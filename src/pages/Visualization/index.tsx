@@ -1,12 +1,12 @@
-import React,{memo} from "react";
-import type{FC,ReactNode} from "react";
+import React, { memo } from "react";
+import type { FC, ReactNode } from "react";
 
-interface IProps{
-    children?:ReactNode
+interface IProps {
+  children?: ReactNode;
 }
 
-const VisualizationPage:FC<IProps> = () =>{
-    return <div>VisualizationPage</div>
-}
+const VisualizationPage: FC<IProps> = () => {
+  return <div>VisualizationPage</div>;
+};
 
 export default memo(VisualizationPage);

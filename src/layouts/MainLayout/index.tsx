@@ -1,12 +1,19 @@
-import { Outlet, NavLink } from 'react-router-dom';
-import { Suspense } from 'react';
+import { Outlet, NavLink } from "react-router-dom";
+import { Suspense } from "react";
 
 export default function MainLayout() {
   return (
     <div>
       <header>
         {/* 这里是你的导航栏 */}
-        <nav style={{ display: 'flex', gap: '20px', padding: '20px', borderBottom: '1px solid #eee' }}>
+        <nav
+          style={{
+            display: "flex",
+            gap: "20px",
+            padding: "20px",
+            borderBottom: "1px solid #eee",
+          }}
+        >
           <h2>知几</h2>
           <NavLink to="/visualization">可视化交互</NavLink>
           <NavLink to="/translation">公式-算法对译</NavLink>
