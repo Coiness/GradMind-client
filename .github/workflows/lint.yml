@@ -1,0 +1,39 @@
+name: Lint and Format Check
+
+# 控制工作流何时运行
+on:
+  push:
+    branches: ["main", "develop"] # 当推送到 main 或 develop 分支时触发
+  pull_request:
+    branches: ["main", "develop"] # 当向 main 或 develop 分支发起 PR 时触发
+
+# 工作流运行的一个或多个作业
+jobs:
+  lint-and-format:
+    # 作业运行的操作系统类型
+    runs-on: ubuntu-latest
+
+    # 定义作业的一系列步骤
+    steps:
+      # 1. 检出你的代码库
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. 设置 Node.js 环境
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # 使用与你项目匹配的 Node.js 版本
+          cache: 'npm' # 缓存 npm 依赖，加快后续运行速度
+
+      # 3. 安装依赖
+      - name: Install dependencies
+        run: npm ci # 使用 npm ci 更快、更可靠
+
+      # 4. 运行 ESLint 检查
+      - name: Run ESLint
+        run: npm run lint
+
+      # 5. 运行 Prettier 格式检查
+      - name: Run Prettier check
+        run: npm run format:check # 注意：这里用 format:check，只检查不写入
