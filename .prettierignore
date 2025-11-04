@@ -1,0 +1,13 @@
+# 忽略打包产物
+dist
+.tmp
+build
+
+# 忽略依赖
+node_modules
+
+# 忽略锁文件 (它们是自动生成的)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
