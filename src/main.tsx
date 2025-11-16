@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./store/index.ts";
 import "@/style/global.less";
+import "antd/dist/reset.css";
 import App from "./App.tsx";
 
 createRoot(document.getElementById("root")!).render(
