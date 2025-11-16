@@ -18,7 +18,7 @@ const VisualizationPage: FC<IProps> = () => {
     // ... (你的配置数组保持不变)
     {
       key: "learningRate",
-      label: "学习率 (Learning Rate)",
+      label: "初始学习率 (Learning Rate)",
       type: "slider",
       defaultValue: 0.1,
       options: { min: 0.01, max: 1, step: 0.01 },

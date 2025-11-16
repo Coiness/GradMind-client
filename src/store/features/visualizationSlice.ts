@@ -1,6 +1,5 @@
 import type { ParameterValues } from "@/types";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
 
 // 假设这是你的计算结果的数据结构
 export interface VisualizationData {
