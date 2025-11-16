@@ -1,30 +1,43 @@
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Suspense } from "react";
+import { Tabs } from "antd";
+import styles from "./MainLayout.module.css";
 
 export default function MainLayout() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const items = [
+    {
+      key: "/visualization",
+      label: "可视化交互",
+    },
+    {
+      key: "/translation",
+      label: "公式-算法对译",
+    },
+    {
+      key: "/orchestration",
+      label: "算法流编排",
+    },
+  ];
+
+  const onTabChange = (key: string) => {
+    navigate(key);
+  };
+
   return (
     <div>
-      <header>
-        {/* 这里是你的导航栏 */}
-        <nav
-          style={{
-            display: "flex",
-            gap: "20px",
-            padding: "20px",
-            borderBottom: "1px solid #eee",
-          }}
-        >
-          <h2>知几</h2>
-          <NavLink to="/visualization">可视化交互</NavLink>
-          <NavLink to="/translation">公式-算法对译</NavLink>
-          <NavLink to="/orchestration">算法流编排</NavLink>
-        </nav>
+      {/* 2. 使用 className 替换 style */}
+      <header className={styles.header}>
+        <div className={styles.logo}>知几</div>
+        <Tabs
+          activeKey={location.pathname}
+          items={items}
+          onChange={onTabChange}
+        />
       </header>
       <main>
-        {/* 
-          子路由组件会在这里渲染。
-          因为子路由也是懒加载的，所以这里也需要一个 Suspense。
-        */}
         <Suspense fallback={<div>Loading Page...</div>}>
           <Outlet />
         </Suspense>
