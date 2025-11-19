@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Slider, InputNumber, Select, Space } from "antd";
 import type { ParameterConfig, ParameterValues } from "@/types/parameterConfig";
-import styles from "./ParameterPanel.module.css";
+import styles from "./index.module.css";
 
 interface ParameterPanelProps {
   config: ParameterConfig[];
