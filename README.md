@@ -1,7 +1,9 @@
 # GradMind Client
+
 一个用于可视化《人工智能数学基础》核心概念的交互式 Web 应用。通过动态参数调整和实时计算，帮助学习者直观理解梯度下降、反向传播等算法。
 
 ## 技术栈
+
 - 前端框架: React 18 + TypeScript
 - 构建工具: Vite
 - UI 库: Ant Design
@@ -10,7 +12,9 @@
 - 代码规范: ESLint + Prettier
 
 ## 快速开始
+
 环境要求
+
 - Node.js >= 20.19.0 (推荐使用 LTS 版本)
 - npm 或 yarn
 
@@ -28,12 +32,11 @@
 代码格式化
 `npm run format`
 
-
-
 代码检查
 `npm run lint`
 
 ## 项目结构
+
 ```
 src/
 ├── assets/              # 静态资源文件 (图片、图标等)
@@ -68,10 +71,10 @@ src/
     └── parameterConfig.ts  # 参数配置类型
 ```
 
-
 ## 开发规范
 
 ### 1. 新增组件的要求
+
 - 位置: 所有通用组件放在 `components` 下，每个组件一个文件夹。
 - 文件结构:
   - `index.tsx`: 组件主文件
@@ -84,9 +87,10 @@ src/
 - 命名: PascalCase (如 `ParameterPanel`)。
 - Props: 使用 TypeScript 接口定义，必需属性在前，可选属性在后。
 - 示例:
+
 ```tsx
 // src/components/NewComponent/index.tsx
-import styles from './index.module.css';
+import styles from "./index.module.css";
 
 interface NewComponentProps {
   title: string;
@@ -95,21 +99,19 @@ interface NewComponentProps {
 }
 
 export const NewComponent: React.FC<NewComponentProps> = () => {
-  return (
-    <div className={styles.panel}>
-      {/* 组件内容 */}
-    </div>
-  );
+  return <div className={styles.panel}>{/* 组件内容 */}</div>;
 };
 ```
 
 ### 2. Store (Redux) 使用规范
+
 - 位置: 所有 Redux 相关代码放在 `store` 下。
 - Slice 结构: 使用 Redux Toolkit 的 `createSlice`，每个功能一个 slice。
 - 异步操作: 使用 `createAsyncThunk` 处理异步逻辑。
 - 状态类型: 在 slice 文件中定义 `State` 接口。
 - 命名: slice 文件使用 camelCase (如 `visualizationSlice.ts`)。
 - 示例:
+
 ```ts
 // src/store/features/newFeatureSlice.ts
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
@@ -128,7 +130,7 @@ const newFeatureSlice = createSlice({
   initialState: { ... } as NewFeatureState,
   reducers: { /* 同步 reducers */ },
   extraReducers: (builder) => {
-    builder.addCase(fetchData.pending, (state) => { 
+    builder.addCase(fetchData.pending, (state) => {
       // ...
     });
     // ...
@@ -137,11 +139,13 @@ const newFeatureSlice = createSlice({
 ```
 
 ### 3. Type (TypeScript 类型) 定义规范
+
 - 位置: 所有类型定义放在 `types` 下，每个类型一个文件。
 - 命名: 文件名使用 camelCase (如 `parameterConfig.ts`)，类型名使用 PascalCase (如 `ParameterConfig`)。
 - 组织: 相关类型放在同一个文件，避免过度拆分。
 - 导入: 使用 `import type` 语法。
 - 示例:
+
 ```ts
 // src/types/newType.ts
 export interface NewType {
@@ -150,10 +154,11 @@ export interface NewType {
   value?: number;
 }
 
-export type NewUnionType = 'option1' | 'option2';
+export type NewUnionType = "option1" | "option2";
 ```
 
 ## 贡献指南
+
 1. Fork 本仓库。
 2. 创建功能分支: `git checkout -b feature/new-feature`。
 3. 代码检查: `npm lint`.
@@ -162,3 +167,7 @@ export type NewUnionType = 'option1' | 'option2';
 6. 提交更改: `git commit -m "feat: add new feature"`。
 7. 推送分支: `git push origin feature/new-feature`。
 8. 创建 Pull Request。（github网页可以）
+
+## 补充
+
+我使用 scenarios 类型存放不同场景的一些信息，像是参数、展示信息、计算结果等，可以在 config 里面通过新建文件来配置不同的场景。
