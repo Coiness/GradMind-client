@@ -1,0 +1,45 @@
+.executionResults {
+  padding: 0;
+}
+
+.successHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.successIcon {
+  color: #52c41a;
+  font-size: 20px;
+}
+
+.resultContent {
+  margin-top: 16px;
+}
+
+.resultData {
+  margin-top: 8px;
+  background: #fafafa;
+  border: 1px solid #f0f0f0;
+  border-radius: 4px;
+  padding: 12px;
+  max-height: 400px;
+  overflow: auto;
+}
+
+.resultJson {
+  margin: 0;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #262626;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.metadata {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+}

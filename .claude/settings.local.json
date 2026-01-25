@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:claude.ai)",
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run dev:*)",
+      "Bash(timeout /t 5)",
+      "Bash(dir /b \"C:\\\\Users\\\\15121\\\\Desktop\\\\code\\\\GradMind-client\\\\src\\\\config\\\\algorithms\")"
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+.algorithmInfo {
+  padding: 0;
+}
+
+.algorithmHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.algorithmIcon {
+  font-size: 24px;
+  line-height: 1;
+}

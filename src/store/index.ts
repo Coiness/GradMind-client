@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import VisualizationSlice from "./features/visualizationSlice";
+import OrchestrationSlice from "./features/orchestrationSlice";
 
 export const store = configureStore({
   reducer: {
     // 在这里注册你所有的 slice
     visualization: VisualizationSlice,
+    orchestration: OrchestrationSlice,
   },
 });
 

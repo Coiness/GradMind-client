@@ -13,10 +13,6 @@ export default function MainLayout() {
       label: "可视化交互",
     },
     {
-      key: "/translation",
-      label: "公式-算法对译",
-    },
-    {
       key: "/orchestration",
       label: "算法流编排",
     },

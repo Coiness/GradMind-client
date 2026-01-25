@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from "react";
+import { memo, useMemo } from "react";
 import type { FC } from "react";
 import { Select, Space } from "antd";
 import type { ParameterValues } from "@/types/parameterConfig";

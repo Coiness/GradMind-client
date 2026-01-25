@@ -1,0 +1,36 @@
+.orchestrationPage {
+  height: 100vh;
+  background: #f0f2f5;
+}
+
+.leftPanel {
+  height: 100vh;
+  overflow: hidden;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.centerPanel {
+  height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.rightPanel {
+  height: 100vh;
+  overflow: hidden;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.panelContent {
+  padding: 16px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.emptyState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
