@@ -39,27 +39,31 @@ const VisualizationPage: FC = () => {
   };
 
   return (
-    <div style={{
-      position: "fixed",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      display: "flex",
-      padding: "20px",
-      gap: "16px",
-      backgroundColor: "#f5f5f5",
-      boxSizing: "border-box",
-      overflow: "hidden"
-    }}>
-      {/* 左侧面板 */}
-      <div style={{ 
-        width: "300px",
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
         display: "flex",
-        flexDirection: "column",
-        height: "100%",
-        flexShrink: 0
-      }}>
+        padding: "20px",
+        gap: "16px",
+        backgroundColor: "#f5f5f5",
+        boxSizing: "border-box",
+        overflow: "hidden",
+      }}
+    >
+      {/* 左侧面板 */}
+      <div
+        style={{
+          width: "300px",
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+          flexShrink: 0,
+        }}
+      >
         {/* Select 组件 */}
         <div style={{ marginBottom: "16px" }}>
           <Select
@@ -69,24 +73,28 @@ const VisualizationPage: FC = () => {
             options={scenarios.map((s) => ({ label: s.name, value: s.key }))}
           />
         </div>
-        
+
         {/* ParameterPanel - 占50%高度 */}
-        <div style={{ 
-          flex: "1 1 50%",
-          minHeight: 0,
-          marginBottom: "16px",
-          display: "flex",
-          flexDirection: "column"
-        }}>
-          <div style={{ 
-            border: "1px solid #f0f0f0",
-            borderRadius: "8px",
-            backgroundColor: "#fff",
-            flex: 1,
-            overflow: "auto",
+        <div
+          style={{
+            flex: "1 1 50%",
+            minHeight: 0,
+            marginBottom: "16px",
             display: "flex",
-            flexDirection: "column"
-          }}>
+            flexDirection: "column",
+          }}
+        >
+          <div
+            style={{
+              border: "1px solid #f0f0f0",
+              borderRadius: "8px",
+              backgroundColor: "#fff",
+              flex: 1,
+              overflow: "auto",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
             <ParameterPanel
               config={currentScenario.parameterConfig}
               onApply={handleApplyParams}
@@ -94,23 +102,27 @@ const VisualizationPage: FC = () => {
             />
           </div>
         </div>
-        
+
         {/* InfoPanel - 占50%高度 */}
-        <div style={{ 
-          flex: "1 1 50%",
-          minHeight: 0,
-          display: "flex",
-          flexDirection: "column"
-        }}>
-          <div style={{ 
-            border: "1px solid #f0f0f0",
-            borderRadius: "8px",
-            backgroundColor: "#fff",
-            flex: 1,
-            overflow: "auto",
+        <div
+          style={{
+            flex: "1 1 50%",
+            minHeight: 0,
             display: "flex",
-            flexDirection: "column"
-          }}>
+            flexDirection: "column",
+          }}
+        >
+          <div
+            style={{
+              border: "1px solid #f0f0f0",
+              borderRadius: "8px",
+              backgroundColor: "#fff",
+              flex: 1,
+              overflow: "auto",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
             <InfoPanel
               title={currentScenario.name}
               data={currentScenario.resultTransformer(computationResult)}
@@ -121,53 +133,63 @@ const VisualizationPage: FC = () => {
       </div>
 
       {/* 中间面板 */}
-      <div style={{ 
-        flex: 1,
-        minWidth: 0,
-        display: "flex",
-        flexDirection: "column",
-        height: "100%"
-      }}>
-        <div style={{ 
-          border: "1px solid #f0f0f0",
-          borderRadius: "8px",
-          backgroundColor: "#fff",
-          padding: "16px",
+      <div
+        style={{
           flex: 1,
-          overflow: "auto",
+          minWidth: 0,
           display: "flex",
-          flexDirection: "column"
-        }}>
-          <h3 style={{ marginTop: 0 }}>可视化图表区域</h3>
-          <div style={{ 
+          flexDirection: "column",
+          height: "100%",
+        }}
+      >
+        <div
+          style={{
+            border: "1px solid #f0f0f0",
+            borderRadius: "8px",
+            backgroundColor: "#fff",
+            padding: "16px",
             flex: 1,
+            overflow: "auto",
             display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: 0
-          }}>
+            flexDirection: "column",
+          }}
+        >
+          <h3 style={{ marginTop: 0 }}>可视化图表区域</h3>
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: 0,
+            }}
+          >
             <p>这里显示梯度下降的可视化图表</p>
           </div>
         </div>
       </div>
 
       {/* 右侧面板 */}
-      <div style={{ 
-        width: "400px",
-        flexShrink: 0,
-        display: "flex",
-        flexDirection: "column",
-        height: "100%"
-      }}>
-        <div style={{ 
-          border: "1px solid #f0f0f0",
-          borderRadius: "8px",
-          backgroundColor: "#fff",
-          flex: 1,
-          overflow: "hidden",
+      <div
+        style={{
+          width: "400px",
+          flexShrink: 0,
           display: "flex",
-          flexDirection: "column"
-        }}>
+          flexDirection: "column",
+          height: "100%",
+        }}
+      >
+        <div
+          style={{
+            border: "1px solid #f0f0f0",
+            borderRadius: "8px",
+            backgroundColor: "#fff",
+            flex: 1,
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <MathCodeBridge />
         </div>
       </div>

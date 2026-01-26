@@ -1,10 +1,10 @@
-import type { BridgeConfig } from '@/types/bridgeConfig';
+import type { BridgeConfig } from "@/types/bridgeConfig";
 
 export const gradientDescentBridge: BridgeConfig = {
   id: "gradient-descent",
   name: "梯度下降算法",
   language: "python",
-  
+
   // 完整的 LaTeX 公式，包含 htmlId 标记
   mathTemplate: `## 梯度下降算法数学推导
 
@@ -47,7 +47,7 @@ $$
 $$
 
 其中 $\\alpha$ 是学习率（learning rate），控制每次更新的步长。`,
-  
+
   // 完整的 Python 代码实现
   codeContent: `import numpy as np
 import matplotlib.pyplot as plt
@@ -183,43 +183,43 @@ if __name__ == "__main__":
     
     # 绘制损失曲线
     gd.plot_loss_history()`,
-  
+
   // 映射关系配置
   mappings: {
-    "loss_func": {
+    loss_func: {
       lines: [19, 22],
       color: "#e6f7ff",
-      description: "损失函数定义和计算"
+      description: "损失函数定义和计算",
     },
-    "loss_formula": {
+    loss_formula: {
       lines: [27, 30],
       color: "#bae7ff",
-      description: "损失函数公式具体实现"
+      description: "损失函数公式具体实现",
     },
-    "gradient_calc": {
+    gradient_calc: {
       lines: [40, 42],
       color: "#d9f7be",
-      description: "梯度计算调用"
+      description: "梯度计算调用",
     },
-    "gradient_formula": {
+    gradient_formula: {
       lines: [32, 35],
       color: "#b7eb8f",
-      description: "梯度公式实现"
+      description: "梯度公式实现",
     },
-    "gradient_vector": {
+    gradient_vector: {
       lines: [30, 31],
       color: "#95de64",
-      description: "梯度向量表示"
+      description: "梯度向量表示",
     },
-    "update_step": {
+    update_step: {
       lines: [40, 42],
       color: "#ffd6e7",
-      description: "参数更新步骤"
+      description: "参数更新步骤",
     },
-    "update_vector": {
+    update_vector: {
       lines: [52, 52],
       color: "#ff9ec6",
-      description: "向量形式更新"
-    }
-  }
+      description: "向量形式更新",
+    },
+  },
 };
