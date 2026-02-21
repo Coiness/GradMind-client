@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Layout, Typography, Empty } from "antd";
+import { Layout, Empty } from "antd";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   loadAlgorithmLibrary,
@@ -14,7 +14,6 @@ import { WorkflowControls } from "./components/WorkflowControls";
 import styles from "./index.module.css";
 
 const { Sider, Content } = Layout;
-const { Title } = Typography;
 
 /**
  * Orchestration Page
@@ -34,7 +33,7 @@ const OrchestrationPage: React.FC = () => {
 
     // Create a default workflow if none exists
     if (!currentWorkflow) {
-      dispatch(createNewWorkflow({ name: "New Workflow" }));
+      dispatch(createNewWorkflow({ name: "新建工作流" }));
     }
   }, [dispatch]);
 
@@ -52,7 +51,7 @@ const OrchestrationPage: React.FC = () => {
           <WorkflowCanvasWithProvider />
         ) : (
           <div className={styles.emptyState}>
-            <Empty description="No workflow loaded. Create a new workflow to get started." />
+            <Empty description="未加载工作流。创建一个新工作流以开始。" />
           </div>
         )}
       </Content>

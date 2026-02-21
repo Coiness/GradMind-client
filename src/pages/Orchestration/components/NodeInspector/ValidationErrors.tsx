@@ -22,7 +22,7 @@ export const ValidationErrors: React.FC<ValidationErrorsProps> = ({
     return (
       <div className={styles.validationErrors}>
         <Empty
-          description="No validation errors"
+          description="无验证错误"
           image={Empty.PRESENTED_IMAGE_SIMPLE}
         />
       </div>
@@ -42,7 +42,7 @@ export const ValidationErrors: React.FC<ValidationErrorsProps> = ({
             <div className={styles.sectionHeader}>
               <ExclamationCircleOutlined className={styles.errorIcon} />
               <Title level={5} style={{ margin: 0 }}>
-                Errors ({errorMessages.length})
+                错误 ({errorMessages.length})
               </Title>
             </div>
             <Space direction="vertical" size="small" style={{ width: "100%", marginTop: 12 }}>
@@ -64,7 +64,7 @@ export const ValidationErrors: React.FC<ValidationErrorsProps> = ({
             <div className={styles.sectionHeader}>
               <WarningOutlined className={styles.warningIcon} />
               <Title level={5} style={{ margin: 0 }}>
-                Warnings ({warningMessages.length})
+                警告 ({warningMessages.length})
               </Title>
             </div>
             <Space direction="vertical" size="small" style={{ width: "100%", marginTop: 12 }}>

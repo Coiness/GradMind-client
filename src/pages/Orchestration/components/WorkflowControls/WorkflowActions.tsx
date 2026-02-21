@@ -30,41 +30,41 @@ export const WorkflowActions: React.FC = () => {
   // Save workflow
   const handleSave = () => {
     if (!currentWorkflow) {
-      message.warning("No workflow to save");
+      message.warning("没有可保存的工作流");
       return;
     }
 
     dispatch(saveWorkflow());
-    message.success(`Workflow "${currentWorkflow.name}" saved successfully!`);
+    message.success(`工作流 "${currentWorkflow.name}" 保存成功！`);
   };
 
   // Load workflow
   const handleLoad = (workflowId: string) => {
     dispatch(loadWorkflow(workflowId));
     setLoadModalVisible(false);
-    message.success("Workflow loaded successfully!");
+    message.success("工作流加载成功！");
   };
 
   // Delete workflow
   const handleDelete = (workflowId: string, workflowName: string) => {
     dispatch(deleteWorkflow(workflowId));
-    message.success(`Workflow "${workflowName}" deleted`);
+    message.success(`工作流 "${workflowName}" 已删除`);
   };
 
   // Create new workflow
   const handleNew = () => {
     if (currentWorkflow && currentWorkflow.nodes.length > 0) {
       Modal.confirm({
-        title: "Create New Workflow",
-        content: "You have unsaved changes. Are you sure you want to create a new workflow?",
+        title: "创建新工作流",
+        content: "您有未保存的更改。确定要创建新工作流吗？",
         onOk: () => {
-          dispatch(createNewWorkflow({ name: "New Workflow" }));
-          message.success("New workflow created");
+          dispatch(createNewWorkflow({ name: "新建工作流" }));
+          message.success("新工作流已创建");
         },
       });
     } else {
-      dispatch(createNewWorkflow({ name: "New Workflow" }));
-      message.success("New workflow created");
+      dispatch(createNewWorkflow({ name: "新建工作流" }));
+      message.success("新工作流已创建");
     }
   };
 
@@ -75,7 +75,7 @@ export const WorkflowActions: React.FC = () => {
           icon={<FileAddOutlined />}
           onClick={handleNew}
         >
-          New
+          新建
         </Button>
 
         <Button
@@ -83,20 +83,20 @@ export const WorkflowActions: React.FC = () => {
           onClick={handleSave}
           disabled={!currentWorkflow}
         >
-          Save
+          保存
         </Button>
 
         <Button
           icon={<FolderOpenOutlined />}
           onClick={() => setLoadModalVisible(true)}
         >
-          Load
+          加载
         </Button>
       </Space>
 
       {/* Load Workflow Modal */}
       <Modal
-        title="Load Workflow"
+        title="加载工作流"
         open={loadModalVisible}
         onCancel={() => setLoadModalVisible(false)}
         footer={null}
@@ -104,7 +104,7 @@ export const WorkflowActions: React.FC = () => {
       >
         {savedWorkflows.length === 0 ? (
           <div className={styles.emptyState}>
-            <p>No saved workflows found</p>
+            <p>未找到已保存的工作流</p>
           </div>
         ) : (
           <List
@@ -117,13 +117,13 @@ export const WorkflowActions: React.FC = () => {
                     type="link"
                     onClick={() => handleLoad(workflow.id)}
                   >
-                    Load
+                    加载
                   </Button>,
                   <Popconfirm
-                    title="Delete this workflow?"
+                    title="删除此工作流？"
                     onConfirm={() => handleDelete(workflow.id, workflow.name)}
-                    okText="Yes"
-                    cancelText="No"
+                    okText="是"
+                    cancelText="否"
                   >
                     <Button
                       type="link"
@@ -135,7 +135,7 @@ export const WorkflowActions: React.FC = () => {
               >
                 <List.Item.Meta
                   title={workflow.name}
-                  description={`${workflow.nodes.length} nodes • Updated: ${new Date(
+                  description={`${workflow.nodes.length} 个节点 • 更新时间: ${new Date(
                     workflow.updatedAt
                   ).toLocaleString()}`}
                 />

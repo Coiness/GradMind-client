@@ -30,7 +30,7 @@ export const WorkflowControls: React.FC = () => {
               icon={<DatabaseOutlined />}
               onClick={() => setDatasetModalVisible(true)}
             >
-              Add Dataset
+              添加数据集
             </Button>
           </Space>
         </div>

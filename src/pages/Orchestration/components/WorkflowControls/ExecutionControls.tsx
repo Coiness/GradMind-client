@@ -27,7 +27,7 @@ export const ExecutionControls: React.FC = () => {
   // Validate workflow
   const handleValidate = async () => {
     if (!currentWorkflow) {
-      message.warning("No workflow to validate");
+      message.warning("没有可验证的工作流");
       return;
     }
 
@@ -41,26 +41,29 @@ export const ExecutionControls: React.FC = () => {
       dispatch(setValidationErrors(errors));
 
       if (errors.length === 0) {
-        message.success("Workflow is valid!");
+        message.success("工作流验证通过！");
       } else {
         const errorCount = errors.filter((e) => e.type === "error").length;
         const warningCount = errors.filter((e) => e.type === "warning").length;
         message.warning(
-          `Validation found ${errorCount} error(s) and ${warningCount} warning(s)`
+          `验证发现 ${errorCount} 个错误和 ${warningCount} 个警告`
         );
       }
     } catch (error) {
-      message.error("Validation failed");
+      message.error("验证失败");
       console.error("Validation error:", error);
     }
   };
 
   // Execute workflow
   const handleExecute = async () => {
+    console.log("🎯 [ExecutionControls] Execute button clicked");
     if (!currentWorkflow) {
-      message.warning("No workflow to execute");
+      message.warning("没有可执行的工作流");
       return;
     }
+
+    console.log("📋 [ExecutionControls] Current workflow:", currentWorkflow);
 
     // Validate first
     try {
@@ -74,24 +77,27 @@ export const ExecutionControls: React.FC = () => {
       const criticalErrors = errors.filter((e) => e.type === "error");
       if (criticalErrors.length > 0) {
         message.error(
-          `Cannot execute: workflow has ${criticalErrors.length} error(s)`
+          `无法执行：工作流有 ${criticalErrors.length} 个错误`
         );
+        console.error("❌ [ExecutionControls] Validation errors:", criticalErrors);
         return;
       }
 
+      console.log("✅ [ExecutionControls] Validation passed, dispatching executeWorkflow");
       // Execute
-      await dispatch(executeWorkflow()).unwrap();
-      message.success("Workflow executed successfully!");
+      const result = await dispatch(executeWorkflow()).unwrap();
+      console.log("🎉 [ExecutionControls] Execution completed successfully:", result);
+      message.success("工作流执行成功！");
     } catch (error: any) {
-      message.error(`Execution failed: ${error.message || "Unknown error"}`);
-      console.error("Execution error:", error);
+      console.error("❌ [ExecutionControls] Execution failed:", error);
+      message.error(`执行失败：${error.message || "未知错误"}`);
     }
   };
 
   // Reset execution
   const handleReset = () => {
     dispatch(resetExecution());
-    message.info("Execution state reset");
+    message.info("执行状态已重置");
   };
 
   return (
@@ -103,7 +109,7 @@ export const ExecutionControls: React.FC = () => {
         loading={isExecuting}
         disabled={!currentWorkflow || isExecuting}
       >
-        Execute
+        执行
       </Button>
 
       <Badge count={hasErrors ? validationErrors.length : 0} offset={[5, 0]}>
@@ -112,7 +118,7 @@ export const ExecutionControls: React.FC = () => {
           onClick={handleValidate}
           disabled={!currentWorkflow}
         >
-          Validate
+          验证
         </Button>
       </Badge>
 
@@ -121,7 +127,7 @@ export const ExecutionControls: React.FC = () => {
         onClick={handleReset}
         disabled={!currentWorkflow || executionStatus === "idle"}
       >
-        Reset
+        重置
       </Button>
     </Space>
   );

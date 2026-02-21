@@ -29,7 +29,7 @@ export const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({
   // Handle parameter changes
   const handleParametersApply = (parameters: ParameterValues) => {
     dispatch(updateNodeParameters({ nodeId: node.id, parameters }));
-    message.success("Parameters updated successfully");
+    message.success("参数更新成功");
   };
 
   // Handle dataset nodes
@@ -45,7 +45,7 @@ export const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({
           width: 100,
         }))
       : datasetData?.data[0]?.map((_, index) => ({
-          title: `Col ${index + 1}`,
+          title: `列 ${index + 1}`,
           dataIndex: index,
           key: index,
           width: 100,
@@ -64,36 +64,36 @@ export const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({
       <div className={styles.algorithmInfo}>
         <Space direction="vertical" size="middle" style={{ width: "100%" }}>
           <div>
-            <Title level={5}>Dataset Node</Title>
-            <Tag color="blue">Dataset</Tag>
+            <Title level={5}>数据集节点</Title>
+            <Tag color="blue">数据集</Tag>
           </div>
           <Paragraph>
-            This is a dataset node that provides input data to the workflow.
+            这是一个数据集节点，为工作流提供输入数据。
           </Paragraph>
 
           {datasetData && (
             <>
               <Divider />
               <div>
-                <Text strong>Dataset Information:</Text>
+                <Text strong>数据集信息：</Text>
                 <div style={{ marginTop: 8 }}>
                   <Text type="secondary">
-                    {datasetData.metadata?.rows || datasetData.data.length} rows × {datasetData.metadata?.columns || datasetData.data[0]?.length || 0} columns
+                    {datasetData.metadata?.rows || datasetData.data.length} 行 × {datasetData.metadata?.columns || datasetData.data[0]?.length || 0} 列
                   </Text>
                   {datasetData.metadata?.fileName && (
                     <>
                       <br />
-                      <Text type="secondary">File: {datasetData.metadata.fileName}</Text>
+                      <Text type="secondary">文件: {datasetData.metadata.fileName}</Text>
                     </>
                   )}
                   <br />
-                  <Text type="secondary">Type: {datasetData.type}</Text>
+                  <Text type="secondary">类型: {datasetData.type}</Text>
                 </div>
               </div>
 
               <Divider />
               <div>
-                <Text strong>Data Preview:</Text>
+                <Text strong>数据预览：</Text>
                 <Table
                   columns={columns}
                   dataSource={tableData}
@@ -104,7 +104,7 @@ export const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({
                 />
                 {datasetData.data.length > 10 && (
                   <Text type="secondary" style={{ display: "block", marginTop: 8, fontSize: 12 }}>
-                    Showing first 10 rows of {datasetData.data.length}
+                    显示前 10 行，共 {datasetData.data.length} 行
                   </Text>
                 )}
               </div>
@@ -113,7 +113,7 @@ export const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({
 
           <Divider />
           <div>
-            <Text strong>Node ID:</Text>
+            <Text strong>节点 ID：</Text>
             <br />
             <Text type="secondary" style={{ fontSize: 12 }}>
               {node.id}
@@ -128,7 +128,7 @@ export const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({
   if (!algorithm) {
     return (
       <div className={styles.algorithmInfo}>
-        <Text type="danger">Algorithm definition not found</Text>
+        <Text type="danger">未找到算法定义</Text>
       </div>
     );
   }
@@ -136,10 +136,10 @@ export const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({
   // Get category display name
   const getCategoryName = (category: string) => {
     const categoryMap: Record<string, string> = {
-      "data-reduction": "Data Reduction",
-      "analytical-optimization": "Analytical Optimization",
-      "numerical-optimization": "Numerical Optimization",
-      "parameter-estimation": "Parameter Estimation",
+      "data-reduction": "数据降维",
+      "analytical-optimization": "解析优化",
+      "numerical-optimization": "数值优化",
+      "parameter-estimation": "参数估计",
     };
     return categoryMap[category] || category;
   };
@@ -164,7 +164,7 @@ export const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({
 
         {/* Description */}
         <div>
-          <Text strong>Description:</Text>
+          <Text strong>描述：</Text>
           <Paragraph style={{ marginTop: 8 }}>
             {algorithm.description}
           </Paragraph>
@@ -180,7 +180,7 @@ export const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({
         {/* Parameters */}
         {algorithm.parameters && algorithm.parameters.length > 0 ? (
           <div>
-            <Title level={5}>Parameters</Title>
+            <Title level={5}>参数</Title>
             <ParameterPanel
               config={algorithm.parameters}
               onApply={handleParametersApply}
@@ -188,8 +188,8 @@ export const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({
           </div>
         ) : (
           <div>
-            <Title level={5}>Parameters</Title>
-            <Text type="secondary">No parameters available</Text>
+            <Title level={5}>参数</Title>
+            <Text type="secondary">无可用参数</Text>
           </div>
         )}
 
@@ -197,7 +197,7 @@ export const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({
 
         {/* Node Info */}
         <div>
-          <Text strong>Node ID:</Text>
+          <Text strong>节点 ID：</Text>
           <br />
           <Text type="secondary" style={{ fontSize: 12 }}>
             {node.id}

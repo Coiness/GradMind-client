@@ -24,7 +24,7 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({
   const parseCSV = (text: string): { data: any[][]; headers: string[] } => {
     const lines = text.trim().split("\n");
     if (lines.length === 0) {
-      throw new Error("Empty CSV file");
+      throw new Error("CSV 文件为空");
     }
 
     // First line as headers
@@ -61,7 +61,7 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({
       return { data: json };
     }
 
-    throw new Error("Unsupported JSON format. Expected array of objects or 2D array.");
+    throw new Error("不支持的 JSON 格式。期望对象数组或二维数组。");
   };
 
   // Handle file upload
@@ -78,7 +78,7 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({
         } else if (file.name.endsWith(".json")) {
           parsedData = parseJSON(text);
         } else {
-          message.error("Unsupported file format. Please upload CSV or JSON.");
+          message.error("不支持的文件格式。请上传 CSV 或 JSON 文件。");
           return;
         }
 
@@ -95,9 +95,9 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({
 
         setPreviewData(datasetData);
         onDataLoaded(datasetData);
-        message.success(`File "${file.name}" loaded successfully!`);
+        message.success(`文件 "${file.name}" 加载成功！`);
       } catch (error: any) {
-        message.error(`Failed to parse file: ${error.message}`);
+        message.error(`解析文件失败：${error.message}`);
         console.error("Parse error:", error);
       }
     };
@@ -117,9 +117,9 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({
         <p className="ant-upload-drag-icon">
           <InboxOutlined />
         </p>
-        <p className="ant-upload-text">Click or drag file to upload</p>
+        <p className="ant-upload-text">点击或拖拽文件到此处上传</p>
         <p className="ant-upload-hint">
-          Support for CSV and JSON files. CSV files should have headers in the first row.
+          支持 CSV 和 JSON 文件。CSV 文件应在第一行包含标题。
         </p>
       </Dragger>
 

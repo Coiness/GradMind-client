@@ -32,7 +32,7 @@ export const PortsInfo: React.FC<PortsInfoProps> = ({ algorithm }) => {
     <div className={styles.portsInfo}>
       {/* Input Ports */}
       <div className={styles.portSection}>
-        <Text strong>Input Ports:</Text>
+        <Text strong>输入端口：</Text>
         {algorithm.inputs && algorithm.inputs.length > 0 ? (
           <Space direction="vertical" size="small" style={{ width: "100%", marginTop: 8 }}>
             {algorithm.inputs.map((input) => (
@@ -42,7 +42,7 @@ export const PortsInfo: React.FC<PortsInfoProps> = ({ algorithm }) => {
                   <Text>{input.label}</Text>
                   {input.required && (
                     <Tag color="red" style={{ marginLeft: 8 }}>
-                      Required
+                      必需
                     </Tag>
                   )}
                 </div>
@@ -54,14 +54,14 @@ export const PortsInfo: React.FC<PortsInfoProps> = ({ algorithm }) => {
           </Space>
         ) : (
           <Text type="secondary" style={{ display: "block", marginTop: 8 }}>
-            No input ports
+            无输入端口
           </Text>
         )}
       </div>
 
       {/* Output Ports */}
       <div className={styles.portSection} style={{ marginTop: 16 }}>
-        <Text strong>Output Ports:</Text>
+        <Text strong>输出端口：</Text>
         {algorithm.outputs && algorithm.outputs.length > 0 ? (
           <Space direction="vertical" size="small" style={{ width: "100%", marginTop: 8 }}>
             {algorithm.outputs.map((output) => (
@@ -78,7 +78,7 @@ export const PortsInfo: React.FC<PortsInfoProps> = ({ algorithm }) => {
           </Space>
         ) : (
           <Text type="secondary" style={{ display: "block", marginTop: 8 }}>
-            No output ports
+            无输出端口
           </Text>
         )}
       </div>

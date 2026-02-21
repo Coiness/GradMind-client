@@ -24,7 +24,7 @@ export const DatasetManager: React.FC<DatasetManagerProps> = ({
 
   const handleAddToCanvas = () => {
     if (!datasetData) {
-      message.warning("Please upload or enter dataset data first");
+      message.warning("请先上传或输入数据集数据");
       return;
     }
 
@@ -33,11 +33,11 @@ export const DatasetManager: React.FC<DatasetManagerProps> = ({
       addDatasetNode({
         position: { x: 100, y: 100 },
         datasetData,
-        label: datasetData.metadata?.fileName || "Dataset",
+        label: datasetData.metadata?.fileName || "数据集",
       })
     );
 
-    message.success("Dataset added to canvas!");
+    message.success("数据集已添加到画布！");
     setDatasetData(null);
     onClose();
   };
@@ -45,23 +45,23 @@ export const DatasetManager: React.FC<DatasetManagerProps> = ({
   const tabItems = [
     {
       key: "upload",
-      label: "Upload File",
+      label: "上传文件",
       children: <DatasetUpload onDataLoaded={setDatasetData} />,
     },
     {
       key: "manual",
-      label: "Manual Entry",
+      label: "手动输入",
       children: <ManualDataEntry onDataCreated={setDatasetData} />,
     },
   ];
 
   return (
     <Modal
-      title="Dataset Manager"
+      title="数据集管理器"
       open={visible}
       onCancel={onClose}
       onOk={handleAddToCanvas}
-      okText="Add to Canvas"
+      okText="添加到画布"
       width={800}
       okButtonProps={{ disabled: !datasetData }}
     >

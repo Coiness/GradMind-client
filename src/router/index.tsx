@@ -5,7 +5,6 @@ import { Navigate } from "react-router-dom";
 // 导入布局和页面组件
 const MainLayout = lazy(() => import("@/layouts/MainLayout"));
 const VisualizationPage = lazy(() => import("@/pages/Visualization"));
-const TranslationPage = lazy(() => import("@/pages/Translation"));
 const OrchestrationPage = lazy(() => import("@/pages/Orchestration"));
 
 const router: RouteObject[] = [
@@ -23,10 +22,6 @@ const router: RouteObject[] = [
         // 3. 将页面路由作为子路由
         path: "visualization",
         element: <VisualizationPage />,
-      },
-      {
-        path: "translation",
-        element: <TranslationPage />,
       },
       {
         path: "orchestration",

@@ -31,11 +31,6 @@ export const WorkflowNameEditor: React.FC = () => {
     setIsEditing(false);
   };
 
-  const handleCancel = () => {
-    setIsEditing(false);
-    setEditValue("");
-  };
-
   if (!currentWorkflow) {
     return null;
   }

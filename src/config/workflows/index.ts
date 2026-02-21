@@ -37,6 +37,13 @@ export const templates: Workflow[] = [
         sourceHandle: "dataset",
         targetHandle: "xData",
       },
+      {
+        id: "edge-2",
+        source: "dataset-1",
+        target: "ls-1",
+        sourceHandle: "dataset",
+        targetHandle: "yData",
+      },
     ],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -98,7 +105,11 @@ export const templates: Workflow[] = [
         data: {
           algorithmKey: "gradient-descent",
           label: "Gradient Descent",
-          parameters: { learningRate: 0.01, maxIterations: 100 },
+          parameters: {
+            learningRate: 0.01,
+            maxIterations: 100,
+            tolerance: 1e-6,
+          },
           status: "idle",
         },
       },

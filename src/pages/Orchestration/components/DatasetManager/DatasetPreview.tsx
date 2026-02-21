@@ -23,7 +23,7 @@ export const DatasetPreview: React.FC<DatasetPreviewProps> = ({ data }) => {
         width: 120,
       }))
     : data.data[0]?.map((_, index) => ({
-        title: `Column ${index + 1}`,
+        title: `列 ${index + 1}`,
         dataIndex: index,
         key: index,
         width: 120,
@@ -41,12 +41,12 @@ export const DatasetPreview: React.FC<DatasetPreviewProps> = ({ data }) => {
   return (
     <div className={styles.datasetPreview}>
       <Divider />
-      <Title level={5}>Preview</Title>
+      <Title level={5}>预览</Title>
 
       {/* Metadata */}
       <div className={styles.metadata}>
         <Text type="secondary">
-          {data.metadata?.rows || data.data.length} rows × {data.metadata?.columns || data.data[0]?.length || 0} columns
+          {data.metadata?.rows || data.data.length} 行 × {data.metadata?.columns || data.data[0]?.length || 0} 列
           {data.metadata?.fileName && ` • ${data.metadata.fileName}`}
         </Text>
       </div>
@@ -63,7 +63,7 @@ export const DatasetPreview: React.FC<DatasetPreviewProps> = ({ data }) => {
 
       {data.data.length > 10 && (
         <Text type="secondary" style={{ display: "block", marginTop: 8 }}>
-          Showing first 10 rows of {data.data.length}
+          显示前 10 行，共 {data.data.length} 行
         </Text>
       )}
     </div>

@@ -6,7 +6,15 @@
       "Bash(npm run build:*)",
       "Bash(npm run dev:*)",
       "Bash(timeout /t 5)",
-      "Bash(dir /b \"C:\\\\Users\\\\15121\\\\Desktop\\\\code\\\\GradMind-client\\\\src\\\\config\\\\algorithms\")"
+      "Bash(dir /b \"C:\\\\Users\\\\15121\\\\Desktop\\\\code\\\\GradMind-client\\\\src\\\\config\\\\algorithms\")",
+      "Bash(npx tsc --noEmit)",
+      "Bash(ls:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run type-check:*)",
+      "Bash(npm run:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npm test:*)",
+      "Bash(git add:*)"
     ]
   }
 }

@@ -87,12 +87,20 @@ export const loadTemplates = createAsyncThunk(
 export const executeWorkflow = createAsyncThunk(
   "orchestration/executeWorkflow",
   async (_, { getState }) => {
+    console.log("🚀 [executeWorkflow] Starting workflow execution");
     const state = getState() as { orchestration: OrchestrationState };
     const { currentWorkflow, algorithmLibrary } = state.orchestration;
 
     if (!currentWorkflow) {
       throw new Error("No workflow to execute");
     }
+
+    console.log("📊 [executeWorkflow] Workflow:", {
+      id: currentWorkflow.id,
+      name: currentWorkflow.name,
+      nodes: currentWorkflow.nodes.length,
+      edges: currentWorkflow.edges.length,
+    });
 
     // Import execution utilities
     const { executeWorkflowEngine } = await import(
@@ -105,6 +113,7 @@ export const executeWorkflow = createAsyncThunk(
       algorithmLibrary,
     );
 
+    console.log("✅ [executeWorkflow] Execution completed, results:", results);
     return results;
   },
 );
@@ -463,10 +472,12 @@ export const orchestrationSlice = createSlice({
     // Execute workflow
     builder
       .addCase(executeWorkflow.pending, (state) => {
+        console.log("⏳ [Redux] executeWorkflow.pending");
         state.executionStatus = "running";
         state.executionResults = {};
       })
       .addCase(executeWorkflow.fulfilled, (state, action) => {
+        console.log("✅ [Redux] executeWorkflow.fulfilled, payload:", action.payload);
         state.executionStatus = "completed";
         state.executionResults = action.payload;
 
@@ -474,13 +485,20 @@ export const orchestrationSlice = createSlice({
         if (state.currentWorkflow) {
           state.currentWorkflow.nodes.forEach((node) => {
             if (action.payload[node.id]) {
+              console.log(`📝 [Redux] Updating node ${node.id} with result:`, action.payload[node.id]);
               node.data.result = action.payload[node.id];
               node.data.status = "success";
             }
           });
         }
+        console.log("🔄 [Redux] State after update:", {
+          executionStatus: state.executionStatus,
+          executionResults: state.executionResults,
+          nodeStatuses: state.currentWorkflow?.nodes.map(n => ({ id: n.id, status: n.data.status })),
+        });
       })
       .addCase(executeWorkflow.rejected, (state, action) => {
+        console.error("❌ [Redux] executeWorkflow.rejected:", action.error);
         state.executionStatus = "error";
         state.error = action.error.message || "Workflow execution failed";
       });

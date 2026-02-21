@@ -24,7 +24,7 @@ export const ManualDataEntry: React.FC<ManualDataEntryProps> = ({
 
   const handleGenerate = () => {
     if (!dataText.trim()) {
-      message.warning("Please enter data");
+      message.warning("请输入数据");
       return;
     }
 
@@ -44,7 +44,7 @@ export const ManualDataEntry: React.FC<ManualDataEntryProps> = ({
       }
 
       if (data.length === 0) {
-        message.error("No data found");
+        message.error("未找到数据");
         return;
       }
 
@@ -59,9 +59,9 @@ export const ManualDataEntry: React.FC<ManualDataEntryProps> = ({
 
       setPreviewData(datasetData);
       onDataCreated(datasetData);
-      message.success("Dataset created successfully!");
+      message.success("数据集创建成功！");
     } catch (error: any) {
-      message.error(`Failed to parse data: ${error.message}`);
+      message.error(`解析数据失败：${error.message}`);
       console.error("Parse error:", error);
     }
   };
@@ -82,7 +82,7 @@ export const ManualDataEntry: React.FC<ManualDataEntryProps> = ({
     <Space direction="vertical" size="large" style={{ width: "100%" }}>
       <Form layout="vertical">
         <Space size="middle">
-          <Form.Item label="Rows">
+          <Form.Item label="行数">
             <InputNumber
               min={1}
               max={100}
@@ -90,7 +90,7 @@ export const ManualDataEntry: React.FC<ManualDataEntryProps> = ({
               onChange={(val) => setRows(val || 1)}
             />
           </Form.Item>
-          <Form.Item label="Columns">
+          <Form.Item label="列数">
             <InputNumber
               min={1}
               max={20}
@@ -99,25 +99,25 @@ export const ManualDataEntry: React.FC<ManualDataEntryProps> = ({
             />
           </Form.Item>
           <Form.Item label=" ">
-            <Button onClick={handleGenerateTemplate}>Generate Template</Button>
+            <Button onClick={handleGenerateTemplate}>生成模板</Button>
           </Form.Item>
         </Space>
 
         <Form.Item
-          label="Data (comma-separated values, one row per line)"
-          help="Example: 1, 2, 3"
+          label="数据（逗号分隔的值，每行一个）"
+          help="示例：1, 2, 3"
         >
           <TextArea
             rows={8}
             value={dataText}
             onChange={(e) => setDataText(e.target.value)}
-            placeholder="Enter data here, e.g.:&#10;1, 2, 3&#10;4, 5, 6&#10;7, 8, 9"
+            placeholder="在此输入数据，例如：&#10;1, 2, 3&#10;4, 5, 6&#10;7, 8, 9"
             className={styles.dataInput}
           />
         </Form.Item>
 
         <Button type="primary" onClick={handleGenerate}>
-          Create Dataset
+          创建数据集
         </Button>
       </Form>
 

@@ -16,7 +16,7 @@ export const TemplateSelector: React.FC = () => {
     const template = templates.find((t) => t.id === templateId);
     if (template) {
       dispatch(loadTemplate(templateId));
-      message.success(`Template "${template.name}" loaded successfully!`);
+      message.success(`模板 "${template.name}" 加载成功！`);
     }
   };
 
@@ -30,7 +30,7 @@ export const TemplateSelector: React.FC = () => {
     <Select
       placeholder={
         <>
-          <AppstoreOutlined /> Templates
+          <AppstoreOutlined /> 模板
         </>
       }
       style={{ minWidth: 180 }}

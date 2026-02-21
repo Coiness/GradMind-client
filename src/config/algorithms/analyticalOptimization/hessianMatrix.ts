@@ -1,4 +1,5 @@
 import type { AlgorithmNode } from "@/types/algorithmNode";
+import * as math from "mathjs";
 
 /**
  * Hessian Matrix Algorithm
@@ -6,22 +7,22 @@ import type { AlgorithmNode } from "@/types/algorithmNode";
  */
 export const hessianAlgorithm: AlgorithmNode = {
   key: "hessian",
-  name: "Hessian Matrix",
+  name: "Hessian 矩阵",
   category: "analytical-optimization",
   description:
-    "Computes the Hessian matrix (matrix of second-order partial derivatives) to analyze the curvature of a function.",
+    "计算 Hessian 矩阵（二阶偏导数矩阵）以分析函数的曲率。",
   icon: "∇²",
 
   inputs: [
     {
       id: "function",
-      label: "Objective Function",
+      label: "目标函数",
       dataType: "function",
       required: true,
     },
     {
       id: "point",
-      label: "Evaluation Point",
+      label: "求值点",
       dataType: "vector",
       required: true,
     },
@@ -30,17 +31,17 @@ export const hessianAlgorithm: AlgorithmNode = {
   outputs: [
     {
       id: "hessian",
-      label: "Hessian Matrix",
+      label: "Hessian 矩阵",
       dataType: "matrix",
     },
     {
       id: "eigenvalues",
-      label: "Eigenvalues",
+      label: "特征值",
       dataType: "vector",
     },
     {
       id: "convexity",
-      label: "Convexity Analysis",
+      label: "凸性分析",
       dataType: "scalar",
     },
   ],
@@ -48,19 +49,19 @@ export const hessianAlgorithm: AlgorithmNode = {
   parameters: [
     {
       key: "method",
-      label: "Computation Method",
+      label: "计算方法",
       type: "select",
       defaultValue: "numerical",
       options: {
         items: [
-          { label: "Numerical (Finite Difference)", value: "numerical" },
-          { label: "Automatic Differentiation", value: "autodiff" },
+          { label: "数值法（有限差分）", value: "numerical" },
+          { label: "自动微分", value: "autodiff" },
         ],
       },
     },
     {
       key: "epsilon",
-      label: "Step Size (ε)",
+      label: "步长（ε）",
       type: "number",
       defaultValue: 1e-5,
       options: {
@@ -71,38 +72,167 @@ export const hessianAlgorithm: AlgorithmNode = {
     },
   ],
 
-  compute: async (inputs, _params) => {
-    // Mock implementation for MVP
-    const point = inputs.point || [0, 0];
-    const dim = point.length;
+  compute: async (inputs, params) => {
+    const epsilon = Number(params.epsilon) || 1e-5;
 
-    // Simulate computation delay
-    await new Promise((resolve) => setTimeout(resolve, 400));
+    // 提取输入数据
+    const functionInput = inputs.function;
+    const pointInput = inputs.point;
 
-    // Mock Hessian matrix (positive definite for convex function)
-    const hessian = Array(dim)
-      .fill(0)
-      .map((_, i) =>
-        Array(dim)
-          .fill(0)
-          .map((_, j) => (i === j ? 2 : 0)),
-      );
+    if (!functionInput) {
+      throw new Error("缺少目标函数输入");
+    }
+    if (!pointInput) {
+      throw new Error("缺少求值点输入");
+    }
 
-    const eigenvalues = Array(dim).fill(2);
-    const convexity = eigenvalues.every((e: number) => e > 0) ? 1 : 0; // 1 = convex, 0 = not convex
+    // 提取点数据
+    let point: number[];
+    if (Array.isArray(pointInput)) {
+      point = pointInput;
+    } else if (pointInput.data) {
+      point = Array.isArray(pointInput.data[0]) ? pointInput.data[0] : pointInput.data;
+    } else {
+      throw new Error("无效的点数据格式");
+    }
 
-    return {
-      hessian,
-      eigenvalues,
-      convexity,
-      visualization: {
-        type: "matrix",
-        data: {
-          hessian,
-          eigenvalues,
-          convexity: convexity === 1 ? "Convex" : "Not Convex",
+    // 提取函数
+    let func: (x: number[]) => number;
+    if (typeof functionInput === "function") {
+      func = functionInput;
+    } else if (typeof functionInput === "string") {
+      try {
+        func = new Function("x", `return ${functionInput}`) as (x: number[]) => number;
+      } catch (error) {
+        throw new Error(`无法解析函数字符串: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    } else if (functionInput.func) {
+      func = functionInput.func;
+    } else {
+      throw new Error("无效的函数格式");
+    }
+
+    const n = point.length;
+    const hessian: number[][] = Array(n).fill(0).map(() => Array(n).fill(0));
+
+    try {
+      // 计算 Hessian 矩阵的每个元素
+      // H_ij = ∂²f/∂x_i∂x_j
+      for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+          if (i === j) {
+            // 对角元素：∂²f/∂x_i²
+            // 使用中心差分：f''(x) ≈ [f(x+h) - 2f(x) + f(x-h)] / h²
+            const pointPlus = [...point];
+            const pointMinus = [...point];
+            pointPlus[i] += epsilon;
+            pointMinus[i] -= epsilon;
+
+            const fPlus = func(pointPlus);
+            const fCenter = func(point);
+            const fMinus = func(pointMinus);
+
+            hessian[i][j] = (fPlus - 2 * fCenter + fMinus) / (epsilon * epsilon);
+          } else {
+            // 非对角元素：∂²f/∂x_i∂x_j
+            // 使用混合偏导数公式
+            const pointPP = [...point];
+            const pointPM = [...point];
+            const pointMP = [...point];
+            const pointMM = [...point];
+
+            pointPP[i] += epsilon;
+            pointPP[j] += epsilon;
+
+            pointPM[i] += epsilon;
+            pointPM[j] -= epsilon;
+
+            pointMP[i] -= epsilon;
+            pointMP[j] += epsilon;
+
+            pointMM[i] -= epsilon;
+            pointMM[j] -= epsilon;
+
+            const fPP = func(pointPP);
+            const fPM = func(pointPM);
+            const fMP = func(pointMP);
+            const fMM = func(pointMM);
+
+            hessian[i][j] = (fPP - fPM - fMP + fMM) / (4 * epsilon * epsilon);
+          }
+        }
+      }
+
+      // 计算特征值
+      const H = math.matrix(hessian);
+      const eigenResult = math.eigs(H);
+
+      // 处理特征值：可能是 Matrix 对象或数组
+      let eigenvalues = eigenResult.values;
+      if (eigenvalues instanceof math.Matrix || (eigenvalues as any).type === 'Matrix') {
+        eigenvalues = (eigenvalues as math.Matrix).toArray() as number[];
+      } else if (!Array.isArray(eigenvalues)) {
+        eigenvalues = [eigenvalues] as number[];
+      }
+
+      const processedEigenvalues = (eigenvalues as number[]).map((v) => (typeof v === "number" ? v : Math.abs(v)));
+
+      // 判断凸性
+      // 正定 (所有特征值 > 0) => 严格凸
+      // 半正定 (所有特征值 >= 0) => 凸
+      // 负定 (所有特征值 < 0) => 严格凹
+      // 半负定 (所有特征值 <= 0) => 凹
+      // 其他 => 鞍点
+      const tolerance = 1e-8;
+      const allPositive = processedEigenvalues.every((e) => e > tolerance);
+      const allNonNegative = processedEigenvalues.every((e) => e >= -tolerance);
+      const allNegative = processedEigenvalues.every((e) => e < -tolerance);
+      const allNonPositive = processedEigenvalues.every((e) => e <= tolerance);
+
+      let convexityType: string;
+      let convexity: number;
+      if (allPositive) {
+        convexityType = "严格凸";
+        convexity = 2;
+      } else if (allNonNegative) {
+        convexityType = "凸";
+        convexity = 1;
+      } else if (allNegative) {
+        convexityType = "严格凹";
+        convexity = -2;
+      } else if (allNonPositive) {
+        convexityType = "凹";
+        convexity = -1;
+      } else {
+        convexityType = "鞍点";
+        convexity = 0;
+      }
+
+      // 计算条件数
+      const absEigenvalues = processedEigenvalues.map((e) => Math.abs(e));
+      const maxEig = Math.max(...absEigenvalues);
+      const minEig = Math.min(...absEigenvalues.filter((e) => e > tolerance));
+      const conditionNumber = minEig > 0 ? maxEig / minEig : Infinity;
+
+      return {
+        hessian,
+        eigenvalues: processedEigenvalues,
+        convexity,
+        convexityType,
+        conditionNumber,
+        isPositiveDefinite: allPositive,
+        isPositiveSemidefinite: allNonNegative,
+        visualization: {
+          type: "matrix",
+          data: {
+            hessian,
+            eigenvalues: processedEigenvalues,
+            convexityType,
+          },
         },
-      },
-    };
+      };
+    } catch (error) {
+      throw new Error(`Hessian 矩阵计算失败: ${error instanceof Error ? error.message : String(error)}`);
+    }
   },
 };

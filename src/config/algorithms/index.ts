@@ -51,26 +51,26 @@ export const algorithms: AlgorithmNode[] = [
 export const categories: AlgorithmCategoryInfo[] = [
   {
     key: "data-reduction",
-    name: "Data Reduction",
-    description: "Dimensionality reduction and matrix decomposition techniques",
+    name: "数据降维",
+    description: "降维和矩阵分解技术",
     icon: "📊",
   },
   {
     key: "analytical-optimization",
-    name: "Analytical Optimization",
-    description: "Closed-form solutions and analytical methods",
+    name: "解析优化",
+    description: "闭式解和解析方法",
     icon: "∇",
   },
   {
     key: "numerical-optimization",
-    name: "Numerical Optimization",
-    description: "Iterative optimization algorithms",
+    name: "数值优化",
+    description: "迭代优化算法",
     icon: "🔄",
   },
   {
     key: "parameter-estimation",
-    name: "Parameter Estimation",
-    description: "Statistical parameter estimation methods",
+    name: "参数估计",
+    description: "统计参数估计方法",
     icon: "📈",
   },
 ];

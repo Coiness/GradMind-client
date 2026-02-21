@@ -3,7 +3,7 @@ import { Typography, Input, Space } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { loadAlgorithmLibrary } from "@/store/features/orchestrationSlice";
-import { categories, getAlgorithmsByCategory } from "@/config/algorithms";
+import { categories } from "@/config/algorithms";
 import type { AlgorithmNode } from "@/types/algorithmNode";
 import { CategorySection } from "./CategorySection";
 import styles from "./index.module.css";
@@ -42,18 +42,25 @@ export const AlgorithmLibrary: React.FC = () => {
     );
   };
 
-  const handleDragStart = (_algorithm: AlgorithmNode) => {
+  const handleDragStart = () => {
     // Can be used for future drag state tracking
   };
+
+  const visibleAlgorithmCount = categories.reduce((count, category) => {
+    const categoryAlgorithms = algorithmLibrary.filter(
+      (algorithm) => algorithm.category === category.key,
+    );
+    return count + filterAlgorithms(categoryAlgorithms).length;
+  }, 0);
 
   return (
     <div className={styles.algorithmLibrary}>
       <div className={styles.header}>
         <Title level={4} className={styles.title}>
-          Algorithm Library
+          算法库
         </Title>
         <Input
-          placeholder="Search algorithms..."
+          placeholder="搜索算法..."
           prefix={<SearchOutlined />}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -65,7 +72,9 @@ export const AlgorithmLibrary: React.FC = () => {
       <div className={styles.content}>
         <Space direction="vertical" size="middle" style={{ width: "100%" }}>
           {categories.map((category) => {
-            const categoryAlgorithms = getAlgorithmsByCategory(category.key);
+            const categoryAlgorithms = algorithmLibrary.filter(
+              (algorithm) => algorithm.category === category.key,
+            );
             const filteredAlgorithms = filterAlgorithms(categoryAlgorithms);
 
             // Hide category if no algorithms match search
@@ -83,10 +92,10 @@ export const AlgorithmLibrary: React.FC = () => {
         </Space>
       </div>
 
-      {searchTerm && algorithmLibrary.length === 0 && (
+      {searchTerm && visibleAlgorithmCount === 0 && (
         <div className={styles.noResults}>
           <Typography.Text type="secondary">
-            No algorithms found matching "{searchTerm}"
+            未找到匹配 "{searchTerm}" 的算法
           </Typography.Text>
         </div>
       )}

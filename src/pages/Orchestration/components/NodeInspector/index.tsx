@@ -16,6 +16,12 @@ export const NodeInspector: React.FC = () => {
   const { selectedNodeId, currentWorkflow, algorithmLibrary, validationErrors, executionResults } =
     useAppSelector((state) => state.orchestration);
 
+  console.log("🔍 [NodeInspector] Rendering with:", {
+    selectedNodeId,
+    executionResults,
+    hasWorkflow: !!currentWorkflow,
+  });
+
   // Find the selected node
   const selectedNode = currentWorkflow?.nodes.find(
     (node) => node.id === selectedNodeId
@@ -23,7 +29,7 @@ export const NodeInspector: React.FC = () => {
 
   // Find the algorithm definition
   const algorithm = selectedNode?.data.algorithmKey
-    ? algorithmLibrary.find((alg) => alg.key === selectedNode.data.algorithmKey)
+    ? algorithmLibrary.find((alg) => alg.key === selectedNode.data.algorithmKey) ?? null
     : null;
 
   // Filter validation errors for this node
@@ -34,16 +40,27 @@ export const NodeInspector: React.FC = () => {
   // Get execution result for this node
   const nodeResult = selectedNodeId ? executionResults[selectedNodeId] : null;
 
+  console.log("📊 [NodeInspector] Node details:", {
+    selectedNode: selectedNode ? {
+      id: selectedNode.id,
+      label: selectedNode.data.label,
+      status: selectedNode.data.status,
+      hasResult: !!selectedNode.data.result,
+    } : null,
+    nodeResult,
+    nodeErrors: nodeErrors.length,
+  });
+
   // Empty state when no node is selected
   if (!selectedNodeId || !selectedNode) {
     return (
       <div className={styles.nodeInspector}>
         <div className={styles.header}>
-          <Title level={5}>Node Inspector</Title>
+          <Title level={5}>节点检查器</Title>
         </div>
         <div className={styles.emptyState}>
           <Empty
-            description="Select a node to view details"
+            description="选择一个节点以查看详情"
             image={Empty.PRESENTED_IMAGE_SIMPLE}
           />
         </div>
@@ -55,7 +72,7 @@ export const NodeInspector: React.FC = () => {
   const tabItems = [
     {
       key: "details",
-      label: "Details",
+      label: "详情",
       children: (
         <AlgorithmInfo
           node={selectedNode}
@@ -65,7 +82,7 @@ export const NodeInspector: React.FC = () => {
     },
     {
       key: "results",
-      label: "Results",
+      label: "结果",
       children: (
         <ExecutionResults
           node={selectedNode}
@@ -75,7 +92,7 @@ export const NodeInspector: React.FC = () => {
     },
     {
       key: "validation",
-      label: `Validation ${nodeErrors.length > 0 ? `(${nodeErrors.length})` : ""}`,
+      label: `验证 ${nodeErrors.length > 0 ? `(${nodeErrors.length})` : ""}`,
       children: (
         <ValidationErrors
           errors={nodeErrors}
@@ -87,7 +104,7 @@ export const NodeInspector: React.FC = () => {
   return (
     <div className={styles.nodeInspector}>
       <div className={styles.header}>
-        <Title level={5}>Node Inspector</Title>
+        <Title level={5}>节点检查器</Title>
         <div className={styles.nodeTitle}>{selectedNode.data.label}</div>
       </div>
       <Tabs
@@ -98,4 +115,3 @@ export const NodeInspector: React.FC = () => {
     </div>
   );
 };
-
