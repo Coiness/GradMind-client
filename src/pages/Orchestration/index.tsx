@@ -11,6 +11,7 @@ import { AlgorithmLibrary } from "./components/AlgorithmLibrary";
 import { WorkflowCanvasWithProvider } from "./components/WorkflowCanvas";
 import { NodeInspector } from "./components/NodeInspector";
 import { WorkflowControls } from "./components/WorkflowControls";
+import ResultPanel from "./components/ResultPanel";
 import styles from "./index.module.css";
 
 const { Sider, Content } = Layout;
@@ -44,16 +45,20 @@ const OrchestrationPage: React.FC = () => {
         <AlgorithmLibrary />
       </Sider>
 
-      {/* Center Panel: Workflow Canvas */}
+      {/* Center Panel: Workflow Canvas + Result Panel */}
       <Content className={styles.centerPanel}>
         <WorkflowControls />
-        {currentWorkflow ? (
-          <WorkflowCanvasWithProvider />
-        ) : (
-          <div className={styles.emptyState}>
-            <Empty description="未加载工作流。创建一个新工作流以开始。" />
-          </div>
-        )}
+        <div className={styles.canvasArea}>
+          {currentWorkflow ? (
+            <WorkflowCanvasWithProvider />
+          ) : (
+            <div className={styles.emptyState}>
+              <Empty description="未加载工作流。创建一个新工作流以开始。" />
+            </div>
+          )}
+        </div>
+        {/* 画布下方结果面板 */}
+        <ResultPanel />
       </Content>
 
       {/* Right Panel: Node Inspector */}
