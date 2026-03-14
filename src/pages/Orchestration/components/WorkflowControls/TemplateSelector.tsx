@@ -10,7 +10,9 @@ import { loadTemplate } from "@/store/features/orchestrationSlice";
  */
 export const TemplateSelector: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { templates } = useAppSelector((state) => state.orchestration);
+  const { templates, status } = useAppSelector((state) => state.orchestration);
+
+  const isLoading = status === "loading";
 
   const handleTemplateSelect = (templateId: string) => {
     const template = templates.find((t) => t.id === templateId);
@@ -20,24 +22,53 @@ export const TemplateSelector: React.FC = () => {
     }
   };
 
-  const templateOptions = templates.map((template) => ({
-    label: template.name,
-    value: template.id,
-    description: template.description,
-  }));
+  // 按类别分组：内置数据模板 vs 普通模板
+  const builtinTemplates = templates.filter((t) =>
+    ["template-pca-builtin", "template-gd-builtin", "template-ls-builtin", "template-svd-builtin"].includes(t.id)
+  );
+  const basicTemplates = templates.filter((t) =>
+    !["template-pca-builtin", "template-gd-builtin", "template-ls-builtin", "template-svd-builtin"].includes(t.id)
+  );
+
+  const groupedOptions = [
+    ...(builtinTemplates.length > 0
+      ? [
+          {
+            label: "🎯 内置数据（直接执行）",
+            options: builtinTemplates.map((t) => ({
+              label: t.name,
+              value: t.id,
+            })),
+          },
+        ]
+      : []),
+    ...(basicTemplates.length > 0
+      ? [
+          {
+            label: "📋 基础模板",
+            options: basicTemplates.map((t) => ({
+              label: t.name,
+              value: t.id,
+            })),
+          },
+        ]
+      : []),
+  ];
 
   return (
     <Select
       placeholder={
         <>
-          <AppstoreOutlined /> 模板
+          <AppstoreOutlined /> 加载模板
         </>
       }
-      style={{ minWidth: 180 }}
-      options={templateOptions}
+      style={{ minWidth: 200 }}
+      options={groupedOptions}
       onChange={handleTemplateSelect}
       value={null}
-      disabled={templates.length === 0}
+      loading={isLoading}
+      disabled={false}
+      notFoundContent={isLoading ? "加载中..." : "暂无模板"}
     />
   );
 };
