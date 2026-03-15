@@ -1,21 +1,29 @@
 .workflowControls {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
+  padding: 8px 16px;
   background: #fff;
   border-bottom: 1px solid #f0f0f0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   z-index: 10;
+  flex-shrink: 0;
 }
 
-.leftSection {
-  flex: 1;
-  min-width: 200px;
-}
-
-.centerSection {
-  flex: 2;
+.row {
   display: flex;
-  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.nameSection {
+  flex: 1;
+  min-width: 0;
+}
+
+.execSection {
+  flex-shrink: 0;
+}
+
+.actionsSection {
+  flex: 1;
+  display: flex;
+  align-items: center;
 }
