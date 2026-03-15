@@ -48,6 +48,24 @@ export async function executeWorkflowEngine(
     const node = workflow.nodes.find((n) => n.id === nodeId);
     if (!node) continue;
 
+    if (node.type === "oscilloscope") {
+      // 示波器节点：收集上游数据，透传并生成 visualization 供节点内嵌渲染
+      const incomingEdges = workflow.edges.filter((e) => e.target === nodeId);
+      let inputData: unknown = null;
+      if (incomingEdges.length > 0) {
+        const edge = incomingEdges[0];
+        const sourceResult = results[edge.source];
+        inputData = extractSourceValue(sourceResult, edge.sourceHandle);
+        // 如果 sourceHandle 没有命中子字段，就用整个 sourceResult
+        if (inputData === sourceResult && sourceResult && typeof sourceResult === "object") {
+          inputData = sourceResult;
+        }
+      }
+      results[nodeId] = { data: inputData, type: "oscilloscope", _raw: inputData };
+      console.log(`📡 [workflowExecutor] Oscilloscope node ${nodeId} received:`, inputData);
+      continue;
+    }
+
     if (node.type === "dataset") {
       // Use real dataset data if available, otherwise use mock data
       if (node.data.datasetData) {

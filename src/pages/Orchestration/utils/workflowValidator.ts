@@ -31,6 +31,9 @@ export function validateWorkflow(
 
   // Check each node's connections
   workflow.nodes.forEach((node) => {
+    // 示波器节点不需要 algorithmKey，跳过算法验证
+    if (node.type === "oscilloscope") return;
+
     if (node.type === "algorithm" && node.data.algorithmKey) {
       const algorithm = algorithmLibrary.find(
         (a) => a.key === node.data.algorithmKey,
@@ -132,7 +135,8 @@ function validateDataTypeCompatibility(
       return;
     }
 
-    // 获取源节点的算法定义
+    // 示波器节点接受任意类型，跳过类型检查
+    if (sourceNode.type === "oscilloscope" || targetNode.type === "oscilloscope") return;
     let sourceAlgorithm: AlgorithmNode | undefined;
     if (sourceNode.type === "algorithm" && sourceNode.data.algorithmKey) {
       sourceAlgorithm = algorithmLibrary.find(
@@ -214,6 +218,9 @@ function validatePortValidity(
     const targetNode = workflow.nodes.find((n) => n.id === edge.target);
 
     if (!sourceNode || !targetNode) return;
+
+    // 示波器节点不做端口验证
+    if (sourceNode.type === "oscilloscope" || targetNode.type === "oscilloscope") return;
 
     // 验证源端口
     if (sourceNode.type === "algorithm" && sourceNode.data.algorithmKey) {

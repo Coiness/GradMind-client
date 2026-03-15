@@ -45,9 +45,9 @@ describe("模板4：PCA 降维可视化", () => {
   });
 
   it("应该有一条 Dataset → PCA 的边", () => {
-    expect(tpl.edges.length).toBeGreaterThanOrEqual(1);
-    const edge = tpl.edges[0];
-    expect(edge.targetHandle).toBe("dataset");
+    // 模板含示波器，边数 >= 2；只验证存在 dataset→pca 的边
+    const edge = tpl.edges.find((e) => e.targetHandle === "dataset");
+    expect(edge).toBeDefined();
   });
 });
 
@@ -112,7 +112,7 @@ describe("模板6：最小二乘回归", () => {
   });
 
   it("应该有两条边（xData 和 yData）", () => {
-    expect(tpl.edges.length).toBe(2);
+    // 模板含示波器，总边数 >= 2；只验证 xData 和 yData 边存在
     const handles = tpl.edges.map((e) => e.targetHandle);
     expect(handles).toContain("xData");
     expect(handles).toContain("yData");

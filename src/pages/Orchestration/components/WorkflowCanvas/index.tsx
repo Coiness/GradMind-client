@@ -24,12 +24,14 @@ import {
 import { getAlgorithmByKey } from "@/config/algorithms";
 import { AlgorithmNode } from "./nodes/AlgorithmNode";
 import { DatasetNode } from "./nodes/DatasetNode";
+import { OscilloscopeNode } from "./nodes/OscilloscopeNode";
 import styles from "./index.module.css";
 
 // Define custom node types
 const nodeTypes = {
   algorithm: AlgorithmNode,
   dataset: DatasetNode,
+  oscilloscope: OscilloscopeNode,
 };
 
 /**

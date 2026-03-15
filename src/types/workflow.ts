@@ -34,7 +34,7 @@ export interface DatasetData {
  */
 export interface WorkflowNode {
   id: string; // Unique node ID
-  type: "algorithm" | "dataset"; // Node type
+  type: "algorithm" | "dataset" | "oscilloscope"; // Node type
   position: { x: number; y: number }; // Position on canvas
   data: {
     algorithmKey?: string; // Reference to AlgorithmNode key
