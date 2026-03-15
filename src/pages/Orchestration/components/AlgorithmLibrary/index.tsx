@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Input, Space } from "antd";
+import { Typography, Input, Space, Card } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { loadAlgorithmLibrary } from "@/store/features/orchestrationSlice";
@@ -8,12 +8,8 @@ import type { AlgorithmNode } from "@/types/algorithmNode";
 import { CategorySection } from "./CategorySection";
 import styles from "./index.module.css";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
-/**
- * Algorithm Library Panel (Left Panel)
- * Displays all available algorithms organized by category
- */
 export const AlgorithmLibrary: React.FC = () => {
   const dispatch = useAppDispatch();
   const { algorithmLibrary, status } = useAppSelector(
@@ -22,17 +18,14 @@ export const AlgorithmLibrary: React.FC = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Load algorithm library on mount
   useEffect(() => {
     if (status === "idle") {
       dispatch(loadAlgorithmLibrary());
     }
   }, [dispatch, status]);
 
-  // Filter algorithms based on search term
   const filterAlgorithms = (algorithms: AlgorithmNode[]) => {
     if (!searchTerm) return algorithms;
-
     const term = searchTerm.toLowerCase();
     return algorithms.filter(
       (algo) =>
@@ -42,8 +35,12 @@ export const AlgorithmLibrary: React.FC = () => {
     );
   };
 
-  const handleDragStart = () => {
-    // Can be used for future drag state tracking
+  const handleDragStart = () => {};
+
+  // 示波器拖拽
+  const handleOscilloscopeDragStart = (e: React.DragEvent) => {
+    e.dataTransfer.effectAllowed = "copy";
+    e.dataTransfer.setData("nodeType", "oscilloscope");
   };
 
   const visibleAlgorithmCount = categories.reduce((count, category) => {
@@ -76,10 +73,7 @@ export const AlgorithmLibrary: React.FC = () => {
               (algorithm) => algorithm.category === category.key,
             );
             const filteredAlgorithms = filterAlgorithms(categoryAlgorithms);
-
-            // Hide category if no algorithms match search
             if (filteredAlgorithms.length === 0) return null;
-
             return (
               <CategorySection
                 key={category.key}
@@ -97,6 +91,34 @@ export const AlgorithmLibrary: React.FC = () => {
           <Typography.Text type="secondary">
             未找到匹配 "{searchTerm}" 的算法
           </Typography.Text>
+        </div>
+      )}
+
+      {/* 工具区：示波器 */}
+      {!searchTerm && (
+        <div className={styles.toolsSection}>
+          <div className={styles.toolsSectionTitle}>可视化工具</div>
+          <Card
+            size="small"
+            className={styles.oscilloscopeCard}
+            draggable
+            onDragStart={handleOscilloscopeDragStart}
+          >
+            <div className={styles.cardContent}>
+              <div className={styles.cardHeader}>
+                <span className={styles.icon}>📡</span>
+                <Text strong className={styles.algorithmName}>示波器</Text>
+              </div>
+              <Text type="secondary" className={styles.description}>
+                接收任意数据，自动渲染散点图、折线图等可视化图表
+              </Text>
+              <div className={styles.cardFooter}>
+                <Text type="secondary" className={styles.ioInfo}>
+                  1 个输入 • 图表输出
+                </Text>
+              </div>
+            </div>
+          </Card>
         </div>
       )}
     </div>

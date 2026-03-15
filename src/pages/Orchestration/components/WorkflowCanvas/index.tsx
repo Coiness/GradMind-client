@@ -20,6 +20,7 @@ import {
   addEdge as addEdgeAction,
   removeEdge,
   setSelectedNode,
+  addOscilloscopeNode,
 } from "@/store/features/orchestrationSlice";
 import { getAlgorithmByKey } from "@/config/algorithms";
 import { AlgorithmNode } from "./nodes/AlgorithmNode";
@@ -130,12 +131,7 @@ export const WorkflowCanvas: React.FC = () => {
   const onDrop = useCallback(
     (event: DragEvent) => {
       event.preventDefault();
-
-      const algorithmKey = event.dataTransfer.getData("algorithmKey");
-      if (!algorithmKey || !reactFlowWrapper.current) return;
-
-      const algorithm = getAlgorithmByKey(algorithmKey);
-      if (!algorithm) return;
+      if (!reactFlowWrapper.current) return;
 
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
       const position = {
@@ -143,6 +139,18 @@ export const WorkflowCanvas: React.FC = () => {
         y: event.clientY - reactFlowBounds.top - 50,
       };
 
+      // 示波器节点
+      const nodeType = event.dataTransfer.getData("nodeType");
+      if (nodeType === "oscilloscope") {
+        dispatch(addOscilloscopeNode({ position }));
+        return;
+      }
+
+      // 算法节点
+      const algorithmKey = event.dataTransfer.getData("algorithmKey");
+      if (!algorithmKey) return;
+      const algorithm = getAlgorithmByKey(algorithmKey);
+      if (!algorithm) return;
       dispatch(addNode({ algorithmKey, position }));
     },
     [dispatch],

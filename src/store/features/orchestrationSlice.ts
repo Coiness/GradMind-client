@@ -275,6 +275,27 @@ export const orchestrationSlice = createSlice({
       state.currentWorkflow.updatedAt = new Date().toISOString();
     },
 
+    // Add an oscilloscope node to the workflow
+    addOscilloscopeNode: (
+      state,
+      action: PayloadAction<{ position: { x: number; y: number }; label?: string }>,
+    ) => {
+      if (!state.currentWorkflow) return;
+
+      const newNode: WorkflowNode = {
+        id: `osc-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        type: "oscilloscope",
+        position: action.payload.position,
+        data: {
+          label: action.payload.label || "示波器",
+          status: "idle",
+        },
+      };
+
+      state.currentWorkflow.nodes.push(newNode);
+      state.currentWorkflow.updatedAt = new Date().toISOString();
+    },
+
     // Remove a node from the workflow
     removeNode: (state, action: PayloadAction<string>) => {
       if (!state.currentWorkflow) return;
@@ -513,6 +534,7 @@ export const {
   loadSavedWorkflows,
   addNode,
   addDatasetNode,
+  addOscilloscopeNode,
   removeNode,
   updateNodePosition,
   updateNodeParameters,

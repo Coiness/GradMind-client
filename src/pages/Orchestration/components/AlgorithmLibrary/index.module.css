@@ -125,3 +125,37 @@
 .ioInfo {
   font-size: 11px;
 }
+
+/* 工具区（示波器等） */
+.toolsSection {
+  padding: 12px 16px;
+  border-top: 1px solid #f0f0f0;
+  flex-shrink: 0;
+}
+
+.toolsSectionTitle {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.oscilloscopeCard {
+  cursor: grab;
+  transition: all 0.2s ease;
+  border: 1px solid #d3adf7 !important;
+  background: #f9f0ff !important;
+}
+
+.oscilloscopeCard:hover {
+  border-color: #722ed1 !important;
+  box-shadow: 0 2px 8px rgba(114, 46, 209, 0.2);
+  transform: translateY(-2px);
+}
+
+.oscilloscopeCard:active {
+  cursor: grabbing;
+  transform: scale(0.98);
+}

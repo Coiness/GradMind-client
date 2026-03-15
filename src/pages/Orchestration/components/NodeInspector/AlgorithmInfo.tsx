@@ -32,6 +32,37 @@ export const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({
     message.success("参数更新成功");
   };
 
+  // Handle oscilloscope nodes
+  if (node.type === "oscilloscope") {
+    return (
+      <div className={styles.algorithmInfo}>
+        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+          <div>
+            <Title level={5}>示波器</Title>
+            <Tag color="purple">可视化工具</Tag>
+          </div>
+          <Paragraph>
+            示波器节点接收上游算法或数据集的输出，自动识别数据结构并渲染图表（散点图、折线图、柱状图等）。
+          </Paragraph>
+          <Divider />
+          <div>
+            <Text strong>输入端口：</Text>
+            <div style={{ marginTop: 8 }}>
+              <Tag>input</Tag>
+              <Text type="secondary" style={{ marginLeft: 8 }}>任意数据（自动识别类型）</Text>
+            </div>
+          </div>
+          <Divider />
+          <div>
+            <Text strong>节点 ID：</Text>
+            <br />
+            <Text type="secondary" style={{ fontSize: 12 }}>{node.id}</Text>
+          </div>
+        </Space>
+      </div>
+    );
+  }
+
   // Handle dataset nodes
   if (node.type === "dataset") {
     const datasetData = node.data.datasetData;

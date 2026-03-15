@@ -14,6 +14,23 @@ import styles from "./OscilloscopeNode.module.css";
 const { Text } = Typography;
 
 /**
+ * 递归展开数据，直到得到可渲染的原始值
+ * 处理链：oscilloscope result → { data: dataset_result } → { data: [[...]] } → [[...]]
+ */
+function unwrapData(value: unknown, depth = 0): unknown {
+  if (depth > 5) return value; // 防止无限递归
+  if (Array.isArray(value)) return value;
+  if (value && typeof value === "object") {
+    const obj = value as Record<string, unknown>;
+    // 如果有 visualization 字段，优先返回整个对象供 buildChartOption 处理
+    if (obj.visualization) return obj;
+    // 如果有 data 字段，继续展开
+    if ("data" in obj) return unwrapData(obj.data, depth + 1);
+  }
+  return value;
+}
+
+/**
  * 从示波器接收到的数据中，自动推断图表类型并生成 ECharts option
  */
 function buildChartOption(vizData: Record<string, unknown> | null): object | null {
@@ -25,8 +42,14 @@ function buildChartOption(vizData: Record<string, unknown> | null): object | nul
     return buildFromVisualization(viz.type, viz.data);
   }
 
-  // 否则，尝试从原始数据推断
-  const raw = vizData.data ?? vizData;
+  // 否则，递归展开数据后推断
+  const raw = unwrapData(vizData.data ?? vizData);
+  // 展开后可能又是带 visualization 的对象
+  if (raw && typeof raw === "object" && !Array.isArray(raw)) {
+    const rawObj = raw as Record<string, unknown>;
+    const innerViz = rawObj.visualization as { type: string; data: Record<string, unknown> } | undefined;
+    if (innerViz) return buildFromVisualization(innerViz.type, innerViz.data);
+  }
   return buildFromRaw(raw);
 }
 
