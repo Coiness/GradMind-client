@@ -1,4 +1,5 @@
 import type { DatasetData } from "@/types/workflow";
+import { defaultImageBase64 } from "./presetImage";
 
 export interface PresetDataset {
   id: string;
@@ -105,6 +106,65 @@ const generateGridData = (): number[][] => {
   return data;
 };
 
+// 用于存放异步解析后的图片数据集
+export let imageDatasetData: DatasetData | null = null;
+
+// 异步解析图片并生成灰度矩阵
+export const initImageDataset = async (): Promise<DatasetData> => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      // 为防止预设图片过大，限制最大尺寸
+      const maxSize = 256; 
+      let width = img.width, height = img.height;
+      if (width > maxSize || height > maxSize) {
+        if (width > height) {
+          height = Math.round((height / width) * maxSize);
+          width = maxSize;
+        } else {
+          width = Math.round((width / height) * maxSize);
+          height = maxSize;
+        }
+      }
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d')!;
+      ctx.drawImage(img, 0, 0, width, height);
+
+      const imageData = ctx.getImageData(0, 0, width, height);
+      const grayMatrix: number[][] = [];
+      for (let y = 0; y < height; y++) {
+        const row: number[] = [];
+        for (let x = 0; x < width; x++) {
+          const i = (y * width + x) * 4;
+          const gray = 0.299 * imageData.data[i] + 0.587 * imageData.data[i+1] + 0.114 * imageData.data[i+2];
+          row.push(Math.round(gray));
+        }
+        grayMatrix.push(row);
+      }
+
+      const dataset: DatasetData = {
+        type: 'image',
+        data: grayMatrix,
+        headers: ['pixel'],
+        metadata: {
+          rows: height,
+          columns: width,
+          fileName: 'example_image.png',
+          imageWidth: width,
+          imageHeight: height,
+          imageFormat: 'image/png'
+        }
+      };
+      
+      imageDatasetData = dataset;
+      resolve(dataset);
+    };
+    img.src = defaultImageBase64;
+  });
+};
+
 export const presetDatasets: PresetDataset[] = [
   {
     id: "linear-data",
@@ -208,6 +268,20 @@ export const presetDatasets: PresetDataset[] = [
       data: generateGridData(),
       headers: ["x", "y", "z"],
       metadata: { rows: 100, columns: 3 },
+    },
+  },
+  // 示例图片占位符，实际数据在组件挂载后由 initImageDataset 填充
+  {
+    id: "example-image",
+    name: "示例图片",
+    description: "一张用于测试的单通道灰度图片",
+    icon: "🖼️",
+    dimensions: "256×256",
+    datasetData: {
+      type: "image",
+      data: [[0]], // 占位
+      headers: ["pixel"],
+      metadata: { rows: 1, columns: 1 },
     },
   },
 ];

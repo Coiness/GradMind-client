@@ -665,10 +665,10 @@ export const templates: Workflow[] = [
         data: {
           label: "图像数据集",
           datasetData: {
-            type: "manual",
-            data: [[0]],
+            type: "image",
+            data: [[0]], // 占位，实际在画布中会被建议替换为真实图片
             headers: ["pixel"],
-            metadata: { rows: 1, columns: 1 },
+            metadata: { rows: 1, columns: 1, fileName: "请替换为左侧示例图片" },
           },
         },
       },

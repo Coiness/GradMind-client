@@ -4,7 +4,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { loadAlgorithmLibrary } from "@/store/features/orchestrationSlice";
 import { categories } from "@/config/algorithms";
-import { presetDatasets } from "@/config/presetDatasets";
+import { presetDatasets, initImageDataset, imageDatasetData } from "@/config/presetDatasets";
 import type { AlgorithmNode } from "@/types/algorithmNode";
 import { CategorySection } from "./CategorySection";
 import styles from "./index.module.css";
@@ -18,12 +18,22 @@ export const AlgorithmLibrary: React.FC = () => {
   );
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [, forceRender] = useState(0);
 
   useEffect(() => {
     if (status === "idle") {
       dispatch(loadAlgorithmLibrary());
     }
   }, [dispatch, status]);
+
+  // 初始化图片数据集
+  useEffect(() => {
+    if (!imageDatasetData) {
+      initImageDataset().then(() => {
+        forceRender(prev => prev + 1); // 触发重渲染以使用加载后的图片数据
+      });
+    }
+  }, []);
 
   const filterAlgorithms = (algorithms: AlgorithmNode[]) => {
     if (!searchTerm) return algorithms;
@@ -48,7 +58,13 @@ export const AlgorithmLibrary: React.FC = () => {
   const handleDatasetDragStart = (e: React.DragEvent, dataset: typeof presetDatasets[0]) => {
     e.dataTransfer.effectAllowed = "copy";
     e.dataTransfer.setData("nodeType", "dataset");
-    e.dataTransfer.setData("datasetData", JSON.stringify(dataset.datasetData));
+    
+    // 如果是图片数据集，使用异步加载完成后的真实数据，否则使用定义的数据
+    const datasetDataToUse = dataset.id === "example-image" && imageDatasetData 
+      ? imageDatasetData 
+      : dataset.datasetData;
+      
+    e.dataTransfer.setData("datasetData", JSON.stringify(datasetDataToUse));
     e.dataTransfer.setData("label", dataset.name);
   };
 
