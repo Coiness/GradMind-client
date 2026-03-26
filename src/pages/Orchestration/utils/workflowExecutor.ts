@@ -69,11 +69,26 @@ export async function executeWorkflowEngine(
     if (node.type === "dataset") {
       // Use real dataset data if available, otherwise use mock data
       if (node.data.datasetData) {
-        results[nodeId] = {
+        const resultData: any = {
           data: node.data.datasetData.data,
           type: "dataset",
           metadata: node.data.datasetData.metadata,
         };
+
+        // 自动为图片类型数据集附加 visualization 标识，以便示波器直接渲染
+        if (node.data.datasetData.type === "image") {
+          const meta = node.data.datasetData.metadata;
+          resultData.visualization = {
+            type: "image",
+            data: {
+              matrix: node.data.datasetData.data,
+              width: meta?.imageWidth || meta?.columns || node.data.datasetData.data[0]?.length || 0,
+              height: meta?.imageHeight || meta?.rows || node.data.datasetData.data.length || 0,
+            }
+          };
+        }
+
+        results[nodeId] = resultData;
         console.log(`✅ [workflowExecutor] Dataset node ${nodeId} result:`, results[nodeId]);
       } else {
         // Fallback to mock data

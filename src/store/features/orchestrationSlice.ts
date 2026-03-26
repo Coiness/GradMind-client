@@ -434,6 +434,8 @@ export const orchestrationSlice = createSlice({
           ...template,
           id: `workflow-${Date.now()}`,
           name: `${template.name} (Copy)`,
+          nodes: template.nodes.map(n => ({ ...n, data: { ...n.data } })),
+          edges: template.edges.map(e => ({ ...e })),
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         };
@@ -459,6 +461,17 @@ export const orchestrationSlice = createSlice({
         state.currentWorkflow.description = action.payload.description;
       }
       state.currentWorkflow.updatedAt = new Date().toISOString();
+    },
+
+    // Update dataset node data
+    updateDatasetData: (state, action: PayloadAction<{ nodeId: string; datasetData: any }>) => {
+      const node = state.currentWorkflow?.nodes.find(n => n.id === action.payload.nodeId);
+      if (node) {
+        node.data.datasetData = action.payload.datasetData;
+        if (action.payload.datasetData.metadata?.fileName) {
+          node.data.label = action.payload.datasetData.metadata.fileName;
+        }
+      }
     },
   },
   extraReducers: (builder) => {
@@ -546,6 +559,7 @@ export const {
   updateNodeStatus,
   loadTemplate,
   updateWorkflowMetadata,
+  updateDatasetData,
 } = orchestrationSlice.actions;
 
 export default orchestrationSlice.reducer;

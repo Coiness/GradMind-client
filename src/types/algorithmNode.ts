@@ -18,7 +18,8 @@ export type DataType =
   | "scalar"
   | "function"
   | "model"
-  | "dataset";
+  | "dataset"
+  | "image";
 
 /**
  * Input port definition for an algorithm node

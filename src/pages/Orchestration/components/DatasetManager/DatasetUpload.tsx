@@ -66,6 +66,63 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({
 
   // Handle file upload
   const handleFileUpload = (file: File) => {
+    if (file.type.startsWith('image/')) {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const maxSize = 512;
+        let width = img.width, height = img.height;
+        if (width > maxSize || height > maxSize) {
+          if (width > height) {
+            height = (height / width) * maxSize;
+            width = maxSize;
+          } else {
+            width = (width / height) * maxSize;
+            height = maxSize;
+          }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d')!;
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const imageData = ctx.getImageData(0, 0, width, height);
+        const grayMatrix: number[][] = [];
+        for (let y = 0; y < height; y++) {
+          const row: number[] = [];
+          for (let x = 0; x < width; x++) {
+            const i = (y * width + x) * 4;
+            const gray = 0.299 * imageData.data[i] + 0.587 * imageData.data[i+1] + 0.114 * imageData.data[i+2];
+            row.push(Math.round(gray));
+          }
+          grayMatrix.push(row);
+        }
+
+        const datasetData: DatasetData = {
+          type: 'image',
+          data: grayMatrix,
+          headers: ['pixel'],
+          metadata: {
+            rows: height,
+            columns: width,
+            fileName: file.name,
+            imageWidth: width,
+            imageHeight: height,
+            imageFormat: file.type
+          }
+        };
+
+        setPreviewData(datasetData);
+        onDataLoaded(datasetData);
+        message.success(`图像 "${file.name}" 加载成功！`);
+      };
+      img.onerror = () => {
+        message.error('图像加载失败');
+      };
+      img.src = URL.createObjectURL(file);
+      return false;
+    }
+
     const reader = new FileReader();
 
     reader.onload = (e) => {
@@ -78,7 +135,7 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({
         } else if (file.name.endsWith(".json")) {
           parsedData = parseJSON(text);
         } else {
-          message.error("不支持的文件格式。请上传 CSV 或 JSON 文件。");
+          message.error("不支持的文件格式。请上传 CSV、JSON 或图像文件。");
           return;
         }
 
@@ -109,7 +166,7 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({
   return (
     <Space direction="vertical" size="large" style={{ width: "100%" }}>
       <Dragger
-        accept=".csv,.json"
+        accept=".csv,.json,.png,.jpg,.jpeg"
         beforeUpload={handleFileUpload}
         showUploadList={false}
         className={styles.dragger}
@@ -119,7 +176,7 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({
         </p>
         <p className="ant-upload-text">点击或拖拽文件到此处上传</p>
         <p className="ant-upload-hint">
-          支持 CSV 和 JSON 文件。CSV 文件应在第一行包含标题。
+          支持 CSV、JSON 和图像文件（PNG、JPG）。CSV 文件应在第一行包含标题。
         </p>
       </Dragger>
 

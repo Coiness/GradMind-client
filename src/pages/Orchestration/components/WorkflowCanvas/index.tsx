@@ -21,6 +21,7 @@ import {
   removeEdge,
   setSelectedNode,
   addOscilloscopeNode,
+  addDatasetNode,
 } from "@/store/features/orchestrationSlice";
 import { getAlgorithmByKey } from "@/config/algorithms";
 import { AlgorithmNode } from "./nodes/AlgorithmNode";
@@ -139,11 +140,31 @@ export const WorkflowCanvas: React.FC = () => {
         y: event.clientY - reactFlowBounds.top - 50,
       };
 
-      // 示波器节点
       const nodeType = event.dataTransfer.getData("nodeType");
+
+      // 示波器节点
       if (nodeType === "oscilloscope") {
         dispatch(addOscilloscopeNode({ position }));
         return;
+      }
+
+      // 数据集节点
+      if (nodeType === "dataset") {
+        const datasetDataStr = event.dataTransfer.getData("datasetData");
+        const label = event.dataTransfer.getData("label") || "数据集";
+        if (datasetDataStr) {
+          try {
+            const datasetData = JSON.parse(datasetDataStr);
+            dispatch(addDatasetNode({
+              position,
+              label,
+              datasetData,
+            }));
+          } catch (e) {
+            console.error("无法解析数据集数据:", e);
+          }
+          return;
+        }
       }
 
       // 算法节点

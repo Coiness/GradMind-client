@@ -3,6 +3,8 @@ import type { AlgorithmNode, AlgorithmCategoryInfo } from "@/types/algorithmNode
 // Data Reduction
 import { svdAlgorithm } from "./dataReduction/svd";
 import { pcaAlgorithm } from "./dataReduction/pca";
+import { imageReconstructionAlgorithm } from "./dataReduction/imageReconstruction";
+import { matrixToImageAlgorithm } from "./dataReduction/matrixToImage";
 
 // Analytical Optimization
 import { gradientAlgorithm } from "./analyticalOptimization/gradientComputation";
@@ -21,12 +23,14 @@ import { mleAlgorithm } from "./parameterEstimation/maximumLikelihood";
 import { mapAlgorithm } from "./parameterEstimation/maximumAPosteriori";
 
 /**
- * All available algorithms (12 total)
+ * All available algorithms (13 total)
  */
 export const algorithms: AlgorithmNode[] = [
-  // Data Reduction (2)
+  // Data Reduction (4)
   svdAlgorithm,
   pcaAlgorithm,
+  imageReconstructionAlgorithm,
+  matrixToImageAlgorithm,
 
   // Analytical Optimization (4)
   gradientAlgorithm,

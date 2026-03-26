@@ -23,7 +23,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
 }) => {
   return (
     <Collapse
-      defaultActiveKey={[category.key]}
+      defaultActiveKey={[]}
       className={styles.categoryCollapse}
       expandIconPosition="end"
     >

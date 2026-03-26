@@ -124,6 +124,11 @@ function datasetToMatrix(data: any): number[][] {
  */
 function datasetToVector(data: any): number[] {
   const matrix = datasetToMatrix(data);
+  // 如果是二维数组，提取最后一列（通常是目标值 Y）
+  if (Array.isArray(matrix[0]) && matrix[0].length > 1) {
+    const lastColIndex = matrix[0].length - 1;
+    return matrix.map((row: number[]) => row[lastColIndex]);
+  }
   return matrixToVector(matrix);
 }
 

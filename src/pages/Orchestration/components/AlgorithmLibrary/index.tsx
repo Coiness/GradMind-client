@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Input, Space, Card } from "antd";
+import { Typography, Input, Space, Card, Collapse, Badge } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { loadAlgorithmLibrary } from "@/store/features/orchestrationSlice";
 import { categories } from "@/config/algorithms";
+import { presetDatasets } from "@/config/presetDatasets";
 import type { AlgorithmNode } from "@/types/algorithmNode";
 import { CategorySection } from "./CategorySection";
 import styles from "./index.module.css";
@@ -41,6 +42,14 @@ export const AlgorithmLibrary: React.FC = () => {
   const handleOscilloscopeDragStart = (e: React.DragEvent) => {
     e.dataTransfer.effectAllowed = "copy";
     e.dataTransfer.setData("nodeType", "oscilloscope");
+  };
+
+  // 数据集拖拽
+  const handleDatasetDragStart = (e: React.DragEvent, dataset: typeof presetDatasets[0]) => {
+    e.dataTransfer.effectAllowed = "copy";
+    e.dataTransfer.setData("nodeType", "dataset");
+    e.dataTransfer.setData("datasetData", JSON.stringify(dataset.datasetData));
+    e.dataTransfer.setData("label", dataset.name);
   };
 
   const visibleAlgorithmCount = categories.reduce((count, category) => {
@@ -83,44 +92,97 @@ export const AlgorithmLibrary: React.FC = () => {
               />
             );
           })}
+
+          {searchTerm && visibleAlgorithmCount === 0 && (
+            <div className={styles.noResults}>
+              <Typography.Text type="secondary">
+                未找到匹配 "{searchTerm}" 的算法
+              </Typography.Text>
+            </div>
+          )}
+
+          {/* 预设数据集区 */}
+          {!searchTerm && (
+            <Collapse
+              defaultActiveKey={[]}
+              className={styles.categoryCollapse}
+              expandIconPosition="end"
+            >
+              <Collapse.Panel
+                header={
+                  <div className={styles.categoryHeader}>
+                    <span className={styles.categoryIcon}>🗂️</span>
+                    <div className={styles.categoryInfo}>
+                      <Text strong>预设数据集</Text>
+                      <Badge
+                        count={presetDatasets.length}
+                        style={{ backgroundColor: "#52c41a", marginLeft: 8 }}
+                      />
+                    </div>
+                  </div>
+                }
+                key="preset-datasets"
+              >
+                <div className={styles.datasetList}>
+                  {presetDatasets.map((dataset) => (
+                    <Card
+                      key={dataset.id}
+                      size="small"
+                      className={styles.datasetCard}
+                      draggable
+                      onDragStart={(e) => handleDatasetDragStart(e, dataset)}
+                    >
+                      <div className={styles.cardContent}>
+                        <div className={styles.cardHeader}>
+                          <span className={styles.icon}>{dataset.icon}</span>
+                          <Text strong className={styles.algorithmName}>{dataset.name}</Text>
+                        </div>
+                        <Text type="secondary" className={styles.description}>
+                          {dataset.description}
+                        </Text>
+                        <div className={styles.cardFooter}>
+                          <Text type="secondary" className={styles.ioInfo}>
+                            {dataset.dimensions}
+                          </Text>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </Collapse.Panel>
+            </Collapse>
+          )}
+
+          {/* 工具区：示波器 */}
+          {!searchTerm && (
+            <div className={styles.toolsSection}>
+              <div className={styles.toolsSectionTitle}>可视化工具</div>
+              <Card
+                size="small"
+                className={styles.oscilloscopeCard}
+                draggable
+                onDragStart={handleOscilloscopeDragStart}
+              >
+                <div className={styles.cardContent}>
+                  <div className={styles.cardHeader}>
+                    <span className={styles.icon}>📡</span>
+                    <Text strong className={styles.algorithmName}>示波器</Text>
+                  </div>
+                  <Text type="secondary" className={styles.description}>
+                    接收任意数据，自动渲染散点图、折线图等可视化图表
+                  </Text>
+                  <div className={styles.cardFooter}>
+                    <Text type="secondary" className={styles.ioInfo}>
+                      1 个输入 • 图表输出
+                    </Text>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          )}
+
         </Space>
       </div>
-
-      {searchTerm && visibleAlgorithmCount === 0 && (
-        <div className={styles.noResults}>
-          <Typography.Text type="secondary">
-            未找到匹配 "{searchTerm}" 的算法
-          </Typography.Text>
-        </div>
-      )}
-
-      {/* 工具区：示波器 */}
-      {!searchTerm && (
-        <div className={styles.toolsSection}>
-          <div className={styles.toolsSectionTitle}>可视化工具</div>
-          <Card
-            size="small"
-            className={styles.oscilloscopeCard}
-            draggable
-            onDragStart={handleOscilloscopeDragStart}
-          >
-            <div className={styles.cardContent}>
-              <div className={styles.cardHeader}>
-                <span className={styles.icon}>📡</span>
-                <Text strong className={styles.algorithmName}>示波器</Text>
-              </div>
-              <Text type="secondary" className={styles.description}>
-                接收任意数据，自动渲染散点图、折线图等可视化图表
-              </Text>
-              <div className={styles.cardFooter}>
-                <Text type="secondary" className={styles.ioInfo}>
-                  1 个输入 • 图表输出
-                </Text>
-              </div>
-            </div>
-          </Card>
-        </div>
-      )}
     </div>
   );
 };

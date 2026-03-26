@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useRef, useEffect } from "react";
 import type { NodeProps } from "reactflow";
 import { Handle, Position } from "reactflow";
 import { Card, Typography } from "antd";
@@ -55,6 +55,17 @@ function buildChartOption(vizData: Record<string, unknown> | null): object | nul
 
 function buildFromVisualization(type: string, data: Record<string, unknown>): object | null {
   switch (type) {
+    case "image": {
+      const matrix = data.matrix as number[][];
+      const width = data.width as number;
+      const height = data.height as number;
+      return {
+        _customRender: 'image',
+        matrix,
+        width,
+        height
+      } as any;
+    }
     case "scatter": {
       const points = (data.points as number[][] | undefined) ?? [];
       const ev = data.explainedVariance as number[] | undefined;
@@ -149,11 +160,34 @@ function buildFromRaw(raw: unknown): object | null {
 export const OscilloscopeNode = memo(({ id, data, selected }: NodeProps) => {
   const { executionResults } = useAppSelector((state) => state.orchestration);
   const result = executionResults[id] as Record<string, unknown> | undefined;
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const status = data.status as string | undefined;
   const hasResult = result !== undefined;
 
   const chartOption = hasResult ? buildChartOption(result) : null;
+
+  useEffect(() => {
+    if (chartOption && (chartOption as any)._customRender === 'image' && canvasRef.current) {
+      const { matrix, width, height } = chartOption as any;
+      const canvas = canvasRef.current;
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d')!;
+      const imageData = ctx.createImageData(width, height);
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const i = (y * width + x) * 4;
+          const gray = matrix[y][x];
+          imageData.data[i] = gray;
+          imageData.data[i + 1] = gray;
+          imageData.data[i + 2] = gray;
+          imageData.data[i + 3] = 255;
+        }
+      }
+      ctx.putImageData(imageData, 0, 0);
+    }
+  }, [chartOption]);
 
   const getStatusIcon = () => {
     switch (status) {
@@ -190,7 +224,18 @@ export const OscilloscopeNode = memo(({ id, data, selected }: NodeProps) => {
 
         {/* 图表区域 */}
         <div className={styles.chartArea}>
-          {chartOption ? (
+          {chartOption && (chartOption as any)._customRender === 'image' ? (
+            <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <canvas
+                ref={canvasRef}
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                  display: 'block',
+                }}
+              />
+            </div>
+          ) : chartOption ? (
             <ReactECharts
               option={chartOption}
               style={{ height: "100%", width: "100%" }}

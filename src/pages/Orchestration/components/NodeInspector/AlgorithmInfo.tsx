@@ -125,18 +125,27 @@ export const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({
               <Divider />
               <div>
                 <Text strong>数据预览：</Text>
-                <Table
-                  columns={columns}
-                  dataSource={tableData}
-                  pagination={false}
-                  scroll={{ x: "max-content", y: 200 }}
-                  size="small"
-                  style={{ marginTop: 8 }}
-                />
-                {datasetData.data.length > 10 && (
-                  <Text type="secondary" style={{ display: "block", marginTop: 8, fontSize: 12 }}>
-                    显示前 10 行，共 {datasetData.data.length} 行
-                  </Text>
+                {datasetData.type === "image" ? (
+                  <div style={{ marginTop: 8, padding: 8, background: '#f5f5f5', borderRadius: 4, textAlign: 'center' }}>
+                    <Text type="secondary">图像数据已加载 ({datasetData.data.length}x{datasetData.data[0]?.length || 0})</Text>
+                    <div style={{ fontSize: 24, marginTop: 8 }}>🖼️</div>
+                  </div>
+                ) : (
+                  <>
+                    <Table
+                      columns={columns}
+                      dataSource={tableData}
+                      pagination={false}
+                      scroll={{ x: "max-content", y: 200 }}
+                      size="small"
+                      style={{ marginTop: 8 }}
+                    />
+                    {datasetData.data.length > 10 && (
+                      <Text type="secondary" style={{ display: "block", marginTop: 8, fontSize: 12 }}>
+                        显示前 10 行，共 {datasetData.data.length} 行
+                      </Text>
+                    )}
+                  </>
                 )}
               </div>
             </>

@@ -216,7 +216,7 @@ export const gradientDescentAlgorithm: AlgorithmNode = {
         optimalValue: finalValue,
         iterations,
         converged,
-        history: history.map((h) => [...h.point, h.value]),
+        history: history.map((h) => h.value),
         detailedHistory: history,
         finalGradientNorm: history[history.length - 1]?.gradNorm || 0,
         visualization: {

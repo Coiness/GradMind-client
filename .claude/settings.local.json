@@ -14,7 +14,10 @@
       "Bash(npm run:*)",
       "Bash(npx eslint:*)",
       "Bash(npm test:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(do echo:*)",
+      "Bash(tree -L 3 /c/Users/15121/Desktop/code/GradMind-client/src -I 'node_modules' 2>/dev/null || find /c/Users/15121/Desktop/code/GradMind-client/src -type f -name \"*.tsx\" -o -name \"*.ts\" | grep -v node_modules | sort)"
     ]
   }
 }

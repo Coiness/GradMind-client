@@ -19,13 +19,16 @@ export type WorkflowExecutionStatus =
  * Dataset data structure
  */
 export interface DatasetData {
-  type: "csv" | "json" | "manual";
+  type: "csv" | "json" | "manual" | "image";
   data: any[][]; // 2D array
   headers?: string[];
   metadata?: {
     rows: number;
     columns: number;
     fileName?: string;
+    imageWidth?: number;
+    imageHeight?: number;
+    imageFormat?: string;
   };
 }
 
