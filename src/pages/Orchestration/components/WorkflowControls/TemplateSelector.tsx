@@ -22,38 +22,10 @@ export const TemplateSelector: React.FC = () => {
     }
   };
 
-  // 按类别分组：内置数据模板 vs 普通模板
-  const builtinTemplates = templates.filter((t) =>
-    ["template-pca-builtin", "template-gd-builtin", "template-ls-builtin", "template-svd-builtin"].includes(t.id)
-  );
-  const basicTemplates = templates.filter((t) =>
-    !["template-pca-builtin", "template-gd-builtin", "template-ls-builtin", "template-svd-builtin"].includes(t.id)
-  );
-
-  const groupedOptions = [
-    ...(builtinTemplates.length > 0
-      ? [
-          {
-            label: "🎯 内置数据（直接执行）",
-            options: builtinTemplates.map((t) => ({
-              label: t.name,
-              value: t.id,
-            })),
-          },
-        ]
-      : []),
-    ...(basicTemplates.length > 0
-      ? [
-          {
-            label: "📋 基础模板",
-            options: basicTemplates.map((t) => ({
-              label: t.name,
-              value: t.id,
-            })),
-          },
-        ]
-      : []),
-  ];
+  const options = templates.map((t) => ({
+    label: t.name,
+    value: t.id,
+  }));
 
   return (
     <Select
@@ -63,7 +35,7 @@ export const TemplateSelector: React.FC = () => {
         </>
       }
       style={{ minWidth: 200 }}
-      options={groupedOptions}
+      options={options}
       onChange={handleTemplateSelect}
       value={null}
       loading={isLoading}

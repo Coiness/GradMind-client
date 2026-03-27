@@ -15,17 +15,11 @@ export const leastSquaresAlgorithm: AlgorithmNode = {
 
   inputs: [
     {
-      id: "xData",
-      label: "X 数据（特征）",
+      id: "dataset",
+      label: "输入数据集",
       dataType: "matrix",
       required: true,
-    },
-    {
-      id: "yData",
-      label: "Y 数据（目标）",
-      dataType: "vector",
-      required: true,
-    },
+    }
   ],
 
   outputs: [
@@ -71,45 +65,69 @@ export const leastSquaresAlgorithm: AlgorithmNode = {
         step: 0.1,
       },
     },
+    {
+      key: "targetColumn",
+      label: "目标列索引 (0起,-1为最后一列)",
+      type: "number",
+      defaultValue: -1,
+      options: {
+        min: -1,
+        max: 10,
+        step: 1,
+      },
+    },
   ],
 
   compute: async (inputs, params) => {
     const method = params.method || "normal";
     const lambda = Number(params.regularization) || 0;
+    const targetColParam = Number(params.targetColumn);
+    const targetColumn = isNaN(targetColParam) ? -1 : targetColParam;
 
     // 提取输入数据
-    let xData: number[][];
-    let yData: number[];
+    let rawData: number[][];
 
-    // 处理 X 数据
-    const xInput = inputs.xData;
-    if (!xInput) {
-      throw new Error("缺少 X 数据输入");
+    const datasetInput = inputs.dataset;
+    if (!datasetInput) {
+      throw new Error("缺少数据集输入");
     }
-    if (Array.isArray(xInput)) {
-      // 如果是一维数组，转换为二维
-      if (typeof xInput[0] === "number") {
-        xData = xInput.map((x: number) => [x]);
-      } else {
-        xData = xInput as number[][];
+    
+    if (Array.isArray(datasetInput)) {
+      if (typeof datasetInput[0] === "number") {
+        throw new Error("数据集必须是二维矩阵");
       }
-    } else if (xInput.data) {
-      xData = xInput.data;
+      rawData = datasetInput as number[][];
+    } else if (datasetInput.data && Array.isArray(datasetInput.data)) {
+      rawData = datasetInput.data;
     } else {
-      throw new Error("无效的 X 数据格式");
+      throw new Error("无效的数据集格式");
     }
 
-    // 处理 Y 数据
-    const yInput = inputs.yData;
-    if (!yInput) {
-      throw new Error("缺少 Y 数据输入");
+    if (rawData.length === 0 || rawData[0].length < 2) {
+      throw new Error("数据集至少需要两列（特征和目标）");
     }
-    if (Array.isArray(yInput)) {
-      yData = yInput as number[];
-    } else if (yInput.data) {
-      yData = Array.isArray(yInput.data[0]) ? yInput.data.map((row: number[]) => row[0]) : yInput.data;
-    } else {
-      throw new Error("无效的 Y 数据格式");
+
+    const n = rawData.length;
+    const m = rawData[0].length;
+    
+    // 确定目标列索引
+    const yCol = targetColumn < 0 ? m - 1 : Math.min(targetColumn, m - 1);
+    
+    // 分离 X 和 Y
+    const xData: number[][] = [];
+    const yData: number[] = [];
+    
+    for (let i = 0; i < n; i++) {
+      const row = rawData[i];
+      yData.push(row[yCol]);
+      
+      const xRow = [];
+      for (let j = 0; j < m; j++) {
+        if (j !== yCol) {
+          xRow.push(row[j]);
+        }
+      }
+      xData.push(xRow);
     }
 
     // 验证数据维度
@@ -117,8 +135,8 @@ export const leastSquaresAlgorithm: AlgorithmNode = {
       throw new Error(`X 和 Y 数据长度不匹配: ${xData.length} vs ${yData.length}`);
     }
 
-    const n = xData.length;
-    const m = xData[0].length;
+    const numSamples = xData.length;
+    const numFeatures = xData[0].length;
 
     // 添加截距项（第一列全为1）
     const X = xData.map((row) => [1, ...row]);
@@ -136,7 +154,7 @@ export const leastSquaresAlgorithm: AlgorithmNode = {
 
       // 添加正则化项
       if (lambda > 0) {
-        const I = math.identity(m + 1) as math.Matrix;
+        const I = math.identity(numFeatures + 1) as math.Matrix;
         const regularization = math.multiply(lambda, I) as math.Matrix;
         const XTXReg = math.add(XTX, regularization) as math.Matrix;
         const XTXInv = math.inv(XTXReg) as math.Matrix;

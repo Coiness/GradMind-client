@@ -10,164 +10,167 @@ export interface PresetDataset {
   datasetData: DatasetData;
 }
 
-// 生成服务器内存泄漏趋势数据（线性回归场景）
-const generateMemoryLeakData = (): number[][] => {
+// 生成房屋面积与价格数据（教学用线性回归场景，约500条）
+const generateHousePriceData = (): number[][] => {
   const data: number[][] = [];
-  // 模拟24小时内的内存使用量(GB)，基础16GB，每小时泄漏0.2GB，带随机波动
-  for (let i = 0; i < 24; i++) {
-    const hour = i;
-    const memory = 16 + 0.2 * hour + (Math.random() - 0.5) * 1.5;
-    data.push([hour, Math.max(0, memory)]); // 内存不能为负
+  // 模拟500套房屋的面积（平米）与价格（万元）
+  for (let i = 0; i < 500; i++) {
+    const area = 50 + Math.random() * 150; // 面积 50-200平米
+    // 价格 = 面积 * 3 + 基础价格 + 随机波动（考虑面积越大，价格波动可能越大）
+    const price = 50 + area * 3 + (Math.random() - 0.5) * area * 0.8;
+    data.push([Math.round(area * 10) / 10, Math.round(price * 10) / 10]);
+  }
+  // 按面积排序，使连线更清晰
+  return data.sort((a, b) => a[0] - b[0]);
+};
+
+// 生成抛物线轨迹数据（教学用多项式拟合场景，约500条）
+const generateProjectileData = (): number[][] => {
+  const data: number[][] = [];
+  // 模拟抛体运动轨迹，x为水平距离，y为高度
+  for (let i = 0; i < 500; i++) {
+    const x = Math.random() * 100; // 水平距离 0-100米
+    // 顶点在 x=50，y=80 的开口向下的抛物线
+    const y = -0.032 * Math.pow(x - 50, 2) + 80 + (Math.random() - 0.5) * 5;
+    data.push([Math.round(x * 10) / 10, Math.max(0, Math.round(y * 10) / 10)]); // 高度不为负
+  }
+  return data.sort((a, b) => a[0] - b[0]);
+};
+
+// 生成学生成绩数据（教学用聚类场景，双簇，约500条）
+const generateStudentScoresData = (): number[][] => {
+  const data: number[][] = [];
+  // 偏文科学生（文科成绩高，理科成绩一般）
+  for (let i = 0; i < 250; i++) {
+    data.push([
+      Math.min(100, Math.max(0, Math.round(85 + (Math.random() - 0.5) * 20))), // 语文/英语成绩
+      Math.min(100, Math.max(0, Math.round(60 + (Math.random() - 0.5) * 30)))  // 数学/理综成绩
+    ]);
+  }
+  // 偏理科学生（理科成绩高，文科成绩一般）
+  for (let i = 0; i < 250; i++) {
+    data.push([
+      Math.min(100, Math.max(0, Math.round(65 + (Math.random() - 0.5) * 25))), // 语文/英语成绩
+      Math.min(100, Math.max(0, Math.round(90 + (Math.random() - 0.5) * 15)))  // 数学/理综成绩
+    ]);
   }
   return data;
 };
 
-// 生成设备CPU负载曲线数据（多项式/非线性场景）
-const generateCpuLoadData = (): number[][] => {
+// 生成多维水果属性数据（教学用高维/PCA降维场景，约500条）
+const generateFruitPropertiesData = (): number[][] => {
   const data: number[][] = [];
-  // 模拟一天中CPU负载的二次曲线：早晚低，中午高
-  for (let i = 0; i < 24; i++) {
-    const hour = i;
-    // 顶点在 x=12，y=85 的开口向下的抛物线
-    const load = -0.5 * Math.pow(hour - 12, 2) + 85 + (Math.random() - 0.5) * 10;
-    data.push([hour, Math.max(0, Math.min(100, load))]); // 限制在0-100%
-  }
-  return data;
-};
-
-// 生成网络流量突变数据（聚类/异常检测场景）
-const generateNetworkTrafficData = (): number[][] => {
-  const data: number[][] = [];
-  // 模拟正常流量簇
-  for (let i = 0; i < 30; i++) {
-    const time = i;
-    const traffic = 20 + (Math.random() - 0.5) * 10;
-    data.push([time, traffic]);
-  }
-  // 模拟突发流量簇（如DDoS攻击）
-  for (let i = 30; i < 40; i++) {
-    const time = i;
-    const traffic = 80 + (Math.random() - 0.5) * 20;
-    data.push([time, traffic]);
-  }
-  // 恢复正常流量簇
-  for (let i = 40; i < 50; i++) {
-    const time = i;
-    const traffic = 20 + (Math.random() - 0.5) * 10;
-    data.push([time, traffic]);
-  }
-  return data;
-};
-
-// 生成系统资源多维监控数据（高维/PCA降维场景）
-const generateSystemResourceData = (): number[][] => {
-  const data: number[][] = [];
-  // 模拟50个时间点的10维系统资源指标：CPU, 内存, 磁盘IO, 网络收, 网络发, 进程数, 线程数, 句柄数, TCP连接, 错误率
-  for (let i = 0; i < 50; i++) {
-    // 构造一些相关性（如CPU高时内存通常也高，网络发和收相关等）
-    const baseLoad = Math.random() * 10;
-    const baseNet = Math.random() * 8;
+  // 模拟500个水果的10个特征：重量, 体积, 甜度, 酸度, 硬度, 红色度, 绿色度, 黄色度, 水分, 价格
+  for (let i = 0; i < 500; i++) {
+    const size = Math.random() * 10;
+    const colorType = Math.random();
     const row = [
-      baseLoad + (Math.random() - 0.5), // CPU
-      baseLoad * 0.8 + 2 + (Math.random() - 0.5), // 内存
-      baseLoad * 0.5 + (Math.random() - 0.5), // 磁盘IO
-      baseNet + (Math.random() - 0.5), // 网络收
-      baseNet * 0.9 + (Math.random() - 0.5), // 网络发
-      100 + baseLoad * 5 + (Math.random() - 0.5) * 10, // 进程数
-      1000 + baseLoad * 50 + (Math.random() - 0.5) * 50, // 线程数
-      5000 + baseLoad * 200 + (Math.random() - 0.5) * 200, // 句柄数
-      baseNet * 20 + (Math.random() - 0.5) * 10, // TCP连接
-      Math.max(0, baseLoad * 0.1 - 0.5 + Math.random() * 0.2), // 错误率
+      Math.round((size * 10 + 50 + (Math.random() - 0.5) * 20) * 10) / 10, // 重量
+      Math.round((size * 12 + 40 + (Math.random() - 0.5) * 15) * 10) / 10, // 体积(与重量高度相关)
+      Math.round((Math.random() * 10) * 10) / 10, // 甜度
+      Math.round((Math.random() * 5) * 10) / 10, // 酸度
+      Math.round((Math.random() * 8) * 10) / 10, // 硬度
+      Math.round((colorType < 0.3 ? 8 : Math.random() * 3) * 10) / 10, // 红色度
+      Math.round((colorType > 0.3 && colorType < 0.6 ? 8 : Math.random() * 3) * 10) / 10, // 绿色度
+      Math.round((colorType > 0.6 ? 8 : Math.random() * 3) * 10) / 10, // 黄色度
+      Math.round((80 + (Math.random() - 0.5) * 15) * 10) / 10, // 水分
+      Math.round((size * 2 + 5 + (Math.random() - 0.5) * 3) * 10) / 10, // 价格
     ];
     data.push(row);
   }
   return data;
 };
 
-// 生成业务指标周期性波动数据（正弦波/时序预测场景）
-const generateBusinessMetricData = (): number[][] => {
+// 生成每日气温波动数据（教学用正弦波/时序场景，约500条）
+const generateTemperatureData = (): number[][] => {
   const data: number[][] = [];
-  // 模拟电商平台的日活跃用户数(DAU)波动：存在周周期性（周末高）和日周期性（晚上高）
-  for (let i = 0; i < 40; i++) {
-    const time = i * 0.3; // 缩放时间轴
-    const dau = 50 + 15 * Math.sin(time) + 5 * Math.sin(time / 7) + (Math.random() - 0.5) * 3;
-    data.push([time, Math.max(0, dau)]);
+  // 模拟大约20天（每小时一个点，共480点）的气温波动
+  for (let i = 0; i < 500; i++) {
+    const hour = i;
+    // 基础温度15度，日振幅8度，周期24小时，加上长周期的天气变化
+    const temp = 15 + 8 * Math.sin((hour - 8) * Math.PI / 12) + 5 * Math.sin(hour * Math.PI / 240) + (Math.random() - 0.5) * 2;
+    data.push([hour, Math.round(temp * 10) / 10]);
   }
   return data;
 };
 
-// 生成用户行为聚类数据（双簇/多簇场景）
-const generateUserBehaviorData = (): number[][] => {
-  const data: number[][] = [];
-  // 簇1：活跃用户（高频访问，长停留）
-  for (let i = 0; i < 25; i++) {
-    data.push([
-      80 + (Math.random() - 0.5) * 20, // 访问频次 70-90
-      30 + (Math.random() - 0.5) * 10  // 停留时间 25-35
-    ]);
-  }
-  // 簇2：流失风险用户（低频访问，短停留）
-  for (let i = 0; i < 25; i++) {
-    data.push([
-      10 + (Math.random() - 0.5) * 8,  // 访问频次 6-14
-      5 + (Math.random() - 0.5) * 4    // 停留时间 3-7
-    ]);
-  }
-  return data;
-};
-
-// 生成复杂系统异常状态数据（四簇/异常检测场景）
-const generateSystemAnomalyData = (): number[][] => {
+// 生成混合动植物分类数据（教学用多分类/异常检测场景，约600条）
+const generateSpeciesClassificationData = (): number[][] => {
   const centers = [
-    [20, 20], // 正常低负载
-    [20, 80], // 高IO低CPU
-    [80, 20], // 高CPU低IO
-    [80, 80]  // 全面高负载（可能异常）
+    [10, 15], // 类别A：小型动物（低体重，低高度）
+    [20, 80], // 类别B：高瘦植物（低体重，高高度）
+    [80, 20], // 类别C：扁平植物（高体重，低高度）
+    [90, 90]  // 类别D：大型动物（高体重，高高度）
   ];
   const data: number[][] = [];
   centers.forEach(([cx, cy]) => {
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 150; i++) {
       data.push([
-        Math.max(0, Math.min(100, cx + (Math.random() - 0.5) * 15)),
-        Math.max(0, Math.min(100, cy + (Math.random() - 0.5) * 15))
+        Math.max(0, Math.round((cx + (Math.random() - 0.5) * 20) * 10) / 10),
+        Math.max(0, Math.round((cy + (Math.random() - 0.5) * 20) * 10) / 10)
       ]);
     }
   });
   return data;
 };
 
-// 生成圆形数据
+// 生成商场客流量突变数据（教学用异常检测/突变数据，约500条）
+const generateMallTrafficData = (): number[][] => {
+  const data: number[][] = [];
+  // 模拟正常客流
+  for (let i = 0; i < 200; i++) {
+    const time = i;
+    const traffic = Math.round(50 + 20 * Math.sin(time * Math.PI / 24) + (Math.random() - 0.5) * 10);
+    data.push([time, Math.max(0, traffic)]);
+  }
+  // 模拟节假日/促销突发高客流
+  for (let i = 200; i < 300; i++) {
+    const time = i;
+    const traffic = Math.round(150 + 30 * Math.sin(time * Math.PI / 24) + (Math.random() - 0.5) * 30);
+    data.push([time, Math.max(0, traffic)]);
+  }
+  // 恢复正常客流
+  for (let i = 300; i < 500; i++) {
+    const time = i;
+    const traffic = Math.round(50 + 20 * Math.sin(time * Math.PI / 24) + (Math.random() - 0.5) * 10);
+    data.push([time, Math.max(0, traffic)]);
+  }
+  return data;
+};
+
+// 生成圆形分布数据（教学用分类场景，约500条）
 const generateCircleData = (): number[][] => {
   const data: number[][] = [];
-  for (let i = 0; i < 50; i++) {
-    const angle = (i / 50) * 2 * Math.PI;
-    const radius = 5 + (Math.random() - 0.5) * 0.5;
+  for (let i = 0; i < 500; i++) {
+    const angle = Math.random() * 2 * Math.PI;
+    const radius = 5 + (Math.random() - 0.5) * 1.5;
     const x = radius * Math.cos(angle);
     const y = radius * Math.sin(angle);
-    data.push([x, y]);
+    data.push([Math.round(x * 100) / 100, Math.round(y * 100) / 100]);
   }
   return data;
 };
 
-// 生成螺旋数据
+// 生成螺旋分布数据（教学用复杂分类场景，约500条）
 const generateSpiralData = (): number[][] => {
   const data: number[][] = [];
-  for (let i = 0; i < 60; i++) {
-    const angle = (i / 60) * 4 * Math.PI;
-    const radius = i * 0.1;
-    const x = radius * Math.cos(angle) + (Math.random() - 0.5) * 0.2;
-    const y = radius * Math.sin(angle) + (Math.random() - 0.5) * 0.2;
-    data.push([x, y]);
+  for (let i = 0; i < 500; i++) {
+    const angle = (i / 500) * 6 * Math.PI; // 3圈
+    const radius = i * 0.02 + (Math.random() - 0.5) * 0.5;
+    const x = radius * Math.cos(angle);
+    const y = radius * Math.sin(angle);
+    data.push([Math.round(x * 100) / 100, Math.round(y * 100) / 100]);
   }
   return data;
 };
 
-// 生成网格数据
+// 生成网格坐标数据（教学用空间变换场景，约500条）
 const generateGridData = (): number[][] => {
   const data: number[][] = [];
-  for (let i = 0; i < 10; i++) {
-    for (let j = 0; j < 10; j++) {
-      data.push([i, j, Math.sin(i * 0.5) * Math.cos(j * 0.5)]);
+  // 25x20 网格 = 500点
+  for (let i = 0; i < 25; i++) {
+    for (let j = 0; j < 20; j++) {
+      data.push([i, j, Math.round(Math.sin(i * 0.2) * Math.cos(j * 0.2) * 100) / 100]);
     }
   }
   return data;
@@ -234,120 +237,146 @@ export const initImageDataset = async (): Promise<DatasetData> => {
 
 export const presetDatasets: PresetDataset[] = [
   {
-    id: "memory-leak-data",
-    name: "内存泄漏趋势",
-    description: "服务器24小时内存监控，缓慢上升趋势(用于线性回归)",
-    icon: "📈",
-    dimensions: "24×2",
+    id: "house-price-data",
+    name: "房屋价格与面积",
+    description: "500套房屋的面积与价格数据，呈现明显的线性正相关趋势，适合用于演示简单线性回归。",
+    icon: "🏠",
+    dimensions: "500×2",
     datasetData: {
       type: "manual",
-      data: generateMemoryLeakData(),
-      headers: ["Hour", "Memory(GB)"],
-      metadata: { rows: 24, columns: 2 },
+      data: generateHousePriceData(),
+      headers: ["房屋面积(平米)", "房屋价格(万元)"],
+      metadata: { rows: 500, columns: 2 },
     },
   },
   {
-    id: "cpu-load-data",
-    name: "CPU负载曲线",
-    description: "设备一天内CPU使用率，呈现抛物线趋势(用于多项式拟合)",
-    icon: "📊",
-    dimensions: "24×2",
+    id: "projectile-motion-data",
+    name: "抛物体运动轨迹",
+    description: "记录了500个抛物体在空中的飞行轨迹（水平距离与高度），呈完美抛物线，适合多项式回归拟合。",
+    icon: "⚾",
+    dimensions: "500×2",
     datasetData: {
       type: "manual",
-      data: generateCpuLoadData(),
-      headers: ["Hour", "CPU_Usage(%)"],
-      metadata: { rows: 24, columns: 2 },
+      data: generateProjectileData(),
+      headers: ["水平距离(米)", "飞行高度(米)"],
+      metadata: { rows: 500, columns: 2 },
     },
   },
   {
-    id: "user-behavior-data",
-    name: "用户行为聚类",
-    description: "活跃用户与流失用户双特征分布(用于PCA/聚类分析)",
-    icon: "🎯",
-    dimensions: "50×2",
+    id: "student-scores-data",
+    name: "文理科学生成绩分布",
+    description: "500名学生的文科（语文/英语）与理科（数学/理综）成绩对比，明显分为偏文和偏理两个群体，适合K-Means聚类教学。",
+    icon: "🎓",
+    dimensions: "500×2",
     datasetData: {
       type: "manual",
-      data: generateUserBehaviorData(),
-      headers: ["Visit_Frequency", "Stay_Duration(min)"],
-      metadata: { rows: 50, columns: 2 },
+      data: generateStudentScoresData(),
+      headers: ["文科综合成绩", "理科综合成绩"],
+      metadata: { rows: 500, columns: 2 },
     },
   },
   {
-    id: "system-resource-data",
-    name: "系统多维指标",
-    description: "10个维度的系统运行状态监控数据(用于降维分析)",
-    icon: "🔢",
-    dimensions: "50×10",
+    id: "fruit-properties-data",
+    name: "水果多维特征数据",
+    description: "包含500个水果样本的10个维度特征（重量、甜度、颜色等），适合用于演示PCA主成分分析等高维降维算法。",
+    icon: "🍎",
+    dimensions: "500×10",
     datasetData: {
       type: "manual",
-      data: generateSystemResourceData(),
-      headers: ["CPU", "Mem", "IO", "NetIn", "NetOut", "Procs", "Thds", "FDs", "TCP", "ErrRate"],
-      metadata: { rows: 50, columns: 10 },
+      data: generateFruitPropertiesData(),
+      headers: ["重量(g)", "体积(cm³)", "甜度", "酸度", "硬度", "红色度", "绿色度", "黄色度", "水分(%)", "价格(元)"],
+      metadata: { rows: 500, columns: 10 },
     },
   },
   {
-    id: "business-metric-data",
-    name: "业务周期波动",
-    description: "电商日活(DAU)的周期性波动数据(用于时序分析)",
-    icon: "〰️",
-    dimensions: "40×2",
+    id: "temperature-fluctuation-data",
+    name: "连续气温波动记录",
+    description: "连续500小时的气温变化记录，呈现出明显的日夜周期性波动规律，适合时间序列分析。",
+    icon: "🌡️",
+    dimensions: "500×2",
     datasetData: {
       type: "manual",
-      data: generateBusinessMetricData(),
-      headers: ["Time", "DAU(k)"],
-      metadata: { rows: 40, columns: 2 },
+      data: generateTemperatureData(),
+      headers: ["记录时间(小时)", "环境温度(℃)"],
+      metadata: { rows: 500, columns: 2 },
     },
   },
   {
-    id: "system-anomaly-data",
-    name: "系统异常状态",
-    description: "4种不同系统负载状态的数据簇(用于异常检测)",
+    id: "species-classification-data",
+    name: "动植物多类别分布",
+    description: "包含4种不同动植物（如高瘦植物、大型动物等）的体重与高度数据，共600条，适合多分类算法教学。",
+    icon: "🌿",
+    dimensions: "600×2",
+    datasetData: {
+      type: "manual",
+      data: generateSpeciesClassificationData(),
+      headers: ["样本体重(kg)", "样本高度(cm)"],
+      metadata: { rows: 600, columns: 2 },
+    },
+  },
+  {
+    id: "mall-traffic-data",
+    name: "商场客流量统计",
+    description: "商场500个时间段的客流量数据，包含日常波动以及节假日带来的突发客流高峰，适合异常检测分析。",
+    icon: "🚶",
+    dimensions: "500×2",
+    datasetData: {
+      type: "manual",
+      data: generateMallTrafficData(),
+      headers: ["监测时段", "客流量(人次)"],
+      metadata: { rows: 500, columns: 2 },
+    },
+  },
+  {
+    id: "circle-distribution-data",
+    name: "环形分布坐标",
+    description: "500个呈现环形分布的二维坐标点，适合演示非线性分类器（如SVM的核函数技巧）的分类效果。",
     icon: "⭕",
-    dimensions: "60×2",
+    dimensions: "500×2",
     datasetData: {
       type: "manual",
-      data: generateSystemAnomalyData(),
-      headers: ["CPU_Load", "IO_Load"],
-      metadata: { rows: 60, columns: 2 },
+      data: generateCircleData(),
+      headers: ["横坐标X", "纵坐标Y"],
+      metadata: { rows: 500, columns: 2 },
     },
   },
   {
-    id: "network-traffic-data",
-    name: "网络流量突变",
-    description: "网络带宽使用率时序数据，包含突发高峰",
-    icon: "⚡",
-    dimensions: "50×2",
+    id: "spiral-distribution-data",
+    name: "螺旋分布坐标",
+    description: "500个呈现螺旋形上升的二维坐标点，属于复杂的非线性分布数据集，对分类算法是很好的挑战。",
+    icon: "🌀",
+    dimensions: "500×2",
     datasetData: {
       type: "manual",
-      data: generateNetworkTrafficData(),
-      headers: ["Time", "Bandwidth(Mbps)"],
-      metadata: { rows: 50, columns: 2 },
+      data: generateSpiralData(),
+      headers: ["横坐标X", "纵坐标Y"],
+      metadata: { rows: 500, columns: 2 },
     },
   },
   {
-    id: "grid-data",
-    name: "网格数据",
-    description: "100个点，10×10网格",
+    id: "grid-coordinate-data",
+    name: "网格波浪坐标数据",
+    description: "由500个点组成的25×20网格，Z轴受到正弦余弦波函数影响，形成波浪起伏的三维曲面，适合空间数据可视化。",
     icon: "🔲",
-    dimensions: "100×3",
+    dimensions: "500×3",
     datasetData: {
       type: "manual",
       data: generateGridData(),
-      headers: ["x", "y", "z"],
-      metadata: { rows: 100, columns: 3 },
+      headers: ["网格X", "网格Y", "波浪高度Z"],
+      metadata: { rows: 500, columns: 3 },
     },
   },
   // 示例图片占位符，实际数据在组件挂载后由 initImageDataset 填充
   {
     id: "example-image",
-    name: "示例图片",
-    description: "一张用于测试的单通道灰度图片",
+    name: "示例教学图片",
+    description: "一张用于图像处理与矩阵转换演示的单通道灰度图片。",
     icon: "🖼️",
     dimensions: "256×256",
     datasetData: {
       type: "image",
       data: [[0]], // 占位
-      headers: ["pixel"],
+      headers: ["像素灰度值"],
       metadata: { rows: 1, columns: 1 },
     },
   },

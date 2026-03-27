@@ -1,4 +1,5 @@
 import type { Workflow } from "@/types/workflow";
+import { presetDatasets } from "@/config/presetDatasets";
 
 // ─── 内置数据生成工具 ────────────────────────────────────────────────────────
 
@@ -149,20 +150,20 @@ function generateMultiClusterData(): number[][] {
 export const templates: Workflow[] = [
   // ── 原有基础模板（不带示波器） ─────────────────────────────────────────────
   /**
-   * 模板1：简单线性回归 (内存泄漏趋势)
+   * 模板1：简单线性回归 (房屋价格预测)
    */
   {
     id: "template-linear-regression",
-    name: "简单线性回归",
-    description: "分析服务器内存泄漏趋势，使用线性模型进行拟合和预测",
+    name: "房屋价格预测 (线性回归)",
+    description: "通过房屋面积预测价格，使用简单线性回归模型拟合正相关趋势，适合入门教学。",
     nodes: [
       {
         id: "dataset-1",
         type: "dataset",
         position: { x: 50, y: 150 },
         data: {
-          label: "内存泄漏趋势数据",
-          datasetData: presetDatasets.find((d) => d.id === "memory-leak-data")?.datasetData,
+          label: "房屋价格与面积数据",
+          datasetData: presetDatasets.find((d) => d.id === "house-price-data")?.datasetData,
         },
       },
       {
@@ -170,8 +171,10 @@ export const templates: Workflow[] = [
         type: "algorithm",
         position: { x: 300, y: 150 },
         data: {
-          label: "线性回归",
-          algorithm: algorithms.find((a) => a.key === "linear-regression"),
+          label: "最小二乘法",
+          algorithmKey: "least-squares",
+          parameters: { method: "normal", regularization: 0, targetColumn: -1 },
+          status: "idle",
         },
       },
       {
@@ -183,37 +186,37 @@ export const templates: Workflow[] = [
     ],
     edges: [
       {
-        id: "e1-2",
+        id: "e1-2-dataset",
         source: "dataset-1",
         target: "algo-1",
-        sourceHandle: "output-dataset",
-        targetHandle: "input-data",
+        sourceHandle: "dataset",
+        targetHandle: "dataset",
       },
       {
         id: "e2-3",
         source: "algo-1",
         target: "osc-1",
-        sourceHandle: "output-model",
-        targetHandle: "input-data",
+        sourceHandle: "coefficients",
+        targetHandle: "input",
       },
     ],
   },
 
   /**
-   * 模板2：多项式回归拟合 (CPU负载曲线)
+   * 模板2：多项式回归拟合 (抛物体运动轨迹)
    */
   {
     id: "template-polynomial",
-    name: "多项式回归",
-    description: "分析设备全天CPU负载波动规律，使用多项式曲线拟合",
+    name: "抛物体轨迹拟合 (多项式回归)",
+    description: "分析抛物体在空中的飞行轨迹，使用多项式曲线拟合完美的抛物线。",
     nodes: [
       {
         id: "dataset-1",
         type: "dataset",
         position: { x: 50, y: 150 },
         data: {
-          label: "CPU负载曲线数据",
-          datasetData: presetDatasets.find((d) => d.id === "cpu-load-data")?.datasetData,
+          label: "抛物体运动数据",
+          datasetData: presetDatasets.find((d) => d.id === "projectile-motion-data")?.datasetData,
         },
       },
       {
@@ -221,159 +224,51 @@ export const templates: Workflow[] = [
         type: "algorithm",
         position: { x: 300, y: 150 },
         data: {
-          label: "多项式回归",
-          algorithm: algorithms.find((a) => a.key === "polynomial-regression"),
-        },
-      },
-      {
-        id: "osc-1",
-        type: "oscilloscope",
-        position: { x: 550, y: 150 },
-        data: { label: "负载趋势拟合" },
-      },
-    ],
-    edges: [
-      {
-        id: "e1-2",
-        source: "dataset-1",
-        target: "algo-1",
-        sourceHandle: "output-dataset",
-        targetHandle: "input-data",
-      },
-      {
-        id: "e2-3",
-        source: "algo-1",
-        target: "osc-1",
-        sourceHandle: "output-model",
-        targetHandle: "input-data",
-      },
-    ],
-  },
-
-  /**
-   * 模板3：K-Means 聚类 (用户行为分析)
-   */
-  {
-    id: "template-kmeans",
-    name: "K-Means 聚类",
-    description: "对用户行为特征（访问频次与停留时间）进行无监督聚类",
-    nodes: [
-      {
-        id: "dataset-1",
-        type: "dataset",
-        position: { x: 50, y: 150 },
-        data: {
-          label: "用户行为数据",
-          datasetData: presetDatasets.find((d) => d.id === "user-behavior-data")?.datasetData,
-        },
-      },
-      {
-        id: "algo-1",
-        type: "algorithm",
-        position: { x: 300, y: 150 },
-        data: {
-          label: "K-Means 聚类",
-          algorithm: algorithms.find((a) => a.key === "kmeans"),
-        },
-      },
-      {
-        id: "osc-1",
-        type: "oscilloscope",
-        position: { x: 550, y: 150 },
-        data: { label: "用户群体分布" },
-      },
-    ],
-    edges: [
-      {
-        id: "e1-2",
-        source: "dataset-1",
-        target: "algo-1",
-        sourceHandle: "output-dataset",
-        targetHandle: "input-data",
-      },
-      {
-        id: "e2-3",
-        source: "algo-1",
-        target: "osc-1",
-        sourceHandle: "output-model",
-        targetHandle: "input-data",
-      },
-    ],
-  },"
-
-  // ── 新增内置数据模板（带示波器，展示处理前后对比） ─────────────────────────
-
-  /**
-   * 模板4：PCA 降维可视化
-   * 布局：Dataset → [示波器①原始数据] → PCA → [示波器②降维结果]
-   */
-  {
-    id: "template-pca-builtin",
-    name: "PCA 降维可视化",
-    description: "内置双簇数据，示波器对比降维前后散点图",
-    nodes: [
-      {
-        id: "dataset-1",
-        type: "dataset",
-        position: { x: 60, y: 220 },
-        data: {
-          label: "双簇数据集（内置）",
-          datasetData: {
-            type: "manual",
-            data: generateTwoClusterData(),
-            headers: ["x", "y"],
-            metadata: { rows: 30, columns: 2 },
-          },
-        },
-      },
-      {
-        id: "osc-before",
-        type: "oscilloscope",
-        position: { x: 280, y: 120 },
-        data: { label: "原始数据", status: "idle" },
-      },
-      {
-        id: "pca-1",
-        type: "algorithm",
-        position: { x: 280, y: 320 },
-        data: {
-          algorithmKey: "pca",
-          label: "PCA",
-          parameters: { nComponents: 2 },
+          label: "最小二乘法",
+          algorithmKey: "least-squares",
+          parameters: { method: "polynomial", degree: 2, regularization: 0, targetColumn: -1 },
           status: "idle",
         },
       },
       {
-        id: "osc-after",
+        id: "osc-1",
         type: "oscilloscope",
-        position: { x: 560, y: 320 },
-        data: { label: "降维结果", status: "idle" },
+        position: { x: 550, y: 150 },
+        data: { label: "抛物体轨迹拟合" },
       },
     ],
     edges: [
-      { id: "e1", source: "dataset-1", target: "osc-before", sourceHandle: "dataset", targetHandle: "input" },
-      { id: "e2", source: "dataset-1", target: "pca-1", sourceHandle: "dataset", targetHandle: "dataset" },
-      { id: "e3", source: "pca-1", target: "osc-after", sourceHandle: "transformed", targetHandle: "input" },
+      {
+        id: "e1-2-dataset",
+        source: "dataset-1",
+        target: "algo-1",
+        sourceHandle: "dataset",
+        targetHandle: "dataset",
+      },
+      {
+        id: "e2-3",
+        source: "algo-1",
+        target: "osc-1",
+        sourceHandle: "coefficients",
+        targetHandle: "input",
+      },
     ],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
   },
 
   /**
-   * 模板5：梯度下降收敛
-   * 布局：Dataset → GD → [示波器 收敛曲线]
+   * 模板3：梯度下降法 (寻找局部最优)
    */
   {
-    id: "template-gd-builtin",
-    name: "梯度下降收敛",
-    description: "内置初始点 [5,5]，示波器展示收敛曲线",
+    id: "template-kmeans",
+    name: "梯度下降优化演示",
+    description: "演示梯度下降算法在特定目标函数下，从初始点出发寻找局部最优解的迭代过程。",
     nodes: [
       {
         id: "dataset-1",
         type: "dataset",
-        position: { x: 60, y: 200 },
+        position: { x: 50, y: 150 },
         data: {
-          label: "初始点（内置）",
+          label: "初始点数据",
           datasetData: {
             type: "manual",
             data: [[5, 5]],
@@ -383,109 +278,252 @@ export const templates: Workflow[] = [
         },
       },
       {
-        id: "gd-1",
+        id: "algo-1",
         type: "algorithm",
-        position: { x: 300, y: 200 },
+        position: { x: 300, y: 150 },
         data: {
+          label: "梯度下降法",
           algorithmKey: "gradient-descent",
-          label: "梯度下降",
-          parameters: { learningRate: 0.1, maxIterations: 100, tolerance: 1e-6 },
+          parameters: { learningRate: 0.01, maxIterations: 100 },
           status: "idle",
         },
       },
       {
-        id: "osc-conv",
+        id: "osc-1",
         type: "oscilloscope",
-        position: { x: 560, y: 200 },
-        data: { label: "收敛过程", status: "idle" },
+        position: { x: 550, y: 150 },
+        data: { label: "收敛历史分析" },
       },
     ],
     edges: [
-      { id: "e1", source: "dataset-1", target: "gd-1", sourceHandle: "dataset", targetHandle: "initialPoint" },
-      { id: "e2", source: "gd-1", target: "osc-conv", sourceHandle: "solution", targetHandle: "input" },
+      {
+        id: "e1-2",
+        source: "dataset-1",
+        target: "algo-1",
+        sourceHandle: "dataset",
+        targetHandle: "initialPoint",
+      },
+      {
+        id: "e2-3",
+        source: "algo-1",
+        target: "osc-1",
+        sourceHandle: "history",
+        targetHandle: "input",
+      },
+    ],
+  },
+
+  // ── 新增内置数据模板（带示波器，展示处理前后对比） ─────────────────────────
+
+  /**
+   * 模板4：PCA 降维可视化
+   * 布局：Dataset → [示波器①原始数据] → PCA → [示波器②降维结果]
+   */
+  {
+    id: "template-pca-builtin",
+    name: "高维特征 PCA 降维对比",
+    description: "演示PCA算法如何将多维特征数据降维。上方示波器展示原始高维数据，下方展示降维后的结果。",
+    nodes: [
+      {
+        id: "dataset-1",
+        type: "dataset",
+        position: { x: 50, y: 150 },
+        data: {
+          label: "水果多维特征数据",
+          datasetData: presetDatasets.find((d) => d.id === "fruit-properties-data")?.datasetData,
+        },
+      },
+      {
+        id: "osc-raw",
+        type: "oscilloscope",
+        position: { x: 300, y: 50 },
+        data: { label: "原始高维数据展示" },
+      },
+      {
+        id: "algo-1",
+        type: "algorithm",
+        position: { x: 300, y: 250 },
+        data: {
+          label: "PCA 降维",
+          algorithmKey: "pca",
+          parameters: { targetDimension: 2 },
+          status: "idle",
+        },
+      },
+      {
+        id: "osc-result",
+        type: "oscilloscope",
+        position: { x: 550, y: 250 },
+        data: { label: "PCA 降维结果展示" },
+      },
+    ],
+    edges: [
+      {
+        id: "e1-raw",
+        source: "dataset-1",
+        target: "osc-raw",
+        sourceHandle: "dataset",
+        targetHandle: "input",
+      },
+      {
+        id: "e1-algo",
+        source: "dataset-1",
+        target: "algo-1",
+        sourceHandle: "dataset",
+        targetHandle: "dataMatrix",
+      },
+      {
+        id: "e-algo-result",
+        source: "algo-1",
+        target: "osc-result",
+        sourceHandle: "reducedData",
+        targetHandle: "input",
+      },
     ],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
 
   /**
-   * 模板6：最小二乘回归
-   * 布局：Dataset → [示波器①原始散点] → LeastSquares → [示波器②拟合结果]
+   * 模板5：梯度下降法拟合效果对比
+   * 布局：Dataset → [示波器①原始数据] → 梯度下降法 → [示波器②拟合结果]
    */
   {
-    id: "template-ls-builtin",
-    name: "最小二乘回归",
-    description: "内置线性数据，示波器对比原始散点与拟合直线",
+    id: "template-gd-builtin",
+    name: "梯度下降优化全景",
+    description: "展示梯度下降法在寻找极小值过程中的收敛历史，与初始点状态形成对比。",
     nodes: [
       {
         id: "dataset-1",
         type: "dataset",
         position: { x: 60, y: 220 },
         data: {
-          label: "线性数据集（内置）",
+          label: "初始点数据",
           datasetData: {
             type: "manual",
-            data: generateLinearData(),
-            headers: ["x", "y"],
-            metadata: { rows: 20, columns: 2 },
+            data: [[5, 5]],
+            headers: ["x1", "x2"],
+            metadata: { rows: 1, columns: 2 },
           },
         },
       },
       {
         id: "osc-before",
         type: "oscilloscope",
-        position: { x: 280, y: 80 },
-        data: { label: "原始散点", status: "idle" },
+        position: { x: 280, y: 120 },
+        data: { label: "原始数据分布" },
       },
       {
-        id: "ls-1",
+        id: "gd-1",
         type: "algorithm",
-        position: { x: 280, y: 340 },
+        position: { x: 280, y: 320 },
         data: {
-          algorithmKey: "least-squares",
-          label: "最小二乘法",
-          parameters: { method: "normal", regularization: 0 },
+          algorithmKey: "gradient-descent",
+          label: "梯度下降优化",
+          parameters: { learningRate: 0.01, maxIterations: 100 },
           status: "idle",
         },
       },
       {
         id: "osc-after",
         type: "oscilloscope",
-        position: { x: 560, y: 340 },
-        data: { label: "拟合结果", status: "idle" },
+        position: { x: 560, y: 320 },
+        data: { label: "收敛历史" },
       },
     ],
     edges: [
       { id: "e1", source: "dataset-1", target: "osc-before", sourceHandle: "dataset", targetHandle: "input" },
-      { id: "e2", source: "dataset-1", target: "ls-1", sourceHandle: "dataset", targetHandle: "xData" },
-      { id: "e3", source: "dataset-1", target: "ls-1", sourceHandle: "dataset", targetHandle: "yData" },
-      { id: "e4", source: "ls-1", target: "osc-after", sourceHandle: "coefficients", targetHandle: "input" },
+      { id: "e2", source: "dataset-1", target: "gd-1", sourceHandle: "dataset", targetHandle: "initialPoint" },
+      { id: "e3", source: "gd-1", target: "osc-after", sourceHandle: "history", targetHandle: "input" },
     ],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
 
   /**
-   * 模板7：SVD 矩阵分解
-   * 布局：Dataset → SVD → [示波器 奇异值]
+   * 模板6：最小二乘法曲线拟合效果对比
+   */
+  {
+    id: "template-ls-builtin",
+    name: "最小二乘法曲线拟合对比",
+    description: "演示最小二乘法如何拟合带有噪声的观测数据。上方示波器展示原始散点，下方展示拟合系数。",
+    nodes: [
+      {
+        id: "dataset-1",
+        type: "dataset",
+        position: { x: 50, y: 150 },
+        data: {
+          label: "连续气温波动记录",
+          datasetData: presetDatasets.find((d) => d.id === "temperature-fluctuation-data")?.datasetData,
+        },
+      },
+      {
+        id: "osc-raw",
+        type: "oscilloscope",
+        position: { x: 300, y: 50 },
+        data: { label: "气温波动散点图" },
+      },
+      {
+        id: "algo-1",
+        type: "algorithm",
+        position: { x: 300, y: 250 },
+        data: {
+          label: "最小二乘法",
+          algorithmKey: "least-squares",
+          parameters: { method: "polynomial", degree: 3, regularization: 0, targetColumn: -1 },
+          status: "idle",
+        },
+      },
+      {
+        id: "osc-result",
+        type: "oscilloscope",
+        position: { x: 550, y: 250 },
+        data: { label: "拟合系数分析" },
+      },
+    ],
+    edges: [
+      {
+        id: "e1-raw",
+        source: "dataset-1",
+        target: "osc-raw",
+        sourceHandle: "dataset",
+        targetHandle: "input",
+      },
+      {
+        id: "e1-algo-dataset",
+        source: "dataset-1",
+        target: "algo-1",
+        sourceHandle: "dataset",
+        targetHandle: "dataset",
+      },
+      {
+        id: "e-algo-result",
+        source: "algo-1",
+        target: "osc-result",
+        sourceHandle: "coefficients",
+        targetHandle: "input",
+      },
+    ],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+
+  /**
+   * 模板7：SVD 特征提取
+   * 布局：Dataset → SVD → [示波器 特征值分析]
    */
   {
     id: "template-svd-builtin",
-    name: "SVD 矩阵分解",
-    description: "内置 5×4 矩阵，示波器展示奇异值分布",
+    name: "SVD 特征提取 (教学图片)",
+    description: "内置示例教学图片，通过SVD分解提取奇异值特征，示波器展示特征值大小分布",
     nodes: [
       {
         id: "dataset-1",
         type: "dataset",
         position: { x: 60, y: 200 },
         data: {
-          label: "示例矩阵（内置）",
-          datasetData: {
-            type: "manual",
-            data: SVD_MATRIX,
-            headers: ["c1", "c2", "c3", "c4"],
-            metadata: { rows: 5, columns: 4 },
-          },
+          label: "示例教学图片",
+          datasetData: presetDatasets.find((d) => d.id === "example-image")?.datasetData,
         },
       },
       {
@@ -494,21 +532,21 @@ export const templates: Workflow[] = [
         position: { x: 300, y: 200 },
         data: {
           algorithmKey: "svd",
-          label: "SVD",
-          parameters: { fullMatrices: "false" },
+          label: "SVD 分解",
+          parameters: { k: 10 },
           status: "idle",
         },
       },
       {
-        id: "osc-sigma",
+        id: "osc-s",
         type: "oscilloscope",
         position: { x: 560, y: 200 },
-        data: { label: "奇异值分布", status: "idle" },
+        data: { label: "奇异值分布" },
       },
     ],
     edges: [
       { id: "e1", source: "dataset-1", target: "svd-1", sourceHandle: "dataset", targetHandle: "matrix" },
-      { id: "e2", source: "svd-1", target: "osc-sigma", sourceHandle: "sigma", targetHandle: "input" },
+      { id: "e2", source: "svd-1", target: "osc-s", sourceHandle: "s", targetHandle: "input" },
     ],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -546,7 +584,7 @@ export const templates: Workflow[] = [
         data: {
           algorithmKey: "least-squares",
           label: "最小二乘法",
-          parameters: {},
+          parameters: { method: "polynomial", degree: 3, regularization: 0, targetColumn: -1 },
           status: "idle",
         },
       },
@@ -558,8 +596,7 @@ export const templates: Workflow[] = [
       },
     ],
     edges: [
-      { id: "e1", source: "dataset-1", target: "ls-1", sourceHandle: "dataset", targetHandle: "xData" },
-      { id: "e2", source: "dataset-1", target: "ls-1", sourceHandle: "dataset", targetHandle: "yData" },
+      { id: "e1", source: "dataset-1", target: "ls-1", sourceHandle: "dataset", targetHandle: "dataset" },
       { id: "e3", source: "ls-1", target: "osc-result", sourceHandle: "coefficients", targetHandle: "input" },
     ],
     createdAt: new Date().toISOString(),
@@ -567,26 +604,21 @@ export const templates: Workflow[] = [
   },
 
   /**
-   * 模板9：高维数据降维
-   * 使用 generateHighDimData() - 50×10 高维数据
+   * 模板9：高维数据降维 (水果特征PCA)
+   * 使用 fruit-properties-data - 500×10 高维数据
    */
   {
     id: "template-highdim-pca",
-    name: "高维数据降维",
-    description: "50×10 数据降至 2 维",
+    name: "高维数据降维 (水果特征PCA)",
+    description: "将包含10个维度的500个水果特征数据通过PCA降维至2维，以便于可视化分析。",
     nodes: [
       {
         id: "dataset-1",
         type: "dataset",
         position: { x: 60, y: 200 },
         data: {
-          label: "高维数据（10维）",
-          datasetData: {
-            type: "manual",
-            data: generateHighDimData(),
-            headers: ["d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", "d10"],
-            metadata: { rows: 50, columns: 10 },
-          },
+          label: "水果多维特征数据",
+          datasetData: presetDatasets.find((d) => d.id === "fruit-properties-data")?.datasetData,
         },
       },
       {
@@ -596,46 +628,41 @@ export const templates: Workflow[] = [
         data: {
           algorithmKey: "pca",
           label: "PCA",
-          parameters: { nComponents: 2 },
+          parameters: { targetDimension: 2 },
           status: "idle",
         },
       },
       {
-        id: "osc-reduced",
+        id: "osc-1",
         type: "oscilloscope",
         position: { x: 580, y: 200 },
         data: { label: "降维结果", status: "idle" },
       },
     ],
     edges: [
-      { id: "e1", source: "dataset-1", target: "pca-1", sourceHandle: "dataset", targetHandle: "dataset" },
-      { id: "e2", source: "pca-1", target: "osc-reduced", sourceHandle: "transformed", targetHandle: "input" },
+      { id: "e1", source: "dataset-1", target: "pca-1", sourceHandle: "dataset", targetHandle: "dataMatrix" },
+      { id: "e2", source: "pca-1", target: "osc-1", sourceHandle: "reducedData", targetHandle: "input" },
     ],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
 
   /**
-   * 模板10：四簇数据可视化
-   * 使用 generateMultiClusterData() - 60×2 四簇数据
+   * 模板10：多类别数据可视化 (动植物多类别)
+   * 使用 species-classification-data - 600×2 
    */
   {
     id: "template-four-clusters",
-    name: "四簇数据可视化",
-    description: "60个点分布在4个簇中",
+    name: "多类别数据可视化 (动植物分类)",
+    description: "600个包含体重和高度的样本点，自然分布在4个动植物类别簇中，适合聚类和分类教学。",
     nodes: [
       {
         id: "dataset-1",
         type: "dataset",
         position: { x: 60, y: 200 },
         data: {
-          label: "四簇数据",
-          datasetData: {
-            type: "manual",
-            data: generateMultiClusterData(),
-            headers: ["x", "y"],
-            metadata: { rows: 60, columns: 2 },
-          },
+          label: "动植物多类别分布数据",
+          datasetData: presetDatasets.find((d) => d.id === "species-classification-data")?.datasetData,
         },
       },
       {
@@ -645,7 +672,7 @@ export const templates: Workflow[] = [
         data: {
           algorithmKey: "pca",
           label: "PCA",
-          parameters: { nComponents: 2 },
+          parameters: { targetDimension: 2 },
           status: "idle",
         },
       },
@@ -657,8 +684,8 @@ export const templates: Workflow[] = [
       },
     ],
     edges: [
-      { id: "e1", source: "dataset-1", target: "pca-1", sourceHandle: "dataset", targetHandle: "dataset" },
-      { id: "e2", source: "pca-1", target: "osc-clusters", sourceHandle: "transformed", targetHandle: "input" },
+      { id: "e1", source: "dataset-1", target: "pca-1", sourceHandle: "dataset", targetHandle: "dataMatrix" },
+      { id: "e2", source: "pca-1", target: "osc-clusters", sourceHandle: "reducedData", targetHandle: "input" },
     ],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -707,7 +734,7 @@ export const templates: Workflow[] = [
     ],
     edges: [
       { id: "e1", source: "dataset-1", target: "svd-1", sourceHandle: "dataset", targetHandle: "matrix" },
-      { id: "e2", source: "svd-1", target: "osc-sigma", sourceHandle: "sigma", targetHandle: "input" },
+      { id: "e2", source: "svd-1", target: "osc-sigma", sourceHandle: "s", targetHandle: "input" },
     ],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -715,12 +742,12 @@ export const templates: Workflow[] = [
 
   /**
    * 模板12：SVD 图像压缩
-   * 上传图像，使用SVD分解并重建，观察压缩效果
+   * 演示如何通过SVD截断部分特征值，实现图像的压缩与重建。
    */
   {
     id: "template-image-compression",
-    name: "SVD图像压缩",
-    description: "上传图像，使用SVD分解并重建，观察压缩效果",
+    name: "SVD 图像压缩",
+    description: "演示如何通过SVD截断部分特征值，实现图像的压缩与重建。",
     nodes: [
       {
         id: "dataset-1",
@@ -742,7 +769,7 @@ export const templates: Workflow[] = [
         position: { x: 320, y: 150 },
         data: {
           algorithmKey: "svd",
-          label: "SVD",
+          label: "SVD 分解",
           parameters: { fullMatrices: "false" },
           status: "idle",
         },
@@ -774,8 +801,8 @@ export const templates: Workflow[] = [
     edges: [
       { id: "e1", source: "dataset-1", target: "svd-1", sourceHandle: "dataset", targetHandle: "matrix" },
       { id: "e2", source: "svd-1", target: "recon-1", sourceHandle: "u", targetHandle: "u" },
-      { id: "e3", source: "svd-1", target: "recon-1", sourceHandle: "sigma", targetHandle: "sigma" },
-      { id: "e4", source: "svd-1", target: "recon-1", sourceHandle: "vt", targetHandle: "vt" },
+      { id: "e3", source: "svd-1", target: "recon-1", sourceHandle: "s", targetHandle: "s" },
+      { id: "e4", source: "svd-1", target: "recon-1", sourceHandle: "v", targetHandle: "v" },
       { id: "e5", source: "dataset-1", target: "osc-original", sourceHandle: "dataset", targetHandle: "input" },
       { id: "e6", source: "recon-1", target: "osc-reconstructed", sourceHandle: "reconstructed", targetHandle: "input" },
     ],

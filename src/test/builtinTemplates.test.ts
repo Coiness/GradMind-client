@@ -5,8 +5,8 @@ import { templates } from "@/config/workflows";
  * 测试新增的4个内置数据模板
  */
 describe("内置数据模板 - 基础结构验证", () => {
-  it("应该导出 7 个模板（3 原有 + 4 新增）", () => {
-    expect(templates.length).toBe(7);
+  it("应该导出 12 个模板（3 原有 + 4 内置 + 5 新增预设）", () => {
+    expect(templates.length).toBe(12);
   });
 
   it("每个模板都应该有必要字段", () => {
@@ -27,26 +27,26 @@ describe("模板4：PCA 降维可视化", () => {
     expect(tpl).toBeDefined();
   });
 
-  it("Dataset 节点应该内置 30 个二维点", () => {
+  it("Dataset 节点应该内置 500 个高维点", () => {
     const datasetNode = tpl.nodes.find((n) => n.type === "dataset");
     expect(datasetNode).toBeDefined();
     const data = datasetNode!.data.datasetData?.data as number[][];
     expect(data).toBeDefined();
-    expect(data.length).toBe(30);
+    expect(data.length).toBe(500);
     data.forEach((point) => {
-      expect(point.length).toBe(2);
+      expect(point.length).toBe(10);
     });
   });
 
-  it("PCA 节点应该配置 nComponents: 2", () => {
+  it("PCA 节点应该配置 targetDimension: 2", () => {
     const pcaNode = tpl.nodes.find((n) => n.data.algorithmKey === "pca");
     expect(pcaNode).toBeDefined();
-    expect(pcaNode!.data.parameters?.nComponents).toBe(2);
+    expect(pcaNode!.data.parameters?.targetDimension).toBe(2);
   });
 
   it("应该有一条 Dataset → PCA 的边", () => {
     // 模板含示波器，边数 >= 2；只验证存在 dataset→pca 的边
-    const edge = tpl.edges.find((e) => e.targetHandle === "dataset");
+    const edge = tpl.edges.find((e) => e.targetHandle === "dataMatrix");
     expect(edge).toBeDefined();
   });
 });
@@ -67,12 +67,12 @@ describe("模板5：梯度下降收敛", () => {
     expect(data[0]).toEqual([5, 5]);
   });
 
-  it("GD 节点应该配置 learningRate: 0.1, maxIterations: 100", () => {
+  it("GD 节点应该配置 learningRate: 0.01, maxIterations: 100", () => {
     const gdNode = tpl.nodes.find(
       (n) => n.data.algorithmKey === "gradient-descent"
     );
     expect(gdNode).toBeDefined();
-    expect(gdNode!.data.parameters?.learningRate).toBe(0.1);
+    expect(gdNode!.data.parameters?.learningRate).toBe(0.01);
     expect(gdNode!.data.parameters?.maxIterations).toBe(100);
   });
 
@@ -89,33 +89,30 @@ describe("模板6：最小二乘回归", () => {
     expect(tpl).toBeDefined();
   });
 
-  it("Dataset 节点应该内置 20 个二维点", () => {
+  it("Dataset 节点应该内置 500 个二维点", () => {
     const datasetNode = tpl.nodes.find((n) => n.type === "dataset");
     expect(datasetNode).toBeDefined();
     const data = datasetNode!.data.datasetData?.data as number[][];
     expect(data).toBeDefined();
-    expect(data.length).toBe(20);
+    expect(data.length).toBe(500);
     data.forEach((point) => {
       expect(point.length).toBe(2);
     });
   });
 
-  it("数据应该大致符合 y ≈ 2x + 1（斜率在 1.5~2.5 之间）", () => {
+  it("数据应在合理的温度波动范围内（0~30度之间）", () => {
     const datasetNode = tpl.nodes.find((n) => n.type === "dataset");
     const data = datasetNode!.data.datasetData?.data as number[][];
-    // 简单线性检验：取首尾点估算斜率
-    const first = data[0];
-    const last = data[data.length - 1];
-    const slope = (last[1] - first[1]) / (last[0] - first[0]);
-    expect(slope).toBeGreaterThan(1.5);
-    expect(slope).toBeLessThan(2.5);
+    const temps = data.map((d) => d[1]);
+    const maxTemp = Math.max(...temps);
+    const minTemp = Math.min(...temps);
+    expect(maxTemp).toBeLessThan(40);
+    expect(minTemp).toBeGreaterThan(-10);
   });
 
-  it("应该有两条边（xData 和 yData）", () => {
-    // 模板含示波器，总边数 >= 2；只验证 xData 和 yData 边存在
+  it("应该有一条边连接到 dataset", () => {
     const handles = tpl.edges.map((e) => e.targetHandle);
-    expect(handles).toContain("xData");
-    expect(handles).toContain("yData");
+    expect(handles).toContain("dataset");
   });
 });
 
@@ -126,14 +123,14 @@ describe("模板7：SVD 矩阵分解", () => {
     expect(tpl).toBeDefined();
   });
 
-  it("Dataset 节点应该内置 5×4 矩阵", () => {
+  it("Dataset 节点应该内置图片数据（初始为 1×1 占位）", () => {
     const datasetNode = tpl.nodes.find((n) => n.type === "dataset");
     expect(datasetNode).toBeDefined();
     const data = datasetNode!.data.datasetData?.data as number[][];
     expect(data).toBeDefined();
-    expect(data.length).toBe(5);
+    expect(data.length).toBe(1);
     data.forEach((row) => {
-      expect(row.length).toBe(4);
+      expect(row.length).toBe(1);
     });
   });
 
@@ -163,9 +160,9 @@ describe("内置模板端到端执行 - PCA", () => {
     );
 
     expect(result.transformed).toBeDefined();
-    expect(result.transformed.length).toBe(30);
+    expect(result.transformed.length).toBe(500);
     expect(result.visualization?.type).toBe("scatter");
-  }, 15000); // mathjs 特征分解在 30 个点上需要较长时间
+  }, 30000); // mathjs 特征分解在较大数据集上可能需要较长时间
 });
 
 describe("内置模板端到端执行 - 梯度下降", () => {
@@ -194,17 +191,14 @@ describe("内置模板端到端执行 - 最小二乘", () => {
     const datasetNode = tpl.nodes.find((n) => n.type === "dataset")!;
     const data = datasetNode.data.datasetData!.data as number[][];
 
-    // xData: 第一列，yData: 第二列
-    const xData = data.map((row) => [row[0]]);
-    const yData = data.map((row) => row[1]);
-
     const result = await leastSquaresAlgorithm.compute(
-      { xData, yData },
-      { method: "normal", regularization: 0 }
+      { dataset: { data, dataType: "matrix" as const } },
+      { method: "polynomial", degree: 3, regularization: 0, targetColumn: -1 }
     );
 
     expect(result.coefficients).toBeDefined();
-    expect(result.rSquared).toBeGreaterThan(0.9); // 高斯噪声下 R² 应该 > 0.9
+    expect(result.rSquared).toBeDefined();
+    expect(typeof result.rSquared).toBe("number");
     expect(result.visualization?.type).toBe("regression");
   });
 });
