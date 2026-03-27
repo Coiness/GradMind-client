@@ -96,6 +96,46 @@ const generateBusinessMetricData = (): number[][] => {
   return data;
 };
 
+// 生成用户行为聚类数据（双簇/多簇场景）
+const generateUserBehaviorData = (): number[][] => {
+  const data: number[][] = [];
+  // 簇1：活跃用户（高频访问，长停留）
+  for (let i = 0; i < 25; i++) {
+    data.push([
+      80 + (Math.random() - 0.5) * 20, // 访问频次 70-90
+      30 + (Math.random() - 0.5) * 10  // 停留时间 25-35
+    ]);
+  }
+  // 簇2：流失风险用户（低频访问，短停留）
+  for (let i = 0; i < 25; i++) {
+    data.push([
+      10 + (Math.random() - 0.5) * 8,  // 访问频次 6-14
+      5 + (Math.random() - 0.5) * 4    // 停留时间 3-7
+    ]);
+  }
+  return data;
+};
+
+// 生成复杂系统异常状态数据（四簇/异常检测场景）
+const generateSystemAnomalyData = (): number[][] => {
+  const centers = [
+    [20, 20], // 正常低负载
+    [20, 80], // 高IO低CPU
+    [80, 20], // 高CPU低IO
+    [80, 80]  // 全面高负载（可能异常）
+  ];
+  const data: number[][] = [];
+  centers.forEach(([cx, cy]) => {
+    for (let i = 0; i < 15; i++) {
+      data.push([
+        Math.max(0, Math.min(100, cx + (Math.random() - 0.5) * 15)),
+        Math.max(0, Math.min(100, cy + (Math.random() - 0.5) * 15))
+      ]);
+    }
+  });
+  return data;
+};
+
 // 生成圆形数据
 const generateCircleData = (): number[][] => {
   const data: number[][] = [];
