@@ -10,61 +10,88 @@ export interface PresetDataset {
   datasetData: DatasetData;
 }
 
-// 生成线性回归数据
-const generateLinearData = (): number[][] => {
+// 生成服务器内存泄漏趋势数据（线性回归场景）
+const generateMemoryLeakData = (): number[][] => {
   const data: number[][] = [];
-  for (let i = 0; i < 20; i++) {
-    const x = i;
-    const y = 2 * x + 1 + (Math.random() - 0.5) * 4;
-    data.push([x, y]);
+  // 模拟24小时内的内存使用量(GB)，基础16GB，每小时泄漏0.2GB，带随机波动
+  for (let i = 0; i < 24; i++) {
+    const hour = i;
+    const memory = 16 + 0.2 * hour + (Math.random() - 0.5) * 1.5;
+    data.push([hour, Math.max(0, memory)]); // 内存不能为负
   }
   return data;
 };
 
-// 生成多项式数据
-const generatePolynomialData = (): number[][] => {
+// 生成设备CPU负载曲线数据（多项式/非线性场景）
+const generateCpuLoadData = (): number[][] => {
   const data: number[][] = [];
+  // 模拟一天中CPU负载的二次曲线：早晚低，中午高
+  for (let i = 0; i < 24; i++) {
+    const hour = i;
+    // 顶点在 x=12，y=85 的开口向下的抛物线
+    const load = -0.5 * Math.pow(hour - 12, 2) + 85 + (Math.random() - 0.5) * 10;
+    data.push([hour, Math.max(0, Math.min(100, load))]); // 限制在0-100%
+  }
+  return data;
+};
+
+// 生成网络流量突变数据（聚类/异常检测场景）
+const generateNetworkTrafficData = (): number[][] => {
+  const data: number[][] = [];
+  // 模拟正常流量簇
   for (let i = 0; i < 30; i++) {
-    const x = (i - 15) / 3;
-    const y = 0.5 * x * x - 2 * x + 3 + (Math.random() - 0.5) * 2;
-    data.push([x, y]);
+    const time = i;
+    const traffic = 20 + (Math.random() - 0.5) * 10;
+    data.push([time, traffic]);
+  }
+  // 模拟突发流量簇（如DDoS攻击）
+  for (let i = 30; i < 40; i++) {
+    const time = i;
+    const traffic = 80 + (Math.random() - 0.5) * 20;
+    data.push([time, traffic]);
+  }
+  // 恢复正常流量簇
+  for (let i = 40; i < 50; i++) {
+    const time = i;
+    const traffic = 20 + (Math.random() - 0.5) * 10;
+    data.push([time, traffic]);
   }
   return data;
 };
 
-// 生成双簇数据
-const generateTwoClusterData = (): number[][] => {
+// 生成系统资源多维监控数据（高维/PCA降维场景）
+const generateSystemResourceData = (): number[][] => {
   const data: number[][] = [];
-  for (let i = 0; i < 25; i++) {
-    const x = 2 + (Math.random() - 0.5) * 2;
-    const y = 3 + (Math.random() - 0.5) * 2;
-    data.push([x, y]);
-  }
-  for (let i = 0; i < 25; i++) {
-    const x = 8 + (Math.random() - 0.5) * 2;
-    const y = 7 + (Math.random() - 0.5) * 2;
-    data.push([x, y]);
-  }
-  return data;
-};
-
-// 生成高维数据
-const generateHighDimData = (): number[][] => {
-  const data: number[][] = [];
+  // 模拟50个时间点的10维系统资源指标：CPU, 内存, 磁盘IO, 网络收, 网络发, 进程数, 线程数, 句柄数, TCP连接, 错误率
   for (let i = 0; i < 50; i++) {
-    const row = Array.from({ length: 10 }, () => Math.random() * 10);
+    // 构造一些相关性（如CPU高时内存通常也高，网络发和收相关等）
+    const baseLoad = Math.random() * 10;
+    const baseNet = Math.random() * 8;
+    const row = [
+      baseLoad + (Math.random() - 0.5), // CPU
+      baseLoad * 0.8 + 2 + (Math.random() - 0.5), // 内存
+      baseLoad * 0.5 + (Math.random() - 0.5), // 磁盘IO
+      baseNet + (Math.random() - 0.5), // 网络收
+      baseNet * 0.9 + (Math.random() - 0.5), // 网络发
+      100 + baseLoad * 5 + (Math.random() - 0.5) * 10, // 进程数
+      1000 + baseLoad * 50 + (Math.random() - 0.5) * 50, // 线程数
+      5000 + baseLoad * 200 + (Math.random() - 0.5) * 200, // 句柄数
+      baseNet * 20 + (Math.random() - 0.5) * 10, // TCP连接
+      Math.max(0, baseLoad * 0.1 - 0.5 + Math.random() * 0.2), // 错误率
+    ];
     data.push(row);
   }
   return data;
 };
 
-// 生成正弦波数据
-const generateSineWaveData = (): number[][] => {
+// 生成业务指标周期性波动数据（正弦波/时序预测场景）
+const generateBusinessMetricData = (): number[][] => {
   const data: number[][] = [];
+  // 模拟电商平台的日活跃用户数(DAU)波动：存在周周期性（周末高）和日周期性（晚上高）
   for (let i = 0; i < 40; i++) {
-    const x = i * 0.3;
-    const y = Math.sin(x) + (Math.random() - 0.5) * 0.2;
-    data.push([x, y]);
+    const time = i * 0.3; // 缩放时间轴
+    const dau = 50 + 15 * Math.sin(time) + 5 * Math.sin(time / 7) + (Math.random() - 0.5) * 3;
+    data.push([time, Math.max(0, dau)]);
   }
   return data;
 };
@@ -167,94 +194,94 @@ export const initImageDataset = async (): Promise<DatasetData> => {
 
 export const presetDatasets: PresetDataset[] = [
   {
-    id: "linear-data",
-    name: "线性回归数据",
-    description: "20个点，y=2x+1+噪声",
+    id: "memory-leak-data",
+    name: "内存泄漏趋势",
+    description: "服务器24小时内存监控，缓慢上升趋势(用于线性回归)",
     icon: "📈",
-    dimensions: "20×2",
+    dimensions: "24×2",
     datasetData: {
       type: "manual",
-      data: generateLinearData(),
-      headers: ["x", "y"],
-      metadata: { rows: 20, columns: 2 },
+      data: generateMemoryLeakData(),
+      headers: ["Hour", "Memory(GB)"],
+      metadata: { rows: 24, columns: 2 },
     },
   },
   {
-    id: "polynomial-data",
-    name: "多项式数据",
-    description: "30个点，二次曲线+噪声",
+    id: "cpu-load-data",
+    name: "CPU负载曲线",
+    description: "设备一天内CPU使用率，呈现抛物线趋势(用于多项式拟合)",
     icon: "📊",
-    dimensions: "30×2",
+    dimensions: "24×2",
     datasetData: {
       type: "manual",
-      data: generatePolynomialData(),
-      headers: ["x", "y"],
-      metadata: { rows: 30, columns: 2 },
+      data: generateCpuLoadData(),
+      headers: ["Hour", "CPU_Usage(%)"],
+      metadata: { rows: 24, columns: 2 },
     },
   },
   {
-    id: "two-cluster-data",
-    name: "双簇数据",
-    description: "50个点，两个聚类中心",
+    id: "user-behavior-data",
+    name: "用户行为聚类",
+    description: "活跃用户与流失用户双特征分布(用于PCA/聚类分析)",
     icon: "🎯",
     dimensions: "50×2",
     datasetData: {
       type: "manual",
-      data: generateTwoClusterData(),
-      headers: ["x", "y"],
+      data: generateUserBehaviorData(),
+      headers: ["Visit_Frequency", "Stay_Duration(min)"],
       metadata: { rows: 50, columns: 2 },
     },
   },
   {
-    id: "high-dim-data",
-    name: "高维数据",
-    description: "50个样本，10个特征",
+    id: "system-resource-data",
+    name: "系统多维指标",
+    description: "10个维度的系统运行状态监控数据(用于降维分析)",
     icon: "🔢",
     dimensions: "50×10",
     datasetData: {
       type: "manual",
-      data: generateHighDimData(),
-      headers: Array.from({ length: 10 }, (_, i) => `f${i + 1}`),
+      data: generateSystemResourceData(),
+      headers: ["CPU", "Mem", "IO", "NetIn", "NetOut", "Procs", "Thds", "FDs", "TCP", "ErrRate"],
       metadata: { rows: 50, columns: 10 },
     },
   },
   {
-    id: "sine-wave-data",
-    name: "正弦波数据",
-    description: "40个点，sin(x)+噪声",
+    id: "business-metric-data",
+    name: "业务周期波动",
+    description: "电商日活(DAU)的周期性波动数据(用于时序分析)",
     icon: "〰️",
     dimensions: "40×2",
     datasetData: {
       type: "manual",
-      data: generateSineWaveData(),
-      headers: ["x", "y"],
+      data: generateBusinessMetricData(),
+      headers: ["Time", "DAU(k)"],
       metadata: { rows: 40, columns: 2 },
     },
   },
   {
-    id: "circle-data",
-    name: "圆形数据",
-    description: "50个点，圆形分布",
+    id: "system-anomaly-data",
+    name: "系统异常状态",
+    description: "4种不同系统负载状态的数据簇(用于异常检测)",
     icon: "⭕",
-    dimensions: "50×2",
-    datasetData: {
-      type: "manual",
-      data: generateCircleData(),
-      headers: ["x", "y"],
-      metadata: { rows: 50, columns: 2 },
-    },
-  },
-  {
-    id: "spiral-data",
-    name: "螺旋数据",
-    description: "60个点，螺旋形分布",
-    icon: "🌀",
     dimensions: "60×2",
     datasetData: {
       type: "manual",
-      data: generateSpiralData(),
-      headers: ["x", "y"],
+      data: generateSystemAnomalyData(),
+      headers: ["CPU_Load", "IO_Load"],
       metadata: { rows: 60, columns: 2 },
+    },
+  },
+  {
+    id: "network-traffic-data",
+    name: "网络流量突变",
+    description: "网络带宽使用率时序数据，包含突发高峰",
+    icon: "⚡",
+    dimensions: "50×2",
+    datasetData: {
+      type: "manual",
+      data: generateNetworkTrafficData(),
+      headers: ["Time", "Bandwidth(Mbps)"],
+      metadata: { rows: 50, columns: 2 },
     },
   },
   {

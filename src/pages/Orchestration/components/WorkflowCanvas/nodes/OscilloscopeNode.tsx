@@ -132,10 +132,42 @@ function buildFromRaw(raw: unknown): object | null {
       const points = (raw as number[][]).slice(0, 200);
       return {
         title: { text: "数据散点图", textStyle: { fontSize: 11 }, left: "center", top: 2 },
-        grid: { left: 36, right: 8, top: 28, bottom: 28 },
-        xAxis: { type: "value", axisLabel: { fontSize: 9 } },
-        yAxis: { type: "value", axisLabel: { fontSize: 9 } },
-        series: [{ type: "scatter", data: points.map((p) => [p[0], p[1]]), symbolSize: 5, itemStyle: { color: "#722ed1", opacity: 0.75 } }],
+        tooltip: {
+          trigger: "axis",
+          axisPointer: { type: "cross" },
+          backgroundColor: "rgba(255, 255, 255, 0.9)",
+          borderColor: "#ccc",
+          borderWidth: 1,
+          textStyle: { color: "#333" }
+        },
+        grid: { left: 36, right: 8, top: 28, bottom: 28, containLabel: true },
+        toolbox: {
+          feature: {
+            dataZoom: { yAxisIndex: 'none' },
+            restore: {},
+            saveAsImage: {}
+          }
+        },
+        dataZoom: [
+          { type: 'inside', start: 0, end: 100 },
+          { start: 0, end: 100 }
+        ],
+        xAxis: { type: "value", axisLabel: { fontSize: 9 }, splitLine: { show: true, lineStyle: { type: "dashed", color: "#eee" } } },
+        yAxis: { type: "value", axisLabel: { fontSize: 9 }, splitLine: { show: true, lineStyle: { type: "dashed", color: "#eee" } } },
+        animation: true,
+        animationDuration: 1000,
+        animationEasing: 'cubicOut',
+        color: [
+          "#1890ff", "#2fc25b", "#facc14", "#f04864", "#8543e0", "#13c2c2", "#fa8c16", "#a0d911"
+        ],
+        series: [
+          { 
+            type: "scatter", 
+            data: points.map((p) => [p[0], p[1]]), 
+            symbolSize: 6, 
+            itemStyle: { color: "#1890ff", opacity: 0.8 } 
+          }
+        ],
       };
     }
     if (typeof first === "number") {

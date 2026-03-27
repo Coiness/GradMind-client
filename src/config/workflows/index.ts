@@ -148,94 +148,158 @@ function generateMultiClusterData(): number[][] {
 
 export const templates: Workflow[] = [
   // ── 原有基础模板（不带示波器） ─────────────────────────────────────────────
+  /**
+   * 模板1：简单线性回归 (内存泄漏趋势)
+   */
   {
     id: "template-linear-regression",
-    name: "Linear Regression",
-    description: "Simple linear regression using least squares",
+    name: "简单线性回归",
+    description: "分析服务器内存泄漏趋势，使用线性模型进行拟合和预测",
     nodes: [
       {
         id: "dataset-1",
         type: "dataset",
-        position: { x: 100, y: 200 },
-        data: { label: "Training Data" },
+        position: { x: 50, y: 150 },
+        data: {
+          label: "内存泄漏趋势数据",
+          datasetData: presetDatasets.find((d) => d.id === "memory-leak-data")?.datasetData,
+        },
       },
       {
-        id: "ls-1",
+        id: "algo-1",
         type: "algorithm",
-        position: { x: 400, y: 200 },
+        position: { x: 300, y: 150 },
         data: {
-          algorithmKey: "least-squares",
-          label: "Least Squares",
-          parameters: {},
-          status: "idle",
+          label: "线性回归",
+          algorithm: algorithms.find((a) => a.key === "linear-regression"),
         },
+      },
+      {
+        id: "osc-1",
+        type: "oscilloscope",
+        position: { x: 550, y: 150 },
+        data: { label: "回归结果分析" },
       },
     ],
     edges: [
-      { id: "edge-1", source: "dataset-1", target: "ls-1", sourceHandle: "dataset", targetHandle: "xData" },
-      { id: "edge-2", source: "dataset-1", target: "ls-1", sourceHandle: "dataset", targetHandle: "yData" },
+      {
+        id: "e1-2",
+        source: "dataset-1",
+        target: "algo-1",
+        sourceHandle: "output-dataset",
+        targetHandle: "input-data",
+      },
+      {
+        id: "e2-3",
+        source: "algo-1",
+        target: "osc-1",
+        sourceHandle: "output-model",
+        targetHandle: "input-data",
+      },
     ],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
   },
+
+  /**
+   * 模板2：多项式回归拟合 (CPU负载曲线)
+   */
   {
-    id: "template-pca",
-    name: "PCA Analysis",
-    description: "Dimensionality reduction using PCA",
+    id: "template-polynomial",
+    name: "多项式回归",
+    description: "分析设备全天CPU负载波动规律，使用多项式曲线拟合",
     nodes: [
       {
         id: "dataset-1",
         type: "dataset",
-        position: { x: 100, y: 200 },
-        data: { label: "Input Dataset" },
+        position: { x: 50, y: 150 },
+        data: {
+          label: "CPU负载曲线数据",
+          datasetData: presetDatasets.find((d) => d.id === "cpu-load-data")?.datasetData,
+        },
       },
       {
-        id: "pca-1",
+        id: "algo-1",
         type: "algorithm",
-        position: { x: 400, y: 200 },
+        position: { x: 300, y: 150 },
         data: {
-          algorithmKey: "pca",
-          label: "PCA",
-          parameters: { nComponents: 2 },
-          status: "idle",
+          label: "多项式回归",
+          algorithm: algorithms.find((a) => a.key === "polynomial-regression"),
         },
+      },
+      {
+        id: "osc-1",
+        type: "oscilloscope",
+        position: { x: 550, y: 150 },
+        data: { label: "负载趋势拟合" },
       },
     ],
     edges: [
-      { id: "edge-1", source: "dataset-1", target: "pca-1", sourceHandle: "dataset", targetHandle: "dataset" },
+      {
+        id: "e1-2",
+        source: "dataset-1",
+        target: "algo-1",
+        sourceHandle: "output-dataset",
+        targetHandle: "input-data",
+      },
+      {
+        id: "e2-3",
+        source: "algo-1",
+        target: "osc-1",
+        sourceHandle: "output-model",
+        targetHandle: "input-data",
+      },
     ],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
   },
+
+  /**
+   * 模板3：K-Means 聚类 (用户行为分析)
+   */
   {
-    id: "template-gradient-descent",
-    name: "Gradient Descent Optimization",
-    description: "Optimize a function using gradient descent",
+    id: "template-kmeans",
+    name: "K-Means 聚类",
+    description: "对用户行为特征（访问频次与停留时间）进行无监督聚类",
     nodes: [
       {
         id: "dataset-1",
         type: "dataset",
-        position: { x: 100, y: 150 },
-        data: { label: "Initial Point" },
+        position: { x: 50, y: 150 },
+        data: {
+          label: "用户行为数据",
+          datasetData: presetDatasets.find((d) => d.id === "user-behavior-data")?.datasetData,
+        },
       },
       {
-        id: "gd-1",
+        id: "algo-1",
         type: "algorithm",
-        position: { x: 400, y: 150 },
+        position: { x: 300, y: 150 },
         data: {
-          algorithmKey: "gradient-descent",
-          label: "Gradient Descent",
-          parameters: { learningRate: 0.01, maxIterations: 100, tolerance: 1e-6 },
-          status: "idle",
+          label: "K-Means 聚类",
+          algorithm: algorithms.find((a) => a.key === "kmeans"),
         },
+      },
+      {
+        id: "osc-1",
+        type: "oscilloscope",
+        position: { x: 550, y: 150 },
+        data: { label: "用户群体分布" },
       },
     ],
     edges: [
-      { id: "edge-1", source: "dataset-1", target: "gd-1", sourceHandle: "dataset", targetHandle: "initialPoint" },
+      {
+        id: "e1-2",
+        source: "dataset-1",
+        target: "algo-1",
+        sourceHandle: "output-dataset",
+        targetHandle: "input-data",
+      },
+      {
+        id: "e2-3",
+        source: "algo-1",
+        target: "osc-1",
+        sourceHandle: "output-model",
+        targetHandle: "input-data",
+      },
     ],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
+  },"
 
   // ── 新增内置数据模板（带示波器，展示处理前后对比） ─────────────────────────
 
