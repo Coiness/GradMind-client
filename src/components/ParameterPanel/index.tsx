@@ -45,7 +45,6 @@ export const ParameterPanel: React.FC<ParameterPanelProps> = ({
     setDraftParams(nextValues);
     applyValues(nextValues);
   };
-
   const renderControl = (param: ParameterConfig) => {
     const { key, type, options } = param;
     const value = draftParams[key];

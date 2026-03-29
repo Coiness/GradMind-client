@@ -9,6 +9,7 @@
 .header {
   padding: 16px;
   border-bottom: 1px solid #f0f0f0;
+  flex-shrink: 0;
 }
 
 .header h5 {
@@ -44,19 +45,30 @@
 .tabs :global(.ant-tabs-content-holder) {
   flex: 1;
   min-height: 0;
+  overflow: hidden;
 }
 
 .tabs :global(.ant-tabs-content) {
   flex: 1;
+  height: 100%;
   min-height: 0;
-  overflow-y: auto;
 }
 
 .tabs :global(.ant-tabs-nav) {
   padding: 0 16px;
   margin: 0;
+  flex-shrink: 0;
 }
 
 .tabs :global(.ant-tabs-tabpane) {
   padding: 16px;
+  height: 100%;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.tabs :global(.ant-tabs-tabpane-active) {
+  height: 100%;
+  box-sizing: border-box;
+  overflow-y: auto;
 }

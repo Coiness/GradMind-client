@@ -4,6 +4,7 @@ import { Select, Space } from "antd";
 import type { ParameterValues } from "@/types/parameterConfig";
 import { ParameterPanel } from "@/components/ParameterPanel";
 import { InfoPanel } from "@/components/InfoPanel";
+import { MathCodeBridge } from "@/components/MathCodeBridge";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   setSelectedScenario,
@@ -12,7 +13,6 @@ import {
 import { scenarios } from "@/config/scenarios";
 
 const VisualizationPage: FC = () => {
-  // 从 Redux store 获取状态
   const dispatch = useAppDispatch();
   const {
     selectedScenarioKey,
@@ -20,19 +20,16 @@ const VisualizationPage: FC = () => {
     status,
   } = useAppSelector((state) => state.visualization);
 
-  // 默认选择第一个场景
   const currentScenarioKey = selectedScenarioKey || scenarios[0].key;
   const currentScenario = useMemo(
     () => scenarios.find((s) => s.key === currentScenarioKey)!,
     [currentScenarioKey],
   );
 
-  // 处理场景选择
   const handleScenarioChange = (key: string) => {
     dispatch(setSelectedScenario(key));
   };
 
-  // 处理参数应用
   const handleApplyParams = (params: ParameterValues) => {
     dispatch(runComputation({ scenarioKey: currentScenarioKey, params }));
   };
@@ -41,12 +38,11 @@ const VisualizationPage: FC = () => {
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "300px 1fr 300px",
+        gridTemplateColumns: "300px minmax(0, 1fr) 400px",
         gap: "16px",
         padding: "20px",
       }}
     >
-      {/* 左侧面板：场景选择 + 参数面板 + 信息面板 */}
       <Space direction="vertical" style={{ width: "100%" }}>
         <Select
           value={currentScenarioKey}
@@ -66,19 +62,7 @@ const VisualizationPage: FC = () => {
         />
       </Space>
 
-      {/* 中间画布 */}
       <main
-        style={{
-          border: "1px solid #f0f0f0",
-          borderRadius: "8px",
-          backgroundColor: "#fff",
-        }}
-      >
-        <p>Canvas Area - 这里将来放置图表</p>
-      </main>
-
-      {/* 右侧面板：暂时留空，未来放置两个相关联的面板 */}
-      <div
         style={{
           border: "1px solid #f0f0f0",
           borderRadius: "8px",
@@ -86,7 +70,18 @@ const VisualizationPage: FC = () => {
           padding: "16px",
         }}
       >
-        <p>右侧面板 - 未来放置相关联的面板</p>
+        <p>Canvas Area - 这里将来放置图表</p>
+      </main>
+
+      <div
+        style={{
+          border: "1px solid #f0f0f0",
+          borderRadius: "8px",
+          backgroundColor: "#fff",
+          overflow: "hidden",
+        }}
+      >
+        <MathCodeBridge />
       </div>
     </div>
   );
