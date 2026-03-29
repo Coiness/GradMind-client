@@ -3,6 +3,7 @@ import type { AlgorithmNode, AlgorithmCategoryInfo } from "@/types/algorithmNode
 // Data Reduction
 import { svdAlgorithm } from "./dataReduction/svd";
 import { pcaAlgorithm } from "./dataReduction/pca";
+import { kMeansAlgorithm } from "./dataReduction/kMeans";
 import { imageReconstructionAlgorithm } from "./dataReduction/imageReconstruction";
 import { matrixToImageAlgorithm } from "./dataReduction/matrixToImage";
 
@@ -26,9 +27,10 @@ import { mapAlgorithm } from "./parameterEstimation/maximumAPosteriori";
  * All available algorithms (13 total)
  */
 export const algorithms: AlgorithmNode[] = [
-  // Data Reduction (4)
+  // Data Reduction (5)
   svdAlgorithm,
   pcaAlgorithm,
+  kMeansAlgorithm,
   imageReconstructionAlgorithm,
   matrixToImageAlgorithm,
 

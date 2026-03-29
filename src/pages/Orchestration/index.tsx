@@ -48,7 +48,9 @@ const OrchestrationPage: React.FC = () => {
       </Content>
 
       <Sider width={300} className={styles.rightPanel} theme="light">
-        <NodeInspector />
+        <div className={styles.panelContent}>
+          <NodeInspector />
+        </div>
       </Sider>
     </Layout>
   );

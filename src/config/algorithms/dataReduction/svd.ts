@@ -108,9 +108,14 @@ export const svdAlgorithm: AlgorithmNode = {
       dataType: "matrix",
     },
     {
-      id: "sigma",
+      id: "s",
       label: "Σ（奇异值）",
       dataType: "vector",
+    },
+    {
+      id: "v",
+      label: "V 矩阵",
+      dataType: "matrix",
     },
     {
       id: "vt",
@@ -228,6 +233,9 @@ export const svdAlgorithm: AlgorithmNode = {
         u = u.map((row) => row.slice(0, k));
         v = v.map((row) => row.slice(0, k));
       } else {
+        // 对于完整矩阵，S需要被填充到 m x n 的维度
+        // 为了在可视化中能直观展示区别，我们对Sigma数组本身不做扩展，
+        // 但可以通过返回一个特殊标记让用户知道当前是 Full SVD
         truncatedSigma = sigma;
       }
 
@@ -241,11 +249,13 @@ export const svdAlgorithm: AlgorithmNode = {
 
       return {
         u,
-        sigma: truncatedSigma,
+        s: truncatedSigma,
+        sigma: truncatedSigma, // 兼容旧代码
         vt,
         v,
         rank,
         conditionNumber,
+        isFullMatrices: fullMatrices,
         visualization: {
           type: "matrix",
           data: {
@@ -253,6 +263,9 @@ export const svdAlgorithm: AlgorithmNode = {
             sigma: truncatedSigma,
             vt,
             rank,
+            isFullMatrices: fullMatrices,
+            uShape: [u.length, u[0]?.length || 0],
+            vShape: [v.length, v[0]?.length || 0],
           },
         },
       };

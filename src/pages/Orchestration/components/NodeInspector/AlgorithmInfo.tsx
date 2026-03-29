@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography, Tag, Divider, Space, message, Table } from "antd";
+import { Typography, Tag, Divider, Space, Table } from "antd";
 import { useAppDispatch } from "@/store/hooks";
 import { updateNodeParameters } from "@/store/features/orchestrationSlice";
 import { ParameterPanel } from "@/components/ParameterPanel";
@@ -26,10 +26,8 @@ export const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({
 }) => {
   const dispatch = useAppDispatch();
 
-  // Handle parameter changes
   const handleParametersApply = (parameters: ParameterValues) => {
     dispatch(updateNodeParameters({ nodeId: node.id, parameters }));
-    message.success("参数更新成功");
   };
 
   // Handle oscilloscope nodes
@@ -223,7 +221,9 @@ export const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({
             <Title level={5}>参数</Title>
             <ParameterPanel
               config={algorithm.parameters}
+              initialValues={node.data.parameters}
               onApply={handleParametersApply}
+              saveMode="blur"
             />
           </div>
         ) : (

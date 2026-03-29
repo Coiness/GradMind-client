@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Button, Slider, InputNumber, Select, Space } from "antd";
 import type { ParameterConfig, ParameterValues } from "@/types/parameterConfig";
 import styles from "./index.module.css";
@@ -7,28 +7,45 @@ interface ParameterPanelProps {
   config: ParameterConfig[];
   onApply: (values: ParameterValues) => void;
   isLoading?: boolean;
+  initialValues?: ParameterValues;
+  saveMode?: "manual" | "blur";
 }
 
 export const ParameterPanel: React.FC<ParameterPanelProps> = ({
   config,
   onApply,
   isLoading,
+  initialValues,
+  saveMode = "manual",
 }) => {
-  // 根据 config 初始化内部的“草稿”状态
-  const [draftParams, setDraftParams] = useState<ParameterValues>(() => {
+  const resolvedInitialValues = useMemo(() => {
     const initialState: ParameterValues = {};
     config.forEach((p) => {
-      initialState[p.key] = p.defaultValue;
+      initialState[p.key] = initialValues?.[p.key] ?? p.defaultValue;
     });
     return initialState;
-  });
+  }, [config, initialValues]);
 
-  // 处理单个参数的变化，更新内部 state
-  const handleParamChange = (key: string, value: number | string) => {
+  const [draftParams, setDraftParams] = useState<ParameterValues>(resolvedInitialValues);
+
+  useEffect(() => {
+    setDraftParams(resolvedInitialValues);
+  }, [resolvedInitialValues]);
+
+  const handleParamChange = (key: string, value: number | string | boolean) => {
     setDraftParams((prev) => ({ ...prev, [key]: value }));
   };
 
-  // 根据配置动态渲染对应的 Ant Design 控件
+  const applyValues = (nextValues: ParameterValues) => {
+    onApply(nextValues);
+  };
+
+  const commitSingleValue = (key: string, value: number | string | boolean) => {
+    const nextValues = { ...draftParams, [key]: value };
+    setDraftParams(nextValues);
+    applyValues(nextValues);
+  };
+
   const renderControl = (param: ParameterConfig) => {
     const { key, type, options } = param;
     const value = draftParams[key];
@@ -41,7 +58,12 @@ export const ParameterPanel: React.FC<ParameterPanelProps> = ({
             max={options?.max}
             step={options?.step}
             value={value as number}
-            onChange={(val) => handleParamChange(key, val)}
+            onChange={(val) => handleParamChange(key, val as number)}
+            onAfterChange={(val) => {
+              if (saveMode === "blur") {
+                commitSingleValue(key, val as number);
+              }
+            }}
           />
         );
       case "number":
@@ -51,8 +73,17 @@ export const ParameterPanel: React.FC<ParameterPanelProps> = ({
             min={options?.min}
             max={options?.max}
             step={options?.step}
-            value={value}
-            onChange={(val) => handleParamChange(key, val as number)}
+            value={typeof value === "number" ? value : undefined}
+            onChange={(val) => {
+              if (val !== null) {
+                handleParamChange(key, val as number);
+              }
+            }}
+            onBlur={() => {
+              if (saveMode === "blur" && typeof draftParams[key] !== "undefined") {
+                applyValues(draftParams);
+              }
+            }}
           />
         );
       case "select":
@@ -60,8 +91,33 @@ export const ParameterPanel: React.FC<ParameterPanelProps> = ({
           <Select
             style={{ width: "100%" }}
             options={options?.items}
-            value={value}
-            onChange={(val) => handleParamChange(key, val)}
+            value={typeof value === "boolean" ? String(value) : value}
+            onChange={(val) => {
+              if (saveMode === "blur") {
+                commitSingleValue(key, val);
+                return;
+              }
+              handleParamChange(key, val);
+            }}
+          />
+        );
+      case "boolean":
+        return (
+          <Select
+            style={{ width: "100%" }}
+            options={[
+              { label: "是", value: "true" },
+              { label: "否", value: "false" },
+            ]}
+            value={String(Boolean(value))}
+            onChange={(val) => {
+              const booleanValue = val === "true";
+              if (saveMode === "blur") {
+                commitSingleValue(key, booleanValue);
+                return;
+              }
+              handleParamChange(key, booleanValue);
+            }}
           />
         );
       default:
@@ -78,14 +134,16 @@ export const ParameterPanel: React.FC<ParameterPanelProps> = ({
             {renderControl(param)}
           </div>
         ))}
-        <Button
-          type="primary"
-          onClick={() => onApply(draftParams)}
-          loading={isLoading}
-          block
-        >
-          应用参数
-        </Button>
+        {saveMode === "manual" ? (
+          <Button
+            type="primary"
+            onClick={() => applyValues(draftParams)}
+            loading={isLoading}
+            block
+          >
+            应用参数
+          </Button>
+        ) : null}
       </Space>
     </div>
   );

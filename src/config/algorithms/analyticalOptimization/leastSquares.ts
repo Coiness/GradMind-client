@@ -135,7 +135,6 @@ export const leastSquaresAlgorithm: AlgorithmNode = {
       throw new Error(`X 和 Y 数据长度不匹配: ${xData.length} vs ${yData.length}`);
     }
 
-    const numSamples = xData.length;
     const numFeatures = xData[0].length;
 
     // 添加截距项（第一列全为1）

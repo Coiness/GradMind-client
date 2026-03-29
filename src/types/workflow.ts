@@ -29,6 +29,7 @@ export interface DatasetData {
     imageWidth?: number;
     imageHeight?: number;
     imageFormat?: string;
+    isAsyncExample?: boolean;
   };
 }
 
@@ -47,6 +48,7 @@ export interface WorkflowNode {
     status?: NodeStatus; // Execution status
     error?: string; // Error message if status is 'error'
     datasetData?: DatasetData; // Dataset data for dataset nodes
+    datasetId?: string;
   };
 }
 

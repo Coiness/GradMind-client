@@ -14,18 +14,6 @@ export const advancedOptimizerAlgorithm: AlgorithmNode = {
 
   inputs: [
     {
-      id: "function",
-      label: "目标函数",
-      dataType: "function",
-      required: true,
-    },
-    {
-      id: "gradient",
-      label: "梯度函数",
-      dataType: "function",
-      required: false,
-    },
-    {
       id: "initialPoint",
       label: "初始点",
       dataType: "vector",
@@ -62,6 +50,19 @@ export const advancedOptimizerAlgorithm: AlgorithmNode = {
           { label: "Adam", value: "adam" },
           { label: "RMSprop", value: "rmsprop" },
           { label: "AdaGrad", value: "adagrad" },
+        ],
+      },
+    },
+    {
+      key: "objectiveFunction",
+      label: "目标函数",
+      type: "select",
+      defaultValue: "bowl",
+      options: {
+        items: [
+          { label: "碗状函数 (x²+y²)", value: "bowl" },
+          { label: "马鞍面 (x²-y²)", value: "saddle" },
+          { label: "Rosenbrock (香蕉函数)", value: "rosenbrock" },
         ],
       },
     },
@@ -126,9 +127,6 @@ export const advancedOptimizerAlgorithm: AlgorithmNode = {
     const gradientInput = inputs.gradient;
     const initialPointInput = inputs.initialPoint;
 
-    if (!functionInput) {
-      throw new Error("缺少目标函数输入");
-    }
     if (!initialPointInput) {
       throw new Error("缺少初始点输入");
     }
@@ -146,19 +144,38 @@ export const advancedOptimizerAlgorithm: AlgorithmNode = {
     }
 
     // 提取目标函数
+    const objFuncType = params.objectiveFunction || "bowl";
+    
     let func: (x: number[]) => number;
-    if (typeof functionInput === "function") {
-      func = functionInput;
-    } else if (typeof functionInput === "string") {
-      try {
-        func = new Function("x", `return ${functionInput}`) as (x: number[]) => number;
-      } catch (error) {
-        throw new Error(`无法解析函数字符串: ${error instanceof Error ? error.message : String(error)}`);
+    if (functionInput !== undefined) {
+      // 兼容外部传入
+      if (typeof functionInput === "function") {
+        func = functionInput;
+      } else if (typeof functionInput === "string") {
+        try {
+          func = new Function("x", `return ${functionInput}`) as (x: number[]) => number;
+        } catch (error) {
+          throw new Error(`无法解析函数字符串: ${error instanceof Error ? error.message : String(error)}`);
+        }
+      } else if (functionInput.func) {
+        func = functionInput.func;
+      } else {
+        throw new Error("无效的函数格式");
       }
-    } else if (functionInput.func) {
-      func = functionInput.func;
     } else {
-      throw new Error("无效的函数格式");
+      // 使用内置预设函数
+      if (objFuncType === "saddle") {
+        func = (x: number[]) => (x[0] || 0) ** 2 - (x[1] || 0) ** 2;
+      } else if (objFuncType === "rosenbrock") {
+        func = (x: number[]) => {
+          const x0 = x[0] || 0;
+          const x1 = x[1] || 0;
+          return (1 - x0) ** 2 + 100 * (x1 - x0 ** 2) ** 2;
+        };
+      } else {
+        // bowl
+        func = (x: number[]) => x.reduce((sum, value) => sum + value * value, 0);
+      }
     }
 
     // 提取梯度函数（如果提供）

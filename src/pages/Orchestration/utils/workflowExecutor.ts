@@ -55,10 +55,16 @@ export async function executeWorkflowEngine(
       if (incomingEdges.length > 0) {
         const edge = incomingEdges[0];
         const sourceResult = results[edge.source];
-        inputData = extractSourceValue(sourceResult, edge.sourceHandle);
-        // 如果 sourceHandle 没有命中子字段，就用整个 sourceResult
-        if (inputData === sourceResult && sourceResult && typeof sourceResult === "object") {
+        
+        // 关键修复：只要上游算子支持 visualization 大礼包，示波器强制全盘接收，防止降级渲染误读
+        if (sourceResult && typeof sourceResult === "object" && "visualization" in sourceResult) {
           inputData = sourceResult;
+        } else {
+          inputData = extractSourceValue(sourceResult, edge.sourceHandle);
+          // 如果 sourceHandle 没有命中子字段，就用整个 sourceResult
+          if (inputData === sourceResult && sourceResult && typeof sourceResult === "object") {
+            inputData = sourceResult;
+          }
         }
       }
       results[nodeId] = { data: inputData, type: "oscilloscope", _raw: inputData };

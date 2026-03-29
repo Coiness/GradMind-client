@@ -14,18 +14,6 @@ export const gradientDescentAlgorithm: AlgorithmNode = {
 
   inputs: [
     {
-      id: "function",
-      label: "目标函数",
-      dataType: "function",
-      required: false,
-    },
-    {
-      id: "gradient",
-      label: "梯度（可选）",
-      dataType: "function",
-      required: false,
-    },
-    {
       id: "initialPoint",
       label: "初始点",
       dataType: "vector",
@@ -52,6 +40,19 @@ export const gradientDescentAlgorithm: AlgorithmNode = {
   ],
 
   parameters: [
+    {
+      key: "objectiveFunction",
+      label: "目标函数",
+      type: "select",
+      defaultValue: "bowl",
+      options: {
+        items: [
+          { label: "碗状函数 (x²+y²)", value: "bowl" },
+          { label: "马鞍面 (x²-y²)", value: "saddle" },
+          { label: "Rosenbrock (香蕉函数)", value: "rosenbrock" },
+        ],
+      },
+    },
     {
       key: "learningRate",
       label: "学习率（α）",
@@ -115,11 +116,11 @@ export const gradientDescentAlgorithm: AlgorithmNode = {
     }
 
     // 提取目标函数
-    const defaultObjectiveFunction = (x: number[]) =>
-      x.reduce((sum, value) => sum + value * value, 0);
-
-    let func: (x: number[]) => number = defaultObjectiveFunction;
+    const objFuncType = params.objectiveFunction || "bowl";
+    
+    let func: (x: number[]) => number;
     if (functionInput !== undefined) {
+      // 兼容外部传入
       if (typeof functionInput === "function") {
         func = functionInput;
       } else if (typeof functionInput === "string") {
@@ -132,6 +133,20 @@ export const gradientDescentAlgorithm: AlgorithmNode = {
         func = functionInput.func;
       } else {
         throw new Error("无效的函数格式");
+      }
+    } else {
+      // 使用内置预设函数
+      if (objFuncType === "saddle") {
+        func = (x: number[]) => (x[0] || 0) ** 2 - (x[1] || 0) ** 2;
+      } else if (objFuncType === "rosenbrock") {
+        func = (x: number[]) => {
+          const x0 = x[0] || 0;
+          const x1 = x[1] || 0;
+          return (1 - x0) ** 2 + 100 * (x1 - x0 ** 2) ** 2;
+        };
+      } else {
+        // bowl
+        func = (x: number[]) => x.reduce((sum, value) => sum + value * value, 0);
       }
     }
 
