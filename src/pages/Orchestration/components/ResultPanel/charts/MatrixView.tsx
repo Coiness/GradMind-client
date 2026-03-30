@@ -86,7 +86,13 @@ const MatrixView: React.FC<MatrixViewProps> = ({ data }) => {
         data: sigma,
         itemStyle: {
           color: (params: { dataIndex: number }) => {
-            const colors = ["#5470c6", "#91cc75", "#fac858", "#ee6666", "#73c0de"];
+            const colors = [
+              "#5470c6",
+              "#91cc75",
+              "#fac858",
+              "#ee6666",
+              "#73c0de",
+            ];
             return colors[params.dataIndex % colors.length];
           },
         },
@@ -104,10 +110,19 @@ const MatrixView: React.FC<MatrixViewProps> = ({ data }) => {
   const tableSize = "small" as const;
 
   return (
-    <div style={{ display: "flex", height: "100%", gap: 8, overflow: "hidden" }}>
+    <div
+      style={{ display: "flex", height: "100%", gap: 8, overflow: "hidden" }}
+    >
       {/* 左：U 矩阵 */}
       <div style={{ flex: 1, minWidth: 0, overflow: "auto" }}>
-        <div style={{ fontSize: 12, fontWeight: 600, marginBottom: 4, color: "#5470c6" }}>
+        <div
+          style={{
+            fontSize: 12,
+            fontWeight: 600,
+            marginBottom: 4,
+            color: "#5470c6",
+          }}
+        >
           U 矩阵（{u.length}×{u[0]?.length ?? 0}）
         </div>
         <Table
@@ -121,9 +136,14 @@ const MatrixView: React.FC<MatrixViewProps> = ({ data }) => {
       </div>
 
       {/* 中：奇异值柱状图 + 统计信息 */}
-      <div style={{ width: 180, display: "flex", flexDirection: "column", gap: 4 }}>
+      <div
+        style={{ width: 180, display: "flex", flexDirection: "column", gap: 4 }}
+      >
         <div style={{ flex: 1, minHeight: 0 }}>
-          <ReactECharts option={sigmaOption} style={{ height: "100%", minHeight: 120 }} />
+          <ReactECharts
+            option={sigmaOption}
+            style={{ height: "100%", minHeight: 120 }}
+          />
         </div>
         <Divider style={{ margin: "4px 0" }} />
         <Row gutter={4}>
@@ -150,7 +170,14 @@ const MatrixView: React.FC<MatrixViewProps> = ({ data }) => {
 
       {/* 右：V^T 矩阵 */}
       <div style={{ flex: 1, minWidth: 0, overflow: "auto" }}>
-        <div style={{ fontSize: 12, fontWeight: 600, marginBottom: 4, color: "#ee6666" }}>
+        <div
+          style={{
+            fontSize: 12,
+            fontWeight: 600,
+            marginBottom: 4,
+            color: "#ee6666",
+          }}
+        >
           V^T 矩阵（{vt.length}×{vt[0]?.length ?? 0}）
         </div>
         <Table

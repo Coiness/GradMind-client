@@ -66,12 +66,13 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({
 
   // Handle file upload
   const handleFileUpload = (file: File) => {
-    if (file.type.startsWith('image/')) {
+    if (file.type.startsWith("image/")) {
       const img = new Image();
       img.onload = () => {
-        const canvas = document.createElement('canvas');
+        const canvas = document.createElement("canvas");
         const maxSize = 512;
-        let width = img.width, height = img.height;
+        let width = img.width,
+          height = img.height;
         if (width > maxSize || height > maxSize) {
           if (width > height) {
             height = (height / width) * maxSize;
@@ -83,7 +84,7 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({
         }
         canvas.width = width;
         canvas.height = height;
-        const ctx = canvas.getContext('2d')!;
+        const ctx = canvas.getContext("2d")!;
         ctx.drawImage(img, 0, 0, width, height);
 
         const imageData = ctx.getImageData(0, 0, width, height);
@@ -92,24 +93,27 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({
           const row: number[] = [];
           for (let x = 0; x < width; x++) {
             const i = (y * width + x) * 4;
-            const gray = 0.299 * imageData.data[i] + 0.587 * imageData.data[i+1] + 0.114 * imageData.data[i+2];
+            const gray =
+              0.299 * imageData.data[i] +
+              0.587 * imageData.data[i + 1] +
+              0.114 * imageData.data[i + 2];
             row.push(Math.round(gray));
           }
           grayMatrix.push(row);
         }
 
         const datasetData: DatasetData = {
-          type: 'image',
+          type: "image",
           data: grayMatrix,
-          headers: ['pixel'],
+          headers: ["pixel"],
           metadata: {
             rows: height,
             columns: width,
             fileName: file.name,
             imageWidth: width,
             imageHeight: height,
-            imageFormat: file.type
-          }
+            imageFormat: file.type,
+          },
         };
 
         setPreviewData(datasetData);
@@ -117,7 +121,7 @@ export const DatasetUpload: React.FC<DatasetUploadProps> = ({
         message.success(`图像 "${file.name}" 加载成功！`);
       };
       img.onerror = () => {
-        message.error('图像加载失败');
+        message.error("图像加载失败");
       };
       img.src = URL.createObjectURL(file);
       return false;

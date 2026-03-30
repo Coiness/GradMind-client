@@ -118,7 +118,7 @@ function detectCycle(workflow: Workflow): boolean {
  */
 function validateDataTypeCompatibility(
   workflow: Workflow,
-  algorithmLibrary: AlgorithmNode[]
+  algorithmLibrary: AlgorithmNode[],
 ): ValidationError[] {
   const errors: ValidationError[] = [];
 
@@ -136,11 +136,15 @@ function validateDataTypeCompatibility(
     }
 
     // 示波器节点接受任意类型，跳过类型检查
-    if (sourceNode.type === "oscilloscope" || targetNode.type === "oscilloscope") return;
+    if (
+      sourceNode.type === "oscilloscope" ||
+      targetNode.type === "oscilloscope"
+    )
+      return;
     let sourceAlgorithm: AlgorithmNode | undefined;
     if (sourceNode.type === "algorithm" && sourceNode.data.algorithmKey) {
       sourceAlgorithm = algorithmLibrary.find(
-        (a) => a.key === sourceNode.data.algorithmKey
+        (a) => a.key === sourceNode.data.algorithmKey,
       );
     } else if (sourceNode.type === "dataset") {
       // Dataset 节点输出 dataset 类型
@@ -161,10 +165,10 @@ function validateDataTypeCompatibility(
 
     // 查找输出端口和输入端口
     const outputPort = sourceAlgorithm.outputs?.find(
-      (o) => o.id === edge.sourceHandle
+      (o) => o.id === edge.sourceHandle,
     );
     const inputPort = targetAlgorithm.inputs?.find(
-      (i) => i.id === edge.targetHandle
+      (i) => i.id === edge.targetHandle,
     );
 
     if (!outputPort) {
@@ -209,7 +213,7 @@ function validateDataTypeCompatibility(
  */
 function validatePortValidity(
   workflow: Workflow,
-  algorithmLibrary: AlgorithmNode[]
+  algorithmLibrary: AlgorithmNode[],
 ): ValidationError[] {
   const errors: ValidationError[] = [];
 
@@ -220,16 +224,20 @@ function validatePortValidity(
     if (!sourceNode || !targetNode) return;
 
     // 示波器节点不做端口验证
-    if (sourceNode.type === "oscilloscope" || targetNode.type === "oscilloscope") return;
+    if (
+      sourceNode.type === "oscilloscope" ||
+      targetNode.type === "oscilloscope"
+    )
+      return;
 
     // 验证源端口
     if (sourceNode.type === "algorithm" && sourceNode.data.algorithmKey) {
       const algorithm = algorithmLibrary.find(
-        (a) => a.key === sourceNode.data.algorithmKey
+        (a) => a.key === sourceNode.data.algorithmKey,
       );
       if (algorithm) {
         const hasOutputPort = algorithm.outputs?.some(
-          (o) => o.id === edge.sourceHandle
+          (o) => o.id === edge.sourceHandle,
         );
         if (!hasOutputPort) {
           errors.push({
@@ -245,11 +253,11 @@ function validatePortValidity(
     // 验证目标端口
     if (targetNode.type === "algorithm" && targetNode.data.algorithmKey) {
       const algorithm = algorithmLibrary.find(
-        (a) => a.key === targetNode.data.algorithmKey
+        (a) => a.key === targetNode.data.algorithmKey,
       );
       if (algorithm) {
         const hasInputPort = algorithm.inputs?.some(
-          (i) => i.id === edge.targetHandle
+          (i) => i.id === edge.targetHandle,
         );
         if (!hasInputPort) {
           errors.push({

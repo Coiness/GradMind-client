@@ -4,7 +4,10 @@ import { topologicalSort } from "./topologicalSort";
 import { validateWorkflow } from "./workflowValidator";
 import { transformData, detectDataType } from "./dataTransformer";
 
-function extractSourceValue(sourceResult: unknown, sourceHandle: string): unknown {
+function extractSourceValue(
+  sourceResult: unknown,
+  sourceHandle: string,
+): unknown {
   if (
     sourceResult &&
     typeof sourceResult === "object" &&
@@ -23,7 +26,14 @@ export async function executeWorkflowEngine(
   algorithmLibrary: AlgorithmNode[],
 ): Promise<Record<string, any>> {
   console.log("🔧 [workflowExecutor] Starting execution engine");
-  console.log("📋 [workflowExecutor] Workflow nodes:", workflow.nodes.map(n => ({ id: n.id, type: n.type, label: n.data.label })));
+  console.log(
+    "📋 [workflowExecutor] Workflow nodes:",
+    workflow.nodes.map((n) => ({
+      id: n.id,
+      type: n.type,
+      label: n.data.label,
+    })),
+  );
 
   // Validate workflow first
   const errors = validateWorkflow(workflow, algorithmLibrary);
@@ -55,20 +65,35 @@ export async function executeWorkflowEngine(
       if (incomingEdges.length > 0) {
         const edge = incomingEdges[0];
         const sourceResult = results[edge.source];
-        
+
         // 关键修复：只要上游算子支持 visualization 大礼包，示波器强制全盘接收，防止降级渲染误读
-        if (sourceResult && typeof sourceResult === "object" && "visualization" in sourceResult) {
+        if (
+          sourceResult &&
+          typeof sourceResult === "object" &&
+          "visualization" in sourceResult
+        ) {
           inputData = sourceResult;
         } else {
           inputData = extractSourceValue(sourceResult, edge.sourceHandle);
           // 如果 sourceHandle 没有命中子字段，就用整个 sourceResult
-          if (inputData === sourceResult && sourceResult && typeof sourceResult === "object") {
+          if (
+            inputData === sourceResult &&
+            sourceResult &&
+            typeof sourceResult === "object"
+          ) {
             inputData = sourceResult;
           }
         }
       }
-      results[nodeId] = { data: inputData, type: "oscilloscope", _raw: inputData };
-      console.log(`📡 [workflowExecutor] Oscilloscope node ${nodeId} received:`, inputData);
+      results[nodeId] = {
+        data: inputData,
+        type: "oscilloscope",
+        _raw: inputData,
+      };
+      console.log(
+        `📡 [workflowExecutor] Oscilloscope node ${nodeId} received:`,
+        inputData,
+      );
       continue;
     }
 
@@ -88,21 +113,38 @@ export async function executeWorkflowEngine(
             type: "image",
             data: {
               matrix: node.data.datasetData.data,
-              width: meta?.imageWidth || meta?.columns || node.data.datasetData.data[0]?.length || 0,
-              height: meta?.imageHeight || meta?.rows || node.data.datasetData.data.length || 0,
-            }
+              width:
+                meta?.imageWidth ||
+                meta?.columns ||
+                node.data.datasetData.data[0]?.length ||
+                0,
+              height:
+                meta?.imageHeight ||
+                meta?.rows ||
+                node.data.datasetData.data.length ||
+                0,
+            },
           };
         }
 
         results[nodeId] = resultData;
-        console.log(`✅ [workflowExecutor] Dataset node ${nodeId} result:`, results[nodeId]);
+        console.log(
+          `✅ [workflowExecutor] Dataset node ${nodeId} result:`,
+          results[nodeId],
+        );
       } else {
         // Fallback to mock data
         results[nodeId] = {
-          data: [[1, 2], [3, 4], [5, 6]],
+          data: [
+            [1, 2],
+            [3, 4],
+            [5, 6],
+          ],
           type: "dataset",
         };
-        console.log(`⚠️ [workflowExecutor] Dataset node ${nodeId} using mock data`);
+        console.log(
+          `⚠️ [workflowExecutor] Dataset node ${nodeId} using mock data`,
+        );
       }
       continue;
     }
@@ -119,7 +161,10 @@ export async function executeWorkflowEngine(
       // Gather inputs from connected nodes
       const inputs: Record<string, any> = {};
       const incomingEdges = workflow.edges.filter((e) => e.target === nodeId);
-      console.log(`📥 [workflowExecutor] Node ${nodeId} incoming edges:`, incomingEdges.length);
+      console.log(
+        `📥 [workflowExecutor] Node ${nodeId} incoming edges:`,
+        incomingEdges.length,
+      );
 
       incomingEdges.forEach((edge) => {
         const sourceResult = results[edge.source];
@@ -134,14 +179,17 @@ export async function executeWorkflowEngine(
           : null;
 
         // 提取该输出端口对应的数据，而不是整个结果对象
-        const extractedSourceValue = extractSourceValue(sourceResult, edge.sourceHandle);
+        const extractedSourceValue = extractSourceValue(
+          sourceResult,
+          edge.sourceHandle,
+        );
 
         // 查找输出端口和输入端口的数据类型
         const outputPort = sourceAlgorithm?.outputs.find(
-          (o) => o.id === edge.sourceHandle
+          (o) => o.id === edge.sourceHandle,
         );
         const inputPort = algorithm.inputs.find(
-          (i) => i.id === edge.targetHandle
+          (i) => i.id === edge.targetHandle,
         );
 
         let sourceType: string | undefined = outputPort?.dataType;
@@ -165,7 +213,7 @@ export async function executeWorkflowEngine(
               inputs[edge.targetHandle] = transformData(
                 extractedSourceValue,
                 sourceType as any,
-                targetType as any
+                targetType as any,
               );
             } else {
               inputs[edge.targetHandle] = extractedSourceValue;
@@ -173,7 +221,7 @@ export async function executeWorkflowEngine(
           } catch (error) {
             console.warn(
               `数据类型转换失败 (${edge.source} → ${edge.target}):`,
-              error instanceof Error ? error.message : String(error)
+              error instanceof Error ? error.message : String(error),
             );
             inputs[edge.targetHandle] = extractedSourceValue;
           }
@@ -184,7 +232,10 @@ export async function executeWorkflowEngine(
       });
 
       console.log(`🔧 [workflowExecutor] Node ${nodeId} inputs:`, inputs);
-      console.log(`⚙️ [workflowExecutor] Node ${nodeId} parameters:`, node.data.parameters);
+      console.log(
+        `⚙️ [workflowExecutor] Node ${nodeId} parameters:`,
+        node.data.parameters,
+      );
 
       // Execute algorithm
       try {
@@ -193,9 +244,15 @@ export async function executeWorkflowEngine(
           node.data.parameters || {},
         );
         results[nodeId] = result;
-        console.log(`✅ [workflowExecutor] Node ${nodeId} execution success, result:`, result);
+        console.log(
+          `✅ [workflowExecutor] Node ${nodeId} execution success, result:`,
+          result,
+        );
       } catch (error) {
-        console.error(`❌ [workflowExecutor] Node ${nodeId} execution failed:`, error);
+        console.error(
+          `❌ [workflowExecutor] Node ${nodeId} execution failed:`,
+          error,
+        );
         throw new Error(
           `Error executing node "${node.data.label}": ${error instanceof Error ? error.message : String(error)}`,
         );
@@ -203,6 +260,9 @@ export async function executeWorkflowEngine(
     }
   }
 
-  console.log("🎉 [workflowExecutor] All nodes executed, final results:", results);
+  console.log(
+    "🎉 [workflowExecutor] All nodes executed, final results:",
+    results,
+  );
   return results;
 }

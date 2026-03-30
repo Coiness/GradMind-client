@@ -1,13 +1,13 @@
-import { describe, it, expect } from 'vitest';
-import { pcaAlgorithm } from '@/config/algorithms/dataReduction/pca';
-import { svdAlgorithm } from '@/config/algorithms/dataReduction/svd';
+import { describe, it, expect } from "vitest";
+import { pcaAlgorithm } from "@/config/algorithms/dataReduction/pca";
+import { svdAlgorithm } from "@/config/algorithms/dataReduction/svd";
 
 /**
  * 测试 PCA 和 SVD 算法的 math.eigs 类型处理
  * 这是 P1 修复：处理 math.eigs 返回值的不同格式
  */
-describe('PCA - math.eigs 类型处理', () => {
-  it('应该正确执行 PCA 并返回降维结果', async () => {
+describe("PCA - math.eigs 类型处理", () => {
+  it("应该正确执行 PCA 并返回降维结果", async () => {
     const inputs = {
       dataset: {
         data: [
@@ -22,7 +22,7 @@ describe('PCA - math.eigs 类型处理', () => {
           [1.5, 1.6],
           [1.1, 0.9],
         ],
-        dataType: 'matrix' as const,
+        dataType: "matrix" as const,
       },
     };
 
@@ -42,7 +42,7 @@ describe('PCA - math.eigs 类型处理', () => {
     expect(result.explainedVariance.length).toBe(1); // 1 个主成分
   });
 
-  it('应该返回正确数量的主成分', async () => {
+  it("应该返回正确数量的主成分", async () => {
     const inputs = {
       dataset: {
         data: [
@@ -51,7 +51,7 @@ describe('PCA - math.eigs 类型处理', () => {
           [7, 8, 9],
           [10, 11, 12],
         ],
-        dataType: 'matrix' as const,
+        dataType: "matrix" as const,
       },
     };
 
@@ -64,8 +64,8 @@ describe('PCA - math.eigs 类型处理', () => {
   });
 });
 
-describe('SVD - math.eigs 类型处理', () => {
-  it('应该正确执行 SVD 并返回 u, sigma, vt', async () => {
+describe("SVD - math.eigs 类型处理", () => {
+  it("应该正确执行 SVD 并返回 u, sigma, vt", async () => {
     const inputs = {
       matrix: {
         data: [
@@ -73,7 +73,7 @@ describe('SVD - math.eigs 类型处理', () => {
           [3, 4],
           [5, 6],
         ],
-        dataType: 'matrix' as const,
+        dataType: "matrix" as const,
       },
     };
 
@@ -91,31 +91,33 @@ describe('SVD - math.eigs 类型处理', () => {
     expect(Array.isArray(result.vt)).toBe(true);
   });
 
-  it('SVD 分解应该满足 A = U * Σ * V^T', async () => {
+  it("SVD 分解应该满足 A = U * Σ * V^T", async () => {
     const inputs = {
       matrix: {
         data: [
           [1, 0],
           [0, 1],
         ],
-        dataType: 'matrix' as const,
+        dataType: "matrix" as const,
       },
     };
 
     const result = await svdAlgorithm.compute(inputs, {});
 
     // 对于单位矩阵，奇异值应该都是 1
-    expect(result.sigma.every((s: number) => Math.abs(s - 1) < 0.01)).toBe(true);
+    expect(result.sigma.every((s: number) => Math.abs(s - 1) < 0.01)).toBe(
+      true,
+    );
   });
 
-  it('应该返回降序排列的奇异值', async () => {
+  it("应该返回降序排列的奇异值", async () => {
     const inputs = {
       matrix: {
         data: [
           [3, 2, 2],
           [2, 3, -2],
         ],
-        dataType: 'matrix' as const,
+        dataType: "matrix" as const,
       },
     };
 

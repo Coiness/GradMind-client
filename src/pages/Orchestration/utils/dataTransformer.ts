@@ -3,7 +3,13 @@
  * 用于在不同数据类型之间进行转换
  */
 
-export type DataType = "matrix" | "vector" | "scalar" | "function" | "model" | "dataset";
+export type DataType =
+  | "matrix"
+  | "vector"
+  | "scalar"
+  | "function"
+  | "model"
+  | "dataset";
 
 /**
  * 数据类型兼容性规则
@@ -21,7 +27,10 @@ const compatibilityRules: Record<DataType, DataType[]> = {
 /**
  * 检查两种数据类型是否兼容
  */
-export function isTypeCompatible(sourceType: DataType, targetType: DataType): boolean {
+export function isTypeCompatible(
+  sourceType: DataType,
+  targetType: DataType,
+): boolean {
   if (sourceType === targetType) return true;
   return compatibilityRules[sourceType]?.includes(targetType) || false;
 }
@@ -36,7 +45,7 @@ export function isTypeCompatible(sourceType: DataType, targetType: DataType): bo
 export function transformData(
   data: any,
   sourceType: DataType,
-  targetType: DataType
+  targetType: DataType,
 ): any {
   // 如果类型相同，直接返回
   if (sourceType === targetType) {
@@ -46,7 +55,7 @@ export function transformData(
   // 检查类型兼容性
   if (!isTypeCompatible(sourceType, targetType)) {
     throw new Error(
-      `无法将类型 "${sourceType}" 转换为 "${targetType}"。这两种类型不兼容。`
+      `无法将类型 "${sourceType}" 转换为 "${targetType}"。这两种类型不兼容。`,
     );
   }
 
@@ -87,7 +96,7 @@ export function transformData(
     throw new Error(
       `数据转换失败 (${sourceType} → ${targetType}): ${
         error instanceof Error ? error.message : String(error)
-      }`
+      }`,
     );
   }
 }
@@ -268,7 +277,7 @@ export function detectDataType(data: any): DataType {
 export function transformInputs(
   inputs: Record<string, any>,
   inputSpecs: Array<{ id: string; dataType: DataType }>,
-  sourceTypes?: Record<string, DataType>
+  sourceTypes?: Record<string, DataType>,
 ): Record<string, any> {
   const transformed: Record<string, any> = {};
 
@@ -285,7 +294,7 @@ export function transformInputs(
     } catch (error) {
       console.warn(
         `输入 "${spec.id}" 转换失败:`,
-        error instanceof Error ? error.message : String(error)
+        error instanceof Error ? error.message : String(error),
       );
       // 转换失败时保留原数据
       transformed[spec.id] = data;
@@ -301,7 +310,9 @@ export function transformInputs(
 export function validateDataType(data: any, expectedType: DataType): boolean {
   try {
     const actualType = detectDataType(data);
-    return actualType === expectedType || isTypeCompatible(actualType, expectedType);
+    return (
+      actualType === expectedType || isTypeCompatible(actualType, expectedType)
+    );
   } catch {
     return false;
   }

@@ -8,8 +8,7 @@ export const gradientDescentAlgorithm: AlgorithmNode = {
   key: "gradient-descent",
   name: "梯度下降",
   category: "numerical-optimization",
-  description:
-    "通过在当前点沿负梯度方向迭代步进来最小化函数。",
+  description: "通过在当前点沿负梯度方向迭代步进来最小化函数。",
   icon: "⬇️",
 
   inputs: [
@@ -117,7 +116,7 @@ export const gradientDescentAlgorithm: AlgorithmNode = {
 
     // 提取目标函数
     const objFuncType = params.objectiveFunction || "bowl";
-    
+
     let func: (x: number[]) => number;
     if (functionInput !== undefined) {
       // 兼容外部传入
@@ -125,9 +124,13 @@ export const gradientDescentAlgorithm: AlgorithmNode = {
         func = functionInput;
       } else if (typeof functionInput === "string") {
         try {
-          func = new Function("x", `return ${functionInput}`) as (x: number[]) => number;
+          func = new Function("x", `return ${functionInput}`) as (
+            x: number[],
+          ) => number;
         } catch (error) {
-          throw new Error(`无法解析函数字符串: ${error instanceof Error ? error.message : String(error)}`);
+          throw new Error(
+            `无法解析函数字符串: ${error instanceof Error ? error.message : String(error)}`,
+          );
         }
       } else if (functionInput.func) {
         func = functionInput.func;
@@ -146,7 +149,8 @@ export const gradientDescentAlgorithm: AlgorithmNode = {
         };
       } else {
         // bowl
-        func = (x: number[]) => x.reduce((sum, value) => sum + value * value, 0);
+        func = (x: number[]) =>
+          x.reduce((sum, value) => sum + value * value, 0);
       }
     }
 
@@ -181,7 +185,12 @@ export const gradientDescentAlgorithm: AlgorithmNode = {
 
     // 梯度下降主循环
     let point = [...initialPoint];
-    const history: Array<{ point: number[]; value: number; gradient: number[]; gradNorm: number }> = [];
+    const history: Array<{
+      point: number[];
+      value: number;
+      gradient: number[];
+      gradNorm: number;
+    }> = [];
     let converged = false;
     let iterations = 0;
 
@@ -193,7 +202,9 @@ export const gradientDescentAlgorithm: AlgorithmNode = {
         const value = func(point);
 
         // 计算梯度
-        const gradient = gradFunc ? gradFunc(point) : computeNumericalGradient(point);
+        const gradient = gradFunc
+          ? gradFunc(point)
+          : computeNumericalGradient(point);
 
         // 计算梯度范数
         const gradNorm = Math.sqrt(gradient.reduce((sum, g) => sum + g * g, 0));
@@ -247,7 +258,9 @@ export const gradientDescentAlgorithm: AlgorithmNode = {
         },
       };
     } catch (error) {
-      throw new Error(`梯度下降失败: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `梯度下降失败: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   },
 };

@@ -44,7 +44,8 @@ const RegressionChart: React.FC<RegressionChartProps> = ({ data }) => {
 
   // MSE
   const residuals = yData.map((y, i) => y - (predictions[i] ?? 0));
-  const mse = residuals.reduce((s, r) => s + r * r, 0) / (residuals.length || 1);
+  const mse =
+    residuals.reduce((s, r) => s + r * r, 0) / (residuals.length || 1);
 
   const option = {
     title: {
@@ -100,9 +101,19 @@ const RegressionChart: React.FC<RegressionChartProps> = ({ data }) => {
       <div style={{ flex: 1, minWidth: 0 }}>
         <ReactECharts option={option} style={{ height: "100%" }} />
       </div>
-      <div style={{ width: 150, display: "flex", flexDirection: "column", justifyContent: "center", gap: 12 }}>
+      <div
+        style={{
+          width: 150,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          gap: 12,
+        }}
+      >
         <div>
-          <div style={{ fontSize: 12, color: "#888", marginBottom: 2 }}>拟合方程</div>
+          <div style={{ fontSize: 12, color: "#888", marginBottom: 2 }}>
+            拟合方程
+          </div>
           <div style={{ fontSize: 13, fontWeight: 600 }}>
             y = {slope.toFixed(4)}x + {intercept.toFixed(4)}
           </div>
@@ -110,7 +121,10 @@ const RegressionChart: React.FC<RegressionChartProps> = ({ data }) => {
         <Statistic
           title="R²（决定系数）"
           value={rSquared.toFixed(4)}
-          valueStyle={{ fontSize: 16, color: rSquared > 0.9 ? "#52c41a" : "#faad14" }}
+          valueStyle={{
+            fontSize: 16,
+            color: rSquared > 0.9 ? "#52c41a" : "#faad14",
+          }}
         />
         <Statistic
           title="MSE"

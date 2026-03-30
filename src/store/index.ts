@@ -12,9 +12,9 @@ export const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: {
         // 忽略 algorithmLibrary 的序列化检查，因为它包含 compute 函数
-        ignoredPaths: ['orchestration.algorithmLibrary'],
+        ignoredPaths: ["orchestration.algorithmLibrary"],
         // 忽略这些 action types 的序列化检查
-        ignoredActions: ['orchestration/loadAlgorithmLibrary/fulfilled'],
+        ignoredActions: ["orchestration/loadAlgorithmLibrary/fulfilled"],
       },
     }),
 });

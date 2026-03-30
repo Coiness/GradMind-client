@@ -8,8 +8,7 @@ export const lagrangeAlgorithm: AlgorithmNode = {
   key: "lagrange",
   name: "Lagrange 乘数法",
   category: "analytical-optimization",
-  description:
-    "使用 Lagrange 乘数法求解受等式约束的函数的局部极大值和极小值。",
+  description: "使用 Lagrange 乘数法求解受等式约束的函数的局部极大值和极小值。",
   icon: "λ",
 
   inputs: [
@@ -126,9 +125,13 @@ export const lagrangeAlgorithm: AlgorithmNode = {
       objectiveFunc = objectiveInput;
     } else if (typeof objectiveInput === "string") {
       try {
-        objectiveFunc = new Function("x", `return ${objectiveInput}`) as (x: number[]) => number;
+        objectiveFunc = new Function("x", `return ${objectiveInput}`) as (
+          x: number[],
+        ) => number;
       } catch (error) {
-        throw new Error(`无法解析目标函数字符串: ${error instanceof Error ? error.message : String(error)}`);
+        throw new Error(
+          `无法解析目标函数字符串: ${error instanceof Error ? error.message : String(error)}`,
+        );
       }
     } else if (objectiveInput.func) {
       objectiveFunc = objectiveInput.func;
@@ -142,9 +145,13 @@ export const lagrangeAlgorithm: AlgorithmNode = {
       constraintFunc = constraintsInput;
     } else if (typeof constraintsInput === "string") {
       try {
-        constraintFunc = new Function("x", `return ${constraintsInput}`) as (x: number[]) => number | number[];
+        constraintFunc = new Function("x", `return ${constraintsInput}`) as (
+          x: number[],
+        ) => number | number[];
       } catch (error) {
-        throw new Error(`无法解析约束函数字符串: ${error instanceof Error ? error.message : String(error)}`);
+        throw new Error(
+          `无法解析约束函数字符串: ${error instanceof Error ? error.message : String(error)}`,
+        );
       }
     } else if (constraintsInput.func) {
       constraintFunc = constraintsInput.func;
@@ -153,7 +160,10 @@ export const lagrangeAlgorithm: AlgorithmNode = {
     }
 
     // 数值梯度计算函数
-    const computeGradient = (func: (x: number[]) => number, x: number[]): number[] => {
+    const computeGradient = (
+      func: (x: number[]) => number,
+      x: number[],
+    ): number[] => {
       const n = x.length;
       const grad: number[] = [];
 
@@ -172,7 +182,10 @@ export const lagrangeAlgorithm: AlgorithmNode = {
     };
 
     // 计算约束函数的梯度
-    const computeConstraintGradient = (x: number[], constraintIdx: number = 0): number[] => {
+    const computeConstraintGradient = (
+      x: number[],
+      constraintIdx: number = 0,
+    ): number[] => {
       const n = x.length;
       const grad: number[] = [];
 
@@ -186,7 +199,9 @@ export const lagrangeAlgorithm: AlgorithmNode = {
         const gMinus = constraintFunc(xMinus);
 
         const gPlusVal = Array.isArray(gPlus) ? gPlus[constraintIdx] : gPlus;
-        const gMinusVal = Array.isArray(gMinus) ? gMinus[constraintIdx] : gMinus;
+        const gMinusVal = Array.isArray(gMinus)
+          ? gMinus[constraintIdx]
+          : gMinus;
 
         grad[i] = (gPlusVal - gMinusVal) / (2 * epsilon);
       }
@@ -196,7 +211,9 @@ export const lagrangeAlgorithm: AlgorithmNode = {
 
     // 确定约束数量
     const testConstraint = constraintFunc(initialPoint);
-    const numConstraints = Array.isArray(testConstraint) ? testConstraint.length : 1;
+    const numConstraints = Array.isArray(testConstraint)
+      ? testConstraint.length
+      : 1;
 
     // 初始化变量
     let x = [...initialPoint]; // 优化变量
@@ -222,7 +239,9 @@ export const lagrangeAlgorithm: AlgorithmNode = {
 
         // 计算约束值
         const constraintResult = constraintFunc(x);
-        const constraintValues = Array.isArray(constraintResult) ? constraintResult : [constraintResult];
+        const constraintValues = Array.isArray(constraintResult)
+          ? constraintResult
+          : [constraintResult];
 
         // 计算目标函数梯度 ∇f(x)
         const gradF = computeGradient(objectiveFunc, x);
@@ -238,7 +257,9 @@ export const lagrangeAlgorithm: AlgorithmNode = {
 
         // 计算梯度范数
         const gradNorm = Math.sqrt(gradL.reduce((sum, g) => sum + g * g, 0));
-        const constraintNorm = Math.sqrt(constraintValues.reduce((sum, c) => sum + c * c, 0));
+        const constraintNorm = Math.sqrt(
+          constraintValues.reduce((sum, c) => sum + c * c, 0),
+        );
 
         // 记录历史
         history.push({
@@ -260,10 +281,15 @@ export const lagrangeAlgorithm: AlgorithmNode = {
 
         // 更新 λ：使用梯度上升来满足约束
         // λ = λ + α * g(x)
-        lambda = lambda.map((lam, i) => lam + learningRate * constraintValues[i]);
+        lambda = lambda.map(
+          (lam, i) => lam + learningRate * constraintValues[i],
+        );
 
         // 检查数值稳定性
-        if (x.some((xi) => !isFinite(xi)) || lambda.some((lam) => !isFinite(lam))) {
+        if (
+          x.some((xi) => !isFinite(xi)) ||
+          lambda.some((lam) => !isFinite(lam))
+        ) {
           throw new Error("优化过程中出现数值不稳定，请尝试减小学习率");
         }
       }
@@ -304,7 +330,9 @@ export const lagrangeAlgorithm: AlgorithmNode = {
         },
       };
     } catch (error) {
-      throw new Error(`Lagrange 乘数法失败: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Lagrange 乘数法失败: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   },
 };

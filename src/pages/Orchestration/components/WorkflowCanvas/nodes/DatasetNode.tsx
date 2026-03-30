@@ -38,7 +38,7 @@ export const DatasetNode = memo(({ id, data, selected }: NodeProps) => {
               };
             }
             return n;
-          })
+          }),
         );
       });
     }
@@ -47,10 +47,12 @@ export const DatasetNode = memo(({ id, data, selected }: NodeProps) => {
   // Handle preset dataset hydration by datasetId
   useEffect(() => {
     if (data?.datasetId && !data?.datasetData) {
-      const preset = presetDatasets.find(p => p.id === data.datasetId);
+      const preset = presetDatasets.find((p) => p.id === data.datasetId);
       if (preset) {
         // Update Redux state
-        dispatch(updateDatasetData({ nodeId: id, datasetData: preset.datasetData }));
+        dispatch(
+          updateDatasetData({ nodeId: id, datasetData: preset.datasetData }),
+        );
         // Update ReactFlow local state
         setNodes((nds) =>
           nds.map((n) => {
@@ -65,7 +67,7 @@ export const DatasetNode = memo(({ id, data, selected }: NodeProps) => {
               };
             }
             return n;
-          })
+          }),
         );
       }
     }

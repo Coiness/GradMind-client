@@ -34,7 +34,11 @@ export const PortsInfo: React.FC<PortsInfoProps> = ({ algorithm }) => {
       <div className={styles.portSection}>
         <Text strong>输入端口：</Text>
         {algorithm.inputs && algorithm.inputs.length > 0 ? (
-          <Space direction="vertical" size="small" style={{ width: "100%", marginTop: 8 }}>
+          <Space
+            direction="vertical"
+            size="small"
+            style={{ width: "100%", marginTop: 8 }}
+          >
             {algorithm.inputs.map((input) => (
               <div key={input.id} className={styles.portItem}>
                 <div className={styles.portLabel}>
@@ -63,7 +67,11 @@ export const PortsInfo: React.FC<PortsInfoProps> = ({ algorithm }) => {
       <div className={styles.portSection} style={{ marginTop: 16 }}>
         <Text strong>输出端口：</Text>
         {algorithm.outputs && algorithm.outputs.length > 0 ? (
-          <Space direction="vertical" size="small" style={{ width: "100%", marginTop: 8 }}>
+          <Space
+            direction="vertical"
+            size="small"
+            style={{ width: "100%", marginTop: 8 }}
+          >
             {algorithm.outputs.map((output) => (
               <div key={output.id} className={styles.portItem}>
                 <div className={styles.portLabel}>

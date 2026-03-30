@@ -21,21 +21,35 @@ function renderChart(result: Record<string, unknown>): React.ReactNode {
 
   if (!viz) {
     return (
-      <pre className={styles.rawResult}>
-        {JSON.stringify(result, null, 2)}
-      </pre>
+      <pre className={styles.rawResult}>{JSON.stringify(result, null, 2)}</pre>
     );
   }
 
   switch (viz.type) {
     case "scatter":
-      return <ScatterChart data={viz.data as Parameters<typeof ScatterChart>[0]["data"]} />;
+      return (
+        <ScatterChart
+          data={viz.data as Parameters<typeof ScatterChart>[0]["data"]}
+        />
+      );
     case "convergence":
-      return <ConvergenceChart data={viz.data as Parameters<typeof ConvergenceChart>[0]["data"]} />;
+      return (
+        <ConvergenceChart
+          data={viz.data as Parameters<typeof ConvergenceChart>[0]["data"]}
+        />
+      );
     case "regression":
-      return <RegressionChart data={viz.data as Parameters<typeof RegressionChart>[0]["data"]} />;
+      return (
+        <RegressionChart
+          data={viz.data as Parameters<typeof RegressionChart>[0]["data"]}
+        />
+      );
     case "matrix":
-      return <MatrixView data={viz.data as Parameters<typeof MatrixView>[0]["data"]} />;
+      return (
+        <MatrixView
+          data={viz.data as Parameters<typeof MatrixView>[0]["data"]}
+        />
+      );
     default:
       return (
         <pre className={styles.rawResult}>
@@ -129,8 +143,8 @@ const ResultPanel: React.FC = () => {
               {executionStatus === "running"
                 ? "正在执行..."
                 : executionStatus === "error"
-                ? "执行出错，请检查节点配置"
-                : "执行工作流后，图表将在此处显示"}
+                  ? "执行出错，请检查节点配置"
+                  : "执行工作流后，图表将在此处显示"}
             </div>
           )}
         </div>

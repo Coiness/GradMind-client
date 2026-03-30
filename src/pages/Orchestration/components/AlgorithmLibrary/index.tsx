@@ -4,7 +4,11 @@ import { SearchOutlined } from "@ant-design/icons";
 import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { loadAlgorithmLibrary } from "@/store/features/orchestrationSlice";
 import { categories } from "@/config/algorithms";
-import { presetDatasets, initImageDataset, imageDatasetData } from "@/config/presetDatasets";
+import {
+  presetDatasets,
+  initImageDataset,
+  imageDatasetData,
+} from "@/config/presetDatasets";
 import type { AlgorithmNode } from "@/types/algorithmNode";
 import { CategorySection } from "./CategorySection";
 import styles from "./index.module.css";
@@ -30,7 +34,7 @@ export const AlgorithmLibrary: React.FC = () => {
   useEffect(() => {
     if (!imageDatasetData) {
       initImageDataset().then(() => {
-        forceRender(prev => prev + 1); // 触发重渲染以使用加载后的图片数据
+        forceRender((prev) => prev + 1); // 触发重渲染以使用加载后的图片数据
       });
     }
   }, []);
@@ -55,15 +59,19 @@ export const AlgorithmLibrary: React.FC = () => {
   };
 
   // 数据集拖拽
-  const handleDatasetDragStart = (e: React.DragEvent, dataset: typeof presetDatasets[0]) => {
+  const handleDatasetDragStart = (
+    e: React.DragEvent,
+    dataset: (typeof presetDatasets)[0],
+  ) => {
     e.dataTransfer.effectAllowed = "copy";
     e.dataTransfer.setData("nodeType", "dataset");
-    
+
     // 如果是图片数据集，使用异步加载完成后的真实数据，否则使用定义的数据
-    const datasetDataToUse = dataset.id === "example-image" && imageDatasetData 
-      ? imageDatasetData 
-      : dataset.datasetData;
-      
+    const datasetDataToUse =
+      dataset.id === "example-image" && imageDatasetData
+        ? imageDatasetData
+        : dataset.datasetData;
+
     e.dataTransfer.setData("datasetData", JSON.stringify(datasetDataToUse));
     e.dataTransfer.setData("label", dataset.name);
   };
@@ -151,7 +159,9 @@ export const AlgorithmLibrary: React.FC = () => {
                       <div className={styles.cardContent}>
                         <div className={styles.cardHeader}>
                           <span className={styles.icon}>{dataset.icon}</span>
-                          <Text strong className={styles.algorithmName}>{dataset.name}</Text>
+                          <Text strong className={styles.algorithmName}>
+                            {dataset.name}
+                          </Text>
                         </div>
                         <Text type="secondary" className={styles.description}>
                           {dataset.description}
@@ -182,7 +192,9 @@ export const AlgorithmLibrary: React.FC = () => {
                 <div className={styles.cardContent}>
                   <div className={styles.cardHeader}>
                     <span className={styles.icon}>📡</span>
-                    <Text strong className={styles.algorithmName}>示波器</Text>
+                    <Text strong className={styles.algorithmName}>
+                      示波器
+                    </Text>
                   </div>
                   <Text type="secondary" className={styles.description}>
                     接收任意数据，自动渲染散点图、折线图等可视化图表
@@ -196,7 +208,6 @@ export const AlgorithmLibrary: React.FC = () => {
               </Card>
             </div>
           )}
-
         </Space>
       </div>
     </div>

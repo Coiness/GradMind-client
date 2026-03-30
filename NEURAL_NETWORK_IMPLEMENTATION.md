@@ -1,6 +1,7 @@
 # Neural Network Implementation Report
 
 ## Overview
+
 Successfully implemented a complete feedforward neural network with backpropagation algorithm in TypeScript using mathjs library.
 
 **File**: `C:\Users\15121\Desktop\code\GradMind-client\src\config\algorithms\numericalOptimization\neuralNetwork.ts`
@@ -10,6 +11,7 @@ Successfully implemented a complete feedforward neural network with backpropagat
 ### 1. Core Components
 
 #### Activation Functions
+
 Implemented three activation functions with their derivatives:
 
 - **Sigmoid**: `σ(x) = 1 / (1 + e^(-x))`
@@ -25,6 +27,7 @@ Implemented three activation functions with their derivatives:
   - Alternative activation function
 
 #### Weight Initialization
+
 - **Xavier Initialization**: `W ~ Uniform(-√(6/(n_in + n_out)), √(6/(n_in + n_out)))`
 - Helps prevent vanishing/exploding gradients
 - Biases initialized to zero
@@ -32,11 +35,13 @@ Implemented three activation functions with their derivatives:
 ### 2. Network Architecture
 
 The implementation supports flexible multi-layer architectures:
+
 - Input layer (size determined by data features)
 - Multiple hidden layers (configurable: 32, 64, [64,32], [128,64,32])
 - Output layer (size determined by labels)
 
 Example: For input features=2, hidden=[64,32], output=1:
+
 ```
 Input(2) → Hidden1(64) → Hidden2(32) → Output(1)
 ```
@@ -44,12 +49,14 @@ Input(2) → Hidden1(64) → Hidden2(32) → Output(1)
 ### 3. Forward Propagation
 
 For each layer l:
+
 ```
 z^[l] = W^[l] * a^[l-1] + b^[l]
 a^[l] = activation(z^[l])
 ```
 
 Where:
+
 - `z^[l]`: Pre-activation values
 - `a^[l]`: Activated values
 - `W^[l]`: Weight matrix
@@ -58,6 +65,7 @@ Where:
 ### 4. Loss Function
 
 **Mean Squared Error (MSE)**:
+
 ```
 L = (1/n) * Σ(y - ŷ)²
 ```
@@ -67,11 +75,13 @@ Used for both regression and classification tasks.
 ### 5. Backpropagation
 
 #### Output Layer Error
+
 ```
 δ^[L] = (a^[L] - y) ⊙ σ'(z^[L])
 ```
 
 #### Hidden Layer Error
+
 ```
 δ^[l] = (W^[l+1])^T * δ^[l+1] ⊙ activation'(z^[l])
 ```
@@ -81,18 +91,21 @@ Where `⊙` denotes element-wise multiplication (Hadamard product).
 ### 6. Parameter Updates
 
 #### Weight Update
+
 ```
 ∇W^[l] = (1/m) * δ^[l]^T * a^[l-1]
 W^[l] = W^[l] - α * ∇W^[l]
 ```
 
 #### Bias Update
+
 ```
 ∇b^[l] = (1/m) * Σ δ^[l]
 b^[l] = b^[l] - α * ∇b^[l]
 ```
 
 Where:
+
 - `α`: Learning rate
 - `m`: Batch size
 
@@ -109,6 +122,7 @@ Where:
 ### 8. Matrix Operations
 
 Implemented custom matrix operations:
+
 - `matrixMultiply`: Matrix multiplication using mathjs
 - `transpose`: Matrix transposition
 - `matrixSubtract`: Element-wise subtraction
@@ -123,21 +137,23 @@ Implemented custom matrix operations:
 
 ## Configuration Parameters
 
-| Parameter | Type | Default | Range | Description |
-|-----------|------|---------|-------|-------------|
-| hiddenLayers | select | "64,32" | 32, 64, 64,32, 128,64,32 | Hidden layer sizes |
-| activation | select | "relu" | relu, sigmoid, tanh | Activation function |
-| learningRate | number | 0.001 | 0.0001 - 0.1 | Learning rate (α) |
-| epochs | slider | 100 | 10 - 500 | Training iterations |
-| batchSize | slider | 32 | 1 - 256 | Mini-batch size |
+| Parameter    | Type   | Default | Range                    | Description         |
+| ------------ | ------ | ------- | ------------------------ | ------------------- |
+| hiddenLayers | select | "64,32" | 32, 64, 64,32, 128,64,32 | Hidden layer sizes  |
+| activation   | select | "relu"  | relu, sigmoid, tanh      | Activation function |
+| learningRate | number | 0.001   | 0.0001 - 0.1             | Learning rate (α)   |
+| epochs       | slider | 100     | 10 - 500                 | Training iterations |
+| batchSize    | slider | 32      | 1 - 256                  | Mini-batch size     |
 
 ## Input/Output Specification
 
 ### Inputs
+
 1. **trainData** (dataset, required): Training features matrix [n_samples × n_features]
 2. **trainLabels** (vector, required): Training labels [n_samples × n_outputs]
 
 ### Outputs
+
 1. **model** (model): Complete trained model with weights and biases
 2. **weights** (matrix): First layer weights (for visualization)
 3. **trainingLoss** (vector): Loss history across epochs
@@ -180,6 +196,7 @@ Implemented custom matrix operations:
 ## Features
 
 ### Supported
+
 - ✅ Multi-layer feedforward architecture
 - ✅ Multiple activation functions (ReLU, Sigmoid, Tanh)
 - ✅ Xavier weight initialization
@@ -192,6 +209,7 @@ Implemented custom matrix operations:
 - ✅ Flexible network architecture
 
 ### Not Implemented (Future Enhancements)
+
 - ❌ Dropout regularization
 - ❌ Batch normalization
 - ❌ L1/L2 regularization
@@ -204,20 +222,16 @@ Implemented custom matrix operations:
 ## Example Usage
 
 ### XOR Problem (Classification)
+
 ```typescript
 const inputs = {
   trainData: [
     [0, 0],
     [0, 1],
     [1, 0],
-    [1, 1]
+    [1, 1],
   ],
-  trainLabels: [
-    [0],
-    [1],
-    [1],
-    [0]
-  ]
+  trainLabels: [[0], [1], [1], [0]],
 };
 
 const params = {
@@ -225,7 +239,7 @@ const params = {
   activation: "relu",
   learningRate: 0.1,
   epochs: 100,
-  batchSize: 4
+  batchSize: 4,
 };
 
 const result = await neuralNetworkAlgorithm.compute(inputs, params);
@@ -233,10 +247,11 @@ const result = await neuralNetworkAlgorithm.compute(inputs, params);
 ```
 
 ### Regression Problem
+
 ```typescript
 const inputs = {
   trainData: [[1], [2], [3], [4], [5]],
-  trainLabels: [[2], [4], [6], [8], [10]]  // y = 2x
+  trainLabels: [[2], [4], [6], [8], [10]], // y = 2x
 };
 
 const params = {
@@ -244,7 +259,7 @@ const params = {
   activation: "relu",
   learningRate: 0.01,
   epochs: 200,
-  batchSize: 5
+  batchSize: 5,
 };
 
 const result = await neuralNetworkAlgorithm.compute(inputs, params);
@@ -254,11 +269,13 @@ const result = await neuralNetworkAlgorithm.compute(inputs, params);
 ## Testing Status
 
 ### TypeScript Compilation
+
 - ✅ No TypeScript errors in neural network file
 - ✅ Successfully integrates with project build system
 - ✅ Proper type annotations throughout
 
 ### Code Quality
+
 - ✅ Comprehensive error handling
 - ✅ Input validation
 - ✅ Clear variable naming
@@ -296,6 +313,7 @@ The implementation follows standard neural network theory:
 ## Integration with GradMind
 
 The algorithm integrates seamlessly with the GradMind workflow system:
+
 - Compatible with dataset nodes
 - Outputs can connect to visualization nodes
 - Parameters configurable through UI
@@ -305,6 +323,7 @@ The algorithm integrates seamlessly with the GradMind workflow system:
 ## Conclusion
 
 This is a **production-ready implementation** of a neural network algorithm that:
+
 - Implements all core neural network concepts correctly
 - Handles various data formats and edge cases
 - Provides comprehensive training information
@@ -312,6 +331,7 @@ This is a **production-ready implementation** of a neural network algorithm that
 - Is well-documented and maintainable
 
 The implementation is the most complex algorithm in the GradMind system, featuring:
+
 - Complete forward and backward propagation
 - Multiple activation functions
 - Mini-batch training

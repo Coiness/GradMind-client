@@ -18,17 +18,20 @@ interface ScatterChartProps {
 const ScatterChart: React.FC<ScatterChartProps> = ({ data }) => {
   const { points = [], explainedVariance = [], cumulativeVariance = [] } = data;
 
-  const pc1Pct = explainedVariance[0] != null
-    ? (explainedVariance[0] * 100).toFixed(1)
-    : "—";
-  const pc2Pct = explainedVariance[1] != null
-    ? (explainedVariance[1] * 100).toFixed(1)
-    : "—";
-  const cumPct = cumulativeVariance[1] != null
-    ? (cumulativeVariance[1] * 100).toFixed(1)
-    : cumulativeVariance[0] != null
-    ? (cumulativeVariance[0] * 100).toFixed(1)
-    : "—";
+  const pc1Pct =
+    explainedVariance[0] != null
+      ? (explainedVariance[0] * 100).toFixed(1)
+      : "—";
+  const pc2Pct =
+    explainedVariance[1] != null
+      ? (explainedVariance[1] * 100).toFixed(1)
+      : "—";
+  const cumPct =
+    cumulativeVariance[1] != null
+      ? (cumulativeVariance[1] * 100).toFixed(1)
+      : cumulativeVariance[0] != null
+        ? (cumulativeVariance[0] * 100).toFixed(1)
+        : "—";
 
   const option = {
     title: {
@@ -72,11 +75,35 @@ const ScatterChart: React.FC<ScatterChartProps> = ({ data }) => {
       <div style={{ flex: 1, minWidth: 0 }}>
         <ReactECharts option={option} style={{ height: "100%" }} />
       </div>
-      <div style={{ width: 140, display: "flex", flexDirection: "column", justifyContent: "center", gap: 12 }}>
-        <Statistic title="PC1 解释方差" value={`${pc1Pct}%`} valueStyle={{ fontSize: 16 }} />
-        <Statistic title="PC2 解释方差" value={`${pc2Pct}%`} valueStyle={{ fontSize: 16 }} />
-        <Statistic title="累积方差" value={`${cumPct}%`} valueStyle={{ fontSize: 16, color: "#52c41a" }} />
-        <Statistic title="样本数" value={points.length} valueStyle={{ fontSize: 16 }} />
+      <div
+        style={{
+          width: 140,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          gap: 12,
+        }}
+      >
+        <Statistic
+          title="PC1 解释方差"
+          value={`${pc1Pct}%`}
+          valueStyle={{ fontSize: 16 }}
+        />
+        <Statistic
+          title="PC2 解释方差"
+          value={`${pc2Pct}%`}
+          valueStyle={{ fontSize: 16 }}
+        />
+        <Statistic
+          title="累积方差"
+          value={`${cumPct}%`}
+          valueStyle={{ fontSize: 16, color: "#52c41a" }}
+        />
+        <Statistic
+          title="样本数"
+          value={points.length}
+          valueStyle={{ fontSize: 16 }}
+        />
       </div>
     </div>
   );

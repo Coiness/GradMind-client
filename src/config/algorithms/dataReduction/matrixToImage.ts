@@ -9,9 +9,7 @@ export const matrixToImageAlgorithm: AlgorithmNode = {
   inputs: [
     { id: "matrix", label: "输入矩阵", dataType: "matrix", required: true },
   ],
-  outputs: [
-    { id: "image", label: "图像数据", dataType: "matrix" },
-  ],
+  outputs: [{ id: "image", label: "图像数据", dataType: "matrix" }],
   parameters: [
     {
       key: "normalize",
@@ -21,14 +19,20 @@ export const matrixToImageAlgorithm: AlgorithmNode = {
       options: {
         items: [
           { label: "是", value: "true" },
-          { label: "否 (裁剪到0-255)", value: "false" }
-        ]
-      }
-    }
+          { label: "否 (裁剪到0-255)", value: "false" },
+        ],
+      },
+    },
   ],
   compute: async (inputs, params) => {
     const matrix = inputs.matrix as number[][];
-    if (!matrix || !Array.isArray(matrix) || matrix.length === 0 || !Array.isArray(matrix[0]) || !matrix[0].length) {
+    if (
+      !matrix ||
+      !Array.isArray(matrix) ||
+      matrix.length === 0 ||
+      !Array.isArray(matrix[0]) ||
+      !matrix[0].length
+    ) {
       throw new Error("无效的输入矩阵");
     }
 
@@ -48,13 +52,13 @@ export const matrixToImageAlgorithm: AlgorithmNode = {
         }
       }
       const range = max - min === 0 ? 1 : max - min;
-      
-      processedMatrix = matrix.map(row => 
-        row.map(val => Math.round(((val - min) / range) * 255))
+
+      processedMatrix = matrix.map((row) =>
+        row.map((val) => Math.round(((val - min) / range) * 255)),
       );
     } else {
-      processedMatrix = matrix.map(row => 
-        row.map(val => Math.max(0, Math.min(255, Math.round(val))))
+      processedMatrix = matrix.map((row) =>
+        row.map((val) => Math.max(0, Math.min(255, Math.round(val)))),
       );
     }
 

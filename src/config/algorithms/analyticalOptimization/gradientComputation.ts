@@ -8,8 +8,7 @@ export const gradientAlgorithm: AlgorithmNode = {
   key: "gradient",
   name: "梯度计算",
   category: "analytical-optimization",
-  description:
-    "计算标量函数相对于其输入变量的梯度（偏导数向量）。",
+  description: "计算标量函数相对于其输入变量的梯度（偏导数向量）。",
   icon: "∇",
 
   inputs: [
@@ -87,7 +86,9 @@ export const gradientAlgorithm: AlgorithmNode = {
     if (Array.isArray(pointInput)) {
       point = pointInput;
     } else if (pointInput.data) {
-      point = Array.isArray(pointInput.data[0]) ? pointInput.data[0] : pointInput.data;
+      point = Array.isArray(pointInput.data[0])
+        ? pointInput.data[0]
+        : pointInput.data;
     } else {
       throw new Error("无效的点数据格式");
     }
@@ -100,9 +101,13 @@ export const gradientAlgorithm: AlgorithmNode = {
       // 如果是字符串，尝试解析为函数
       try {
         // 简单的函数解析：支持 x[0], x[1] 等形式
-        func = new Function("x", `return ${functionInput}`) as (x: number[]) => number;
+        func = new Function("x", `return ${functionInput}`) as (
+          x: number[],
+        ) => number;
       } catch (error) {
-        throw new Error(`无法解析函数字符串: ${error instanceof Error ? error.message : String(error)}`);
+        throw new Error(
+          `无法解析函数字符串: ${error instanceof Error ? error.message : String(error)}`,
+        );
       }
     } else if (functionInput.func) {
       func = functionInput.func;
@@ -127,14 +132,14 @@ export const gradientAlgorithm: AlgorithmNode = {
         const fMinus = func(pointMinus);
         gradient[i] = (fPlus - fMinus) / (2 * epsilon);
       } catch (error) {
-        throw new Error(`计算梯度时出错（维度 ${i}）: ${error instanceof Error ? error.message : String(error)}`);
+        throw new Error(
+          `计算梯度时出错（维度 ${i}）: ${error instanceof Error ? error.message : String(error)}`,
+        );
       }
     }
 
     // 计算梯度范数
-    const magnitude = Math.sqrt(
-      gradient.reduce((sum, g) => sum + g * g, 0)
-    );
+    const magnitude = Math.sqrt(gradient.reduce((sum, g) => sum + g * g, 0));
 
     return {
       gradient,

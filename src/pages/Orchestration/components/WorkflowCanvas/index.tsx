@@ -155,11 +155,13 @@ export const WorkflowCanvas: React.FC = () => {
         if (datasetDataStr) {
           try {
             const datasetData = JSON.parse(datasetDataStr);
-            dispatch(addDatasetNode({
-              position,
-              label,
-              datasetData,
-            }));
+            dispatch(
+              addDatasetNode({
+                position,
+                label,
+                datasetData,
+              }),
+            );
           } catch (e) {
             console.error("无法解析数据集数据:", e);
           }

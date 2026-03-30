@@ -46,8 +46,7 @@ export const AlgorithmCard: React.FC<AlgorithmCardProps> = ({
         </Text>
         <div className={styles.cardFooter}>
           <Text type="secondary" className={styles.ioInfo}>
-            {algorithm.inputs.length} 个输入 • {algorithm.outputs.length}{" "}
-            个输出
+            {algorithm.inputs.length} 个输入 • {algorithm.outputs.length} 个输出
           </Text>
         </div>
       </div>

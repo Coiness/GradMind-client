@@ -103,10 +103,7 @@ export const ManualDataEntry: React.FC<ManualDataEntryProps> = ({
           </Form.Item>
         </Space>
 
-        <Form.Item
-          label="数据（逗号分隔的值，每行一个）"
-          help="示例：1, 2, 3"
-        >
+        <Form.Item label="数据（逗号分隔的值，每行一个）" help="示例：1, 2, 3">
           <TextArea
             rows={8}
             value={dataText}

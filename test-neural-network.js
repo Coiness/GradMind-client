@@ -12,12 +12,7 @@ const testNeuralNetwork = async () => {
     [1, 1],
   ];
 
-  const trainLabels = [
-    [0],
-    [1],
-    [1],
-    [0],
-  ];
+  const trainLabels = [[0], [1], [1], [0]];
 
   console.log("Training Data:");
   console.log(trainData);
@@ -44,9 +39,8 @@ const testNeuralNetwork = async () => {
 
   try {
     // Import the algorithm
-    const { neuralNetworkAlgorithm } = await import(
-      "./src/config/algorithms/numericalOptimization/neuralNetwork.ts"
-    );
+    const { neuralNetworkAlgorithm } =
+      await import("./src/config/algorithms/numericalOptimization/neuralNetwork.ts");
 
     // Run the computation
     const result = await neuralNetworkAlgorithm.compute(inputs, params);
@@ -58,18 +52,19 @@ const testNeuralNetwork = async () => {
     console.log("- Epochs Trained:", result.epochs);
     console.log("- Network Architecture:", result.model.architecture);
     console.log("\nLoss History (first 10 epochs):");
-    console.log(result.lossHistory.slice(0, 10).map(l => l.toFixed(6)));
+    console.log(result.lossHistory.slice(0, 10).map((l) => l.toFixed(6)));
     console.log("\nLoss History (last 10 epochs):");
-    console.log(result.lossHistory.slice(-10).map(l => l.toFixed(6)));
+    console.log(result.lossHistory.slice(-10).map((l) => l.toFixed(6)));
 
     console.log("\nPredictions:");
     result.predictions.forEach((pred, i) => {
-      console.log(`Input: [${trainData[i]}] -> Predicted: ${pred[0].toFixed(4)}, Actual: ${trainLabels[i][0]}`);
+      console.log(
+        `Input: [${trainData[i]}] -> Predicted: ${pred[0].toFixed(4)}, Actual: ${trainLabels[i][0]}`,
+      );
     });
 
     console.log("\n" + "=".repeat(50));
     console.log("Test PASSED!");
-
   } catch (error) {
     console.error("\nTest FAILED!");
     console.error("Error:", error.message);

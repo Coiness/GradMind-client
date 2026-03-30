@@ -69,7 +69,9 @@ describe("场景3：SVD 图像压缩", () => {
 
   it("应该包含 SVD 和图像重建算子", () => {
     const svdNode = tpl.nodes.find((n) => n.data.algorithmKey === "svd");
-    const reconNode = tpl.nodes.find((n) => n.data.algorithmKey === "image-reconstruction");
+    const reconNode = tpl.nodes.find(
+      (n) => n.data.algorithmKey === "image-reconstruction",
+    );
     expect(svdNode).toBeDefined();
     expect(reconNode).toBeDefined();
   });
@@ -83,7 +85,9 @@ describe("场景4：梯度下降寻找谷底", () => {
   });
 
   it("应该配置了 objectiveFunction 为 bowl", () => {
-    const gdNode = tpl.nodes.find((n) => n.data.algorithmKey === "gradient-descent");
+    const gdNode = tpl.nodes.find(
+      (n) => n.data.algorithmKey === "gradient-descent",
+    );
     expect(gdNode).toBeDefined();
     expect(gdNode!.data.parameters?.objectiveFunction).toBe("bowl");
   });

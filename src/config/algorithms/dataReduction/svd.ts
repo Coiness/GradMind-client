@@ -240,8 +240,12 @@ export const svdAlgorithm: AlgorithmNode = {
       }
 
       const vt = transposeMatrix(v);
-      const rank = truncatedSigma.filter((value) => Math.abs(value) > tolerance).length;
-      const nonZeroSigma = truncatedSigma.filter((value) => Math.abs(value) > tolerance);
+      const rank = truncatedSigma.filter(
+        (value) => Math.abs(value) > tolerance,
+      ).length;
+      const nonZeroSigma = truncatedSigma.filter(
+        (value) => Math.abs(value) > tolerance,
+      );
       const conditionNumber =
         nonZeroSigma.length > 0
           ? Math.max(...nonZeroSigma) / Math.min(...nonZeroSigma)

@@ -9,8 +9,7 @@ export const hessianAlgorithm: AlgorithmNode = {
   key: "hessian",
   name: "Hessian 矩阵",
   category: "analytical-optimization",
-  description:
-    "计算 Hessian 矩阵（二阶偏导数矩阵）以分析函数的曲率。",
+  description: "计算 Hessian 矩阵（二阶偏导数矩阵）以分析函数的曲率。",
   icon: "∇²",
 
   inputs: [
@@ -91,7 +90,9 @@ export const hessianAlgorithm: AlgorithmNode = {
     if (Array.isArray(pointInput)) {
       point = pointInput;
     } else if (pointInput.data) {
-      point = Array.isArray(pointInput.data[0]) ? pointInput.data[0] : pointInput.data;
+      point = Array.isArray(pointInput.data[0])
+        ? pointInput.data[0]
+        : pointInput.data;
     } else {
       throw new Error("无效的点数据格式");
     }
@@ -102,9 +103,13 @@ export const hessianAlgorithm: AlgorithmNode = {
       func = functionInput;
     } else if (typeof functionInput === "string") {
       try {
-        func = new Function("x", `return ${functionInput}`) as (x: number[]) => number;
+        func = new Function("x", `return ${functionInput}`) as (
+          x: number[],
+        ) => number;
       } catch (error) {
-        throw new Error(`无法解析函数字符串: ${error instanceof Error ? error.message : String(error)}`);
+        throw new Error(
+          `无法解析函数字符串: ${error instanceof Error ? error.message : String(error)}`,
+        );
       }
     } else if (functionInput.func) {
       func = functionInput.func;
@@ -113,7 +118,9 @@ export const hessianAlgorithm: AlgorithmNode = {
     }
 
     const n = point.length;
-    const hessian: number[][] = Array(n).fill(0).map(() => Array(n).fill(0));
+    const hessian: number[][] = Array(n)
+      .fill(0)
+      .map(() => Array(n).fill(0));
 
     try {
       // 计算 Hessian 矩阵的每个元素
@@ -132,7 +139,8 @@ export const hessianAlgorithm: AlgorithmNode = {
             const fCenter = func(point);
             const fMinus = func(pointMinus);
 
-            hessian[i][j] = (fPlus - 2 * fCenter + fMinus) / (epsilon * epsilon);
+            hessian[i][j] =
+              (fPlus - 2 * fCenter + fMinus) / (epsilon * epsilon);
           } else {
             // 非对角元素：∂²f/∂x_i∂x_j
             // 使用混合偏导数公式
@@ -169,13 +177,18 @@ export const hessianAlgorithm: AlgorithmNode = {
 
       // 处理特征值：可能是 Matrix 对象或数组
       let eigenvalues = eigenResult.values;
-      if (eigenvalues instanceof math.Matrix || (eigenvalues as any).type === 'Matrix') {
+      if (
+        eigenvalues instanceof math.Matrix ||
+        (eigenvalues as any).type === "Matrix"
+      ) {
         eigenvalues = (eigenvalues as math.Matrix).toArray() as number[];
       } else if (!Array.isArray(eigenvalues)) {
         eigenvalues = [eigenvalues] as number[];
       }
 
-      const processedEigenvalues = (eigenvalues as number[]).map((v) => (typeof v === "number" ? v : Math.abs(v)));
+      const processedEigenvalues = (eigenvalues as number[]).map((v) =>
+        typeof v === "number" ? v : Math.abs(v),
+      );
 
       // 判断凸性
       // 正定 (所有特征值 > 0) => 严格凸
@@ -232,7 +245,9 @@ export const hessianAlgorithm: AlgorithmNode = {
         },
       };
     } catch (error) {
-      throw new Error(`Hessian 矩阵计算失败: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Hessian 矩阵计算失败: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   },
 };

@@ -34,7 +34,7 @@ export const DatasetManager: React.FC<DatasetManagerProps> = ({
         position: { x: 100, y: 100 },
         datasetData,
         label: datasetData.metadata?.fileName || "数据集",
-      })
+      }),
     );
 
     message.success("数据集已添加到画布！");

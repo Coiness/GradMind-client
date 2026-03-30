@@ -15,7 +15,7 @@ const generateFruitPropertiesData = (): number[][] => {
   const data: number[][] = [];
   // 模拟500个水果的10个特征：重量, 体积, 甜度, 酸度, 硬度, 红色度, 绿色度, 黄色度, 水分, 价格
   // 故意分成3个明显的簇（苹果、香蕉、葡萄）以保证降维后可视化效果好
-  
+
   // 簇1：苹果 (大, 甜, 红, 硬)
   for (let i = 0; i < 170; i++) {
     const size = 6 + Math.random() * 2;
@@ -32,7 +32,7 @@ const generateFruitPropertiesData = (): number[][] => {
       Math.round((10 + Math.random() * 5) * 10) / 10, // 价格
     ]);
   }
-  
+
   // 簇2：香蕉 (中等, 甜, 黄, 软)
   for (let i = 0; i < 170; i++) {
     const size = 4 + Math.random() * 2;
@@ -49,7 +49,7 @@ const generateFruitPropertiesData = (): number[][] => {
       Math.round((5 + Math.random() * 3) * 10) / 10, // 价格
     ]);
   }
-  
+
   // 簇3：葡萄 (小, 酸甜, 绿/紫, 中硬, 高水分)
   for (let i = 0; i < 160; i++) {
     const size = 1 + Math.random() * 1;
@@ -66,13 +66,13 @@ const generateFruitPropertiesData = (): number[][] => {
       Math.round((15 + Math.random() * 8) * 10) / 10, // 价格
     ]);
   }
-  
+
   // 打乱数组顺序
   for (let i = data.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [data[i], data[j]] = [data[j], data[i]];
   }
-  
+
   return data;
 };
 
@@ -83,31 +83,43 @@ const generateMixedClusterData = (): number[][] => {
   // 簇1中心 (40, 40)
   for (let i = 0; i < 150; i++) {
     data.push([
-      Math.round((40 + (Math.random() + Math.random() + Math.random() - 1.5) * 20) * 10) / 10,
-      Math.round((40 + (Math.random() + Math.random() + Math.random() - 1.5) * 20) * 10) / 10
+      Math.round(
+        (40 + (Math.random() + Math.random() + Math.random() - 1.5) * 20) * 10,
+      ) / 10,
+      Math.round(
+        (40 + (Math.random() + Math.random() + Math.random() - 1.5) * 20) * 10,
+      ) / 10,
     ]);
   }
   // 簇2中心 (60, 60)
   for (let i = 0; i < 150; i++) {
     data.push([
-      Math.round((60 + (Math.random() + Math.random() + Math.random() - 1.5) * 20) * 10) / 10,
-      Math.round((60 + (Math.random() + Math.random() + Math.random() - 1.5) * 20) * 10) / 10
+      Math.round(
+        (60 + (Math.random() + Math.random() + Math.random() - 1.5) * 20) * 10,
+      ) / 10,
+      Math.round(
+        (60 + (Math.random() + Math.random() + Math.random() - 1.5) * 20) * 10,
+      ) / 10,
     ]);
   }
   // 簇3中心 (40, 70)
   for (let i = 0; i < 150; i++) {
     data.push([
-      Math.round((40 + (Math.random() + Math.random() + Math.random() - 1.5) * 20) * 10) / 10,
-      Math.round((70 + (Math.random() + Math.random() + Math.random() - 1.5) * 20) * 10) / 10
+      Math.round(
+        (40 + (Math.random() + Math.random() + Math.random() - 1.5) * 20) * 10,
+      ) / 10,
+      Math.round(
+        (70 + (Math.random() + Math.random() + Math.random() - 1.5) * 20) * 10,
+      ) / 10,
     ]);
   }
-  
+
   // 彻底打乱数组顺序，让画图时颜色混杂
   for (let i = data.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [data[i], data[j]] = [data[j], data[i]];
   }
-  
+
   return data;
 };
 
@@ -118,7 +130,11 @@ const generateTemperatureData = (): number[][] => {
   for (let i = 0; i < 500; i++) {
     const hour = i;
     // 基础温度15度，日振幅8度，周期24小时，加上长周期的天气变化
-    const temp = 15 + 8 * Math.sin((hour - 8) * Math.PI / 12) + 5 * Math.sin(hour * Math.PI / 240) + (Math.random() - 0.5) * 2;
+    const temp =
+      15 +
+      8 * Math.sin(((hour - 8) * Math.PI) / 12) +
+      5 * Math.sin((hour * Math.PI) / 240) +
+      (Math.random() - 0.5) * 2;
     data.push([hour, Math.round(temp * 10) / 10]);
   }
   return data;
@@ -132,10 +148,11 @@ export const initImageDataset = async (): Promise<DatasetData> => {
   return new Promise((resolve) => {
     const img = new Image();
     img.onload = () => {
-      const canvas = document.createElement('canvas');
+      const canvas = document.createElement("canvas");
       // 为防止预设图片过大，限制最大尺寸
-      const maxSize = 256; 
-      let width = img.width, height = img.height;
+      const maxSize = 256;
+      let width = img.width,
+        height = img.height;
       if (width > maxSize || height > maxSize) {
         if (width > height) {
           height = Math.round((height / width) * maxSize);
@@ -147,7 +164,7 @@ export const initImageDataset = async (): Promise<DatasetData> => {
       }
       canvas.width = width;
       canvas.height = height;
-      const ctx = canvas.getContext('2d')!;
+      const ctx = canvas.getContext("2d")!;
       ctx.drawImage(img, 0, 0, width, height);
 
       const imageData = ctx.getImageData(0, 0, width, height);
@@ -156,26 +173,29 @@ export const initImageDataset = async (): Promise<DatasetData> => {
         const row: number[] = [];
         for (let x = 0; x < width; x++) {
           const i = (y * width + x) * 4;
-          const gray = 0.299 * imageData.data[i] + 0.587 * imageData.data[i+1] + 0.114 * imageData.data[i+2];
+          const gray =
+            0.299 * imageData.data[i] +
+            0.587 * imageData.data[i + 1] +
+            0.114 * imageData.data[i + 2];
           row.push(Math.round(gray));
         }
         grayMatrix.push(row);
       }
 
       const dataset: DatasetData = {
-        type: 'image',
+        type: "image",
         data: grayMatrix,
-        headers: ['pixel'],
+        headers: ["pixel"],
         metadata: {
           rows: height,
           columns: width,
-          fileName: 'example_image.png',
+          fileName: "example_image.png",
           imageWidth: width,
           imageHeight: height,
-          imageFormat: 'image/png'
-        }
+          imageFormat: "image/png",
+        },
       };
-      
+
       imageDatasetData = dataset;
       resolve(dataset);
     };
@@ -187,20 +207,33 @@ export const presetDatasets: PresetDataset[] = [
   {
     id: "fruit-properties-data",
     name: "水果多维特征数据",
-    description: "包含500个水果样本的10个维度特征（重量、甜度、颜色等），适合用于演示PCA主成分分析等高维降维算法。",
+    description:
+      "包含500个水果样本的10个维度特征（重量、甜度、颜色等），适合用于演示PCA主成分分析等高维降维算法。",
     icon: "🍎",
     dimensions: "500×10",
     datasetData: {
       type: "manual",
       data: generateFruitPropertiesData(),
-      headers: ["重量(g)", "体积(cm³)", "甜度", "酸度", "硬度", "红色度", "绿色度", "黄色度", "水分(%)", "价格(元)"],
+      headers: [
+        "重量(g)",
+        "体积(cm³)",
+        "甜度",
+        "酸度",
+        "硬度",
+        "红色度",
+        "绿色度",
+        "黄色度",
+        "水分(%)",
+        "价格(元)",
+      ],
       metadata: { rows: 500, columns: 10 },
     },
   },
   {
     id: "mixed-cluster-data",
     name: "混合二维散点数据",
-    description: "450个在二维平面上相互交叠的坐标点，肉眼难以区分边界，是演示K-Means等聚类算法如何寻找潜在规律的绝佳素材。",
+    description:
+      "450个在二维平面上相互交叠的坐标点，肉眼难以区分边界，是演示K-Means等聚类算法如何寻找潜在规律的绝佳素材。",
     icon: "🎯",
     dimensions: "450×2",
     datasetData: {
@@ -213,7 +246,8 @@ export const presetDatasets: PresetDataset[] = [
   {
     id: "temperature-fluctuation-data",
     name: "连续气温波动记录",
-    description: "连续500小时的气温变化记录，呈现出明显的日夜周期性波动规律，适合时间序列分析。",
+    description:
+      "连续500小时的气温变化记录，呈现出明显的日夜周期性波动规律，适合时间序列分析。",
     icon: "🌡️",
     dimensions: "500×2",
     datasetData: {

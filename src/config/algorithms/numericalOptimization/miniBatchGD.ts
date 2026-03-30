@@ -152,10 +152,12 @@ export const miniBatchGDAlgorithm: AlgorithmNode = {
         lossFunc = new Function("params", "X", "y", `return ${modelInput}`) as (
           params: number[],
           X: number[][],
-          y: number[]
+          y: number[],
         ) => number;
       } catch (error) {
-        throw new Error(`无法解析损失函数字符串: ${error instanceof Error ? error.message : String(error)}`);
+        throw new Error(
+          `无法解析损失函数字符串: ${error instanceof Error ? error.message : String(error)}`,
+        );
       }
     } else if (modelInput.func) {
       lossFunc = modelInput.func;
@@ -164,7 +166,11 @@ export const miniBatchGDAlgorithm: AlgorithmNode = {
     }
 
     // 数值梯度计算函数（针对批量数据）
-    const computeGradient = (params: number[], batchX: number[][], batchY: number[]): number[] => {
+    const computeGradient = (
+      params: number[],
+      batchX: number[][],
+      batchY: number[],
+    ): number[] => {
       const n = params.length;
       const grad: number[] = [];
 
@@ -183,7 +189,10 @@ export const miniBatchGDAlgorithm: AlgorithmNode = {
     };
 
     // Fisher-Yates 洗牌算法
-    const shuffleData = (X: number[][], y: number[]): { X: number[][]; y: number[] } => {
+    const shuffleData = (
+      X: number[][],
+      y: number[],
+    ): { X: number[][]; y: number[] } => {
       const indices = Array.from({ length: X.length }, (_, i) => i);
       for (let i = indices.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -267,7 +276,9 @@ export const miniBatchGDAlgorithm: AlgorithmNode = {
         },
       };
     } catch (error) {
-      throw new Error(`小批量梯度下降失败: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `小批量梯度下降失败: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   },
 };

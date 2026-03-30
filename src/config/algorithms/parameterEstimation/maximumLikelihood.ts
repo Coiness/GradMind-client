@@ -17,8 +17,7 @@ export const mleAlgorithm: AlgorithmNode = {
   key: "mle",
   name: "最大似然估计（MLE）",
   category: "parameter-estimation",
-  description:
-    "通过找到使观测数据的似然最大化的值来估计模型参数。",
+  description: "通过找到使观测数据的似然最大化的值来估计模型参数。",
   icon: "📈",
 
   inputs: [
@@ -121,8 +120,8 @@ export const mleAlgorithm: AlgorithmNode = {
       k = 2;
 
       // Calculate log-likelihood: log(L) = -n/2 * log(2π) - n/2 * log(σ²) - 1/(2σ²) * Σ(x_i - μ)²
-      logLikelihood = -n / 2 * Math.log(2 * Math.PI) - n / 2 * Math.log(variance) - n / 2;
-
+      logLikelihood =
+        (-n / 2) * Math.log(2 * Math.PI) - (n / 2) * Math.log(variance) - n / 2;
     } else if (distribution === "poisson") {
       // Poisson distribution: λ̂ = mean(data)
       const lambda = Number(math.mean(data));
@@ -134,7 +133,6 @@ export const mleAlgorithm: AlgorithmNode = {
       logLikelihood = data.reduce((sum: number, x: number) => {
         return sum + x * Math.log(lambda) - lambda - Number(math.lgamma(x + 1));
       }, 0);
-
     } else if (distribution === "exponential") {
       // Exponential distribution: λ̂ = 1/mean(data)
       const mean = Number(math.mean(data));
@@ -146,7 +144,6 @@ export const mleAlgorithm: AlgorithmNode = {
       // Calculate log-likelihood: log(L) = n * log(λ) - λ * Σx_i
       const sumData = data.reduce((sum: number, x: number) => sum + x, 0);
       logLikelihood = n * Math.log(lambda) - lambda * sumData;
-
     } else {
       throw new Error(`不支持的分布类型: ${distribution}`);
     }
@@ -169,7 +166,10 @@ export const mleAlgorithm: AlgorithmNode = {
       const std = Math.sqrt(variance);
 
       // Confidence interval for mean: μ ± z * σ/√n
-      const meanCI = [mean - zScore * std / Math.sqrt(n), mean + zScore * std / Math.sqrt(n)];
+      const meanCI = [
+        mean - (zScore * std) / Math.sqrt(n),
+        mean + (zScore * std) / Math.sqrt(n),
+      ];
 
       // Confidence interval for variance (using chi-square distribution approximation)
       const varCI = [variance * 0.7, variance * 1.3]; // Simplified approximation

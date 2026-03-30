@@ -18,17 +18,22 @@ export const DatasetPreview: React.FC<DatasetPreviewProps> = ({ data }) => {
 
   // Render image to canvas if it's an image dataset
   useEffect(() => {
-    if (data.type === "image" && canvasRef.current && data.data && data.data.length > 0) {
+    if (
+      data.type === "image" &&
+      canvasRef.current &&
+      data.data &&
+      data.data.length > 0
+    ) {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
 
       const height = data.data.length;
       const width = data.data[0].length;
-      
+
       canvas.width = width;
       canvas.height = height;
-      
+
       const imageData = ctx.createImageData(width, height);
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
@@ -76,17 +81,32 @@ export const DatasetPreview: React.FC<DatasetPreviewProps> = ({ data }) => {
       {/* Metadata */}
       <div className={styles.metadata}>
         <Text type="secondary">
-          {data.metadata?.rows || data.data.length} 行 × {data.metadata?.columns || data.data[0]?.length || 0} 列
+          {data.metadata?.rows || data.data.length} 行 ×{" "}
+          {data.metadata?.columns || data.data[0]?.length || 0} 列
           {data.metadata?.fileName && ` • ${data.metadata.fileName}`}
           {data.type === "image" && ` • 图像数据集`}
         </Text>
       </div>
 
       {data.type === "image" ? (
-        <div style={{ marginTop: 16, display: 'flex', justifyContent: 'center', background: '#f5f5f5', padding: 16, borderRadius: 8 }}>
-          <canvas 
-            ref={canvasRef} 
-            style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }} 
+        <div
+          style={{
+            marginTop: 16,
+            display: "flex",
+            justifyContent: "center",
+            background: "#f5f5f5",
+            padding: 16,
+            borderRadius: 8,
+          }}
+        >
+          <canvas
+            ref={canvasRef}
+            style={{
+              maxWidth: "100%",
+              maxHeight: "300px",
+              objectFit: "contain",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+            }}
           />
         </div>
       ) : (

@@ -1,6 +1,9 @@
 import React from "react";
 import { Collapse, Typography, Badge } from "antd";
-import type { AlgorithmNode, AlgorithmCategoryInfo } from "@/types/algorithmNode";
+import type {
+  AlgorithmNode,
+  AlgorithmCategoryInfo,
+} from "@/types/algorithmNode";
 import { AlgorithmCard } from "./AlgorithmCard";
 import styles from "./index.module.css";
 

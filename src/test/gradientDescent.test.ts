@@ -1,25 +1,25 @@
-import { describe, it, expect } from 'vitest';
-import { gradientDescentAlgorithm } from '@/config/algorithms/numericalOptimization/gradientDescent';
+import { describe, it, expect } from "vitest";
+import { gradientDescentAlgorithm } from "@/config/algorithms/numericalOptimization/gradientDescent";
 
 /**
  * 测试梯度下降算法的默认函数功能
  * 这是 P0 修复：function 输入改为可选，缺失时使用默认二次目标函数
  */
-describe('gradientDescent - 默认目标函数', () => {
-  it('应该定义 function 输入为可选', () => {
+describe("gradientDescent - 默认目标函数", () => {
+  it("应该定义 function 输入为可选", () => {
     const functionInput = gradientDescentAlgorithm.inputs.find(
-      (input) => input.id === 'function'
+      (input) => input.id === "function",
     );
 
     expect(functionInput).toBeDefined();
     expect(functionInput?.required).toBe(false);
   });
 
-  it('应该在没有提供函数时使用默认二次函数', async () => {
+  it("应该在没有提供函数时使用默认二次函数", async () => {
     const inputs = {
       initialPoint: {
         data: [5, 5],
-        dataType: 'vector' as const,
+        dataType: "vector" as const,
       },
       // 不提供 function 输入
     };
@@ -44,12 +44,12 @@ describe('gradientDescent - 默认目标函数', () => {
     expect(result.objectiveValue).toBeLessThan(0.1);
   });
 
-  it('应该在提供自定义函数时使用自定义函数', async () => {
+  it("应该在提供自定义函数时使用自定义函数", async () => {
     const inputs = {
       function: (x: number[]) => (x[0] - 3) ** 2 + (x[1] - 4) ** 2,
       initialPoint: {
         data: [0, 0],
-        dataType: 'vector' as const,
+        dataType: "vector" as const,
       },
     };
 
@@ -64,11 +64,11 @@ describe('gradientDescent - 默认目标函数', () => {
     expect(Math.abs(result.solution[1] - 4)).toBeLessThan(0.5);
   });
 
-  it('应该返回收敛历史', async () => {
+  it("应该返回收敛历史", async () => {
     const inputs = {
       initialPoint: {
         data: [2, 2],
-        dataType: 'vector' as const,
+        dataType: "vector" as const,
       },
     };
 
@@ -84,9 +84,9 @@ describe('gradientDescent - 默认目标函数', () => {
 
     // 历史记录应该包含点、值、梯度和梯度范数
     const firstRecord = result.detailedHistory[0];
-    expect(firstRecord).toHaveProperty('point');
-    expect(firstRecord).toHaveProperty('value');
-    expect(firstRecord).toHaveProperty('gradient');
-    expect(firstRecord).toHaveProperty('gradNorm');
+    expect(firstRecord).toHaveProperty("point");
+    expect(firstRecord).toHaveProperty("value");
+    expect(firstRecord).toHaveProperty("gradient");
+    expect(firstRecord).toHaveProperty("gradNorm");
   });
 });

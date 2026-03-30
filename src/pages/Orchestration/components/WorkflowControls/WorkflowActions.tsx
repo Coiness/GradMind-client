@@ -23,7 +23,7 @@ import styles from "./WorkflowActions.module.css";
 export const WorkflowActions: React.FC = () => {
   const dispatch = useAppDispatch();
   const { currentWorkflow, savedWorkflows } = useAppSelector(
-    (state) => state.orchestration
+    (state) => state.orchestration,
   );
   const [loadModalVisible, setLoadModalVisible] = useState(false);
 
@@ -71,10 +71,7 @@ export const WorkflowActions: React.FC = () => {
   return (
     <>
       <Space size="small">
-        <Button
-          icon={<FileAddOutlined />}
-          onClick={handleNew}
-        >
+        <Button icon={<FileAddOutlined />} onClick={handleNew}>
           新建
         </Button>
 
@@ -113,10 +110,7 @@ export const WorkflowActions: React.FC = () => {
               <List.Item
                 key={workflow.id}
                 actions={[
-                  <Button
-                    type="link"
-                    onClick={() => handleLoad(workflow.id)}
-                  >
+                  <Button type="link" onClick={() => handleLoad(workflow.id)}>
                     加载
                   </Button>,
                   <Popconfirm
@@ -125,18 +119,14 @@ export const WorkflowActions: React.FC = () => {
                     okText="是"
                     cancelText="否"
                   >
-                    <Button
-                      type="link"
-                      danger
-                      icon={<DeleteOutlined />}
-                    />
+                    <Button type="link" danger icon={<DeleteOutlined />} />
                   </Popconfirm>,
                 ]}
               >
                 <List.Item.Meta
                   title={workflow.name}
                   description={`${workflow.nodes.length} 个节点 • 更新时间: ${new Date(
-                    workflow.updatedAt
+                    workflow.updatedAt,
                   ).toLocaleString()}`}
                 />
               </List.Item>

@@ -18,8 +18,12 @@ import {
  */
 export const ExecutionControls: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { currentWorkflow, executionStatus, validationErrors, algorithmLibrary } =
-    useAppSelector((state) => state.orchestration);
+  const {
+    currentWorkflow,
+    executionStatus,
+    validationErrors,
+    algorithmLibrary,
+  } = useAppSelector((state) => state.orchestration);
 
   const isExecuting = executionStatus === "running";
   const hasErrors = validationErrors.length > 0;
@@ -33,9 +37,8 @@ export const ExecutionControls: React.FC = () => {
 
     try {
       // Import validation utilities
-      const { validateWorkflow } = await import(
-        "@/pages/Orchestration/utils/workflowValidator"
-      );
+      const { validateWorkflow } =
+        await import("@/pages/Orchestration/utils/workflowValidator");
 
       const errors = validateWorkflow(currentWorkflow, algorithmLibrary);
       dispatch(setValidationErrors(errors));
@@ -46,7 +49,7 @@ export const ExecutionControls: React.FC = () => {
         const errorCount = errors.filter((e) => e.type === "error").length;
         const warningCount = errors.filter((e) => e.type === "warning").length;
         message.warning(
-          `验证发现 ${errorCount} 个错误和 ${warningCount} 个警告`
+          `验证发现 ${errorCount} 个错误和 ${warningCount} 个警告`,
         );
       }
     } catch (error) {
@@ -67,26 +70,31 @@ export const ExecutionControls: React.FC = () => {
 
     // Validate first
     try {
-      const { validateWorkflow } = await import(
-        "@/pages/Orchestration/utils/workflowValidator"
-      );
+      const { validateWorkflow } =
+        await import("@/pages/Orchestration/utils/workflowValidator");
 
       const errors = validateWorkflow(currentWorkflow, algorithmLibrary);
       dispatch(setValidationErrors(errors));
 
       const criticalErrors = errors.filter((e) => e.type === "error");
       if (criticalErrors.length > 0) {
-        message.error(
-          `无法执行：工作流有 ${criticalErrors.length} 个错误`
+        message.error(`无法执行：工作流有 ${criticalErrors.length} 个错误`);
+        console.error(
+          "❌ [ExecutionControls] Validation errors:",
+          criticalErrors,
         );
-        console.error("❌ [ExecutionControls] Validation errors:", criticalErrors);
         return;
       }
 
-      console.log("✅ [ExecutionControls] Validation passed, dispatching executeWorkflow");
+      console.log(
+        "✅ [ExecutionControls] Validation passed, dispatching executeWorkflow",
+      );
       // Execute
       const result = await dispatch(executeWorkflow()).unwrap();
-      console.log("🎉 [ExecutionControls] Execution completed successfully:", result);
+      console.log(
+        "🎉 [ExecutionControls] Execution completed successfully:",
+        result,
+      );
       message.success("工作流执行成功！");
     } catch (error: any) {
       console.error("❌ [ExecutionControls] Execution failed:", error);

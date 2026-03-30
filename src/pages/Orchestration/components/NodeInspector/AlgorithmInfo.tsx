@@ -47,14 +47,18 @@ export const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({
             <Text strong>输入端口：</Text>
             <div style={{ marginTop: 8 }}>
               <Tag>input</Tag>
-              <Text type="secondary" style={{ marginLeft: 8 }}>任意数据（自动识别类型）</Text>
+              <Text type="secondary" style={{ marginLeft: 8 }}>
+                任意数据（自动识别类型）
+              </Text>
             </div>
           </div>
           <Divider />
           <div>
             <Text strong>节点 ID：</Text>
             <br />
-            <Text type="secondary" style={{ fontSize: 12 }}>{node.id}</Text>
+            <Text type="secondary" style={{ fontSize: 12 }}>
+              {node.id}
+            </Text>
           </div>
         </Space>
       </div>
@@ -81,13 +85,14 @@ export const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({
         })) || [];
 
     // Prepare table data (show first 10 rows)
-    const tableData = datasetData?.data.slice(0, 10).map((row, rowIndex) => {
-      const rowData: any = { key: rowIndex };
-      row.forEach((value, colIndex) => {
-        rowData[colIndex] = value;
-      });
-      return rowData;
-    }) || [];
+    const tableData =
+      datasetData?.data.slice(0, 10).map((row, rowIndex) => {
+        const rowData: any = { key: rowIndex };
+        row.forEach((value, colIndex) => {
+          rowData[colIndex] = value;
+        });
+        return rowData;
+      }) || [];
 
     return (
       <div className={styles.algorithmInfo}>
@@ -96,9 +101,7 @@ export const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({
             <Title level={5}>数据集节点</Title>
             <Tag color="blue">数据集</Tag>
           </div>
-          <Paragraph>
-            这是一个数据集节点，为工作流提供输入数据。
-          </Paragraph>
+          <Paragraph>这是一个数据集节点，为工作流提供输入数据。</Paragraph>
 
           {datasetData && (
             <>
@@ -107,12 +110,18 @@ export const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({
                 <Text strong>数据集信息：</Text>
                 <div style={{ marginTop: 8 }}>
                   <Text type="secondary">
-                    {datasetData.metadata?.rows || datasetData.data.length} 行 × {datasetData.metadata?.columns || datasetData.data[0]?.length || 0} 列
+                    {datasetData.metadata?.rows || datasetData.data.length} 行 ×{" "}
+                    {datasetData.metadata?.columns ||
+                      datasetData.data[0]?.length ||
+                      0}{" "}
+                    列
                   </Text>
                   {datasetData.metadata?.fileName && (
                     <>
                       <br />
-                      <Text type="secondary">文件: {datasetData.metadata.fileName}</Text>
+                      <Text type="secondary">
+                        文件: {datasetData.metadata.fileName}
+                      </Text>
                     </>
                   )}
                   <br />
@@ -124,8 +133,19 @@ export const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({
               <div>
                 <Text strong>数据预览：</Text>
                 {datasetData.type === "image" ? (
-                  <div style={{ marginTop: 8, padding: 8, background: '#f5f5f5', borderRadius: 4, textAlign: 'center' }}>
-                    <Text type="secondary">图像数据已加载 ({datasetData.data.length}x{datasetData.data[0]?.length || 0})</Text>
+                  <div
+                    style={{
+                      marginTop: 8,
+                      padding: 8,
+                      background: "#f5f5f5",
+                      borderRadius: 4,
+                      textAlign: "center",
+                    }}
+                  >
+                    <Text type="secondary">
+                      图像数据已加载 ({datasetData.data.length}x
+                      {datasetData.data[0]?.length || 0})
+                    </Text>
                     <div style={{ fontSize: 24, marginTop: 8 }}>🖼️</div>
                   </div>
                 ) : (
@@ -139,7 +159,10 @@ export const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({
                       style={{ marginTop: 8 }}
                     />
                     {datasetData.data.length > 10 && (
-                      <Text type="secondary" style={{ display: "block", marginTop: 8, fontSize: 12 }}>
+                      <Text
+                        type="secondary"
+                        style={{ display: "block", marginTop: 8, fontSize: 12 }}
+                      >
                         显示前 10 行，共 {datasetData.data.length} 行
                       </Text>
                     )}

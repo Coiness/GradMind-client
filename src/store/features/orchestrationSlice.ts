@@ -103,9 +103,8 @@ export const executeWorkflow = createAsyncThunk(
     });
 
     // Import execution utilities
-    const { executeWorkflowEngine } = await import(
-      "@/pages/Orchestration/utils/workflowExecutor"
-    );
+    const { executeWorkflowEngine } =
+      await import("@/pages/Orchestration/utils/workflowExecutor");
 
     // Execute the workflow
     const results = await executeWorkflowEngine(
@@ -278,7 +277,10 @@ export const orchestrationSlice = createSlice({
     // Add an oscilloscope node to the workflow
     addOscilloscopeNode: (
       state,
-      action: PayloadAction<{ position: { x: number; y: number }; label?: string }>,
+      action: PayloadAction<{
+        position: { x: number; y: number };
+        label?: string;
+      }>,
     ) => {
       if (!state.currentWorkflow) return;
 
@@ -323,7 +325,10 @@ export const orchestrationSlice = createSlice({
     // Update node position
     updateNodePosition: (
       state,
-      action: PayloadAction<{ nodeId: string; position: { x: number; y: number } }>,
+      action: PayloadAction<{
+        nodeId: string;
+        position: { x: number; y: number };
+      }>,
     ) => {
       if (!state.currentWorkflow) return;
 
@@ -410,7 +415,11 @@ export const orchestrationSlice = createSlice({
     // Update node status during execution
     updateNodeStatus: (
       state,
-      action: PayloadAction<{ nodeId: string; status: "idle" | "running" | "success" | "error"; error?: string }>,
+      action: PayloadAction<{
+        nodeId: string;
+        status: "idle" | "running" | "success" | "error";
+        error?: string;
+      }>,
     ) => {
       if (!state.currentWorkflow) return;
 
@@ -434,8 +443,8 @@ export const orchestrationSlice = createSlice({
           ...template,
           id: `workflow-${Date.now()}`,
           name: `${template.name} (Copy)`,
-          nodes: template.nodes.map(n => ({ ...n, data: { ...n.data } })),
-          edges: template.edges.map(e => ({ ...e })),
+          nodes: template.nodes.map((n) => ({ ...n, data: { ...n.data } })),
+          edges: template.edges.map((e) => ({ ...e })),
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         };
@@ -450,7 +459,7 @@ export const orchestrationSlice = createSlice({
     // Update workflow metadata (name, description)
     updateWorkflowMetadata: (
       state,
-      action: PayloadAction<{ name?: string; description?: string }>
+      action: PayloadAction<{ name?: string; description?: string }>,
     ) => {
       if (!state.currentWorkflow) return;
 
@@ -464,8 +473,13 @@ export const orchestrationSlice = createSlice({
     },
 
     // Update dataset node data
-    updateDatasetData: (state, action: PayloadAction<{ nodeId: string; datasetData: any }>) => {
-      const node = state.currentWorkflow?.nodes.find(n => n.id === action.payload.nodeId);
+    updateDatasetData: (
+      state,
+      action: PayloadAction<{ nodeId: string; datasetData: any }>,
+    ) => {
+      const node = state.currentWorkflow?.nodes.find(
+        (n) => n.id === action.payload.nodeId,
+      );
       if (node) {
         node.data.datasetData = action.payload.datasetData;
         if (action.payload.datasetData.metadata?.fileName) {
@@ -486,7 +500,8 @@ export const orchestrationSlice = createSlice({
       })
       .addCase(loadAlgorithmLibrary.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message || "Failed to load algorithm library";
+        state.error =
+          action.error.message || "Failed to load algorithm library";
       });
 
     // Load templates
@@ -511,7 +526,10 @@ export const orchestrationSlice = createSlice({
         state.executionResults = {};
       })
       .addCase(executeWorkflow.fulfilled, (state, action) => {
-        console.log("✅ [Redux] executeWorkflow.fulfilled, payload:", action.payload);
+        console.log(
+          "✅ [Redux] executeWorkflow.fulfilled, payload:",
+          action.payload,
+        );
         state.executionStatus = "completed";
         state.executionResults = action.payload;
 
@@ -519,7 +537,10 @@ export const orchestrationSlice = createSlice({
         if (state.currentWorkflow) {
           state.currentWorkflow.nodes.forEach((node) => {
             if (action.payload[node.id]) {
-              console.log(`📝 [Redux] Updating node ${node.id} with result:`, action.payload[node.id]);
+              console.log(
+                `📝 [Redux] Updating node ${node.id} with result:`,
+                action.payload[node.id],
+              );
               node.data.result = action.payload[node.id];
               node.data.status = "success";
             }
@@ -528,7 +549,10 @@ export const orchestrationSlice = createSlice({
         console.log("🔄 [Redux] State after update:", {
           executionStatus: state.executionStatus,
           executionResults: state.executionResults,
-          nodeStatuses: state.currentWorkflow?.nodes.map(n => ({ id: n.id, status: n.data.status })),
+          nodeStatuses: state.currentWorkflow?.nodes.map((n) => ({
+            id: n.id,
+            status: n.data.status,
+          })),
         });
       })
       .addCase(executeWorkflow.rejected, (state, action) => {

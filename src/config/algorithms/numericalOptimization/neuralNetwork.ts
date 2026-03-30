@@ -10,26 +10,26 @@ import * as math from "mathjs";
 const activationFunctions = {
   sigmoid: {
     forward: (z: number[][]): number[][] => {
-      return z.map(row => row.map(val => 1 / (1 + Math.exp(-val))));
+      return z.map((row) => row.map((val) => 1 / (1 + Math.exp(-val))));
     },
     backward: (a: number[][]): number[][] => {
-      return a.map(row => row.map(val => val * (1 - val)));
+      return a.map((row) => row.map((val) => val * (1 - val)));
     },
   },
   relu: {
     forward: (z: number[][]): number[][] => {
-      return z.map(row => row.map(val => Math.max(0, val)));
+      return z.map((row) => row.map((val) => Math.max(0, val)));
     },
     backward: (z: number[][]): number[][] => {
-      return z.map(row => row.map(val => val > 0 ? 1 : 0));
+      return z.map((row) => row.map((val) => (val > 0 ? 1 : 0)));
     },
   },
   tanh: {
     forward: (z: number[][]): number[][] => {
-      return z.map(row => row.map(val => Math.tanh(val)));
+      return z.map((row) => row.map((val) => Math.tanh(val)));
     },
     backward: (a: number[][]): number[][] => {
-      return a.map(row => row.map(val => 1 - val * val));
+      return a.map((row) => row.map((val) => 1 - val * val));
     },
   },
 };
@@ -52,7 +52,10 @@ const xavierInitialize = (nIn: number, nOut: number): number[][] => {
 const matrixMultiply = (a: number[][], b: number[][]): number[][] => {
   const result = math.multiply(math.matrix(a), math.matrix(b));
   const size = math.size(result).valueOf() as number[];
-  return math.subset(result, math.index(math.range(0, size[0]), math.range(0, size[1]))) as unknown as number[][];
+  return math.subset(
+    result,
+    math.index(math.range(0, size[0]), math.range(0, size[1])),
+  ) as unknown as number[][];
 };
 
 // 矩阵转置
@@ -72,7 +75,7 @@ const hadamardProduct = (a: number[][], b: number[][]): number[][] => {
 
 // 标量乘法
 const scalarMultiply = (matrix: number[][], scalar: number): number[][] => {
-  return matrix.map(row => row.map(val => val * scalar));
+  return matrix.map((row) => row.map((val) => val * scalar));
 };
 
 // 计算 MSE 损失
@@ -89,7 +92,10 @@ const computeMSE = (predictions: number[][], targets: number[][]): number => {
 };
 
 // 计算准确率（用于分类问题）
-const computeAccuracy = (predictions: number[][], targets: number[][]): number => {
+const computeAccuracy = (
+  predictions: number[][],
+  targets: number[][],
+): number => {
   let correct = 0;
   const n = predictions.length;
 
@@ -108,8 +114,7 @@ export const neuralNetworkAlgorithm: AlgorithmNode = {
   key: "neural-network",
   name: "神经网络",
   category: "numerical-optimization",
-  description:
-    "使用反向传播和基于梯度的优化训练前馈神经网络。",
+  description: "使用反向传播和基于梯度的优化训练前馈神经网络。",
   icon: "🧠",
 
   inputs: [
@@ -222,7 +227,9 @@ export const neuralNetworkAlgorithm: AlgorithmNode = {
     const hiddenLayersStr = String(params.hiddenLayers) || "64,32";
 
     // 解析隐藏层配置
-    const hiddenLayerSizes = hiddenLayersStr.split(",").map(s => parseInt(s.trim()));
+    const hiddenLayerSizes = hiddenLayersStr
+      .split(",")
+      .map((s) => parseInt(s.trim()));
 
     // 提取训练数据
     const trainDataInput = inputs.trainData;
@@ -250,7 +257,7 @@ export const neuralNetworkAlgorithm: AlgorithmNode = {
     if (Array.isArray(trainLabelsInput)) {
       // 如果是一维数组，转换为二维
       if (typeof trainLabelsInput[0] === "number") {
-        Y = trainLabelsInput.map(label => [label]);
+        Y = trainLabelsInput.map((label) => [label]);
       } else {
         Y = trainLabelsInput as number[][];
       }
@@ -284,11 +291,16 @@ export const neuralNetworkAlgorithm: AlgorithmNode = {
 
     for (let l = 0; l < nLayers - 1; l++) {
       weights.push(xavierInitialize(layerSizes[l], layerSizes[l + 1]));
-      biases.push(Array(layerSizes[l + 1]).fill(0).map(() => [0]));
+      biases.push(
+        Array(layerSizes[l + 1])
+          .fill(0)
+          .map(() => [0]),
+      );
     }
 
     // 获取激活函数
-    const activation = activationFunctions[activationType as keyof typeof activationFunctions];
+    const activation =
+      activationFunctions[activationType as keyof typeof activationFunctions];
     if (!activation) {
       throw new Error(`不支持的激活函数: ${activationType}`);
     }
@@ -358,8 +370,11 @@ export const neuralNetworkAlgorithm: AlgorithmNode = {
 
           // 输出层误差: δ^[L] = (a^[L] - y) ⊙ activation'(z^[L])
           const outputError = matrixSubtract(predictions, batchY);
-          const outputActivationDerivative = activationFunctions.sigmoid.backward(predictions);
-          deltas.unshift(hadamardProduct(outputError, outputActivationDerivative));
+          const outputActivationDerivative =
+            activationFunctions.sigmoid.backward(predictions);
+          deltas.unshift(
+            hadamardProduct(outputError, outputActivationDerivative),
+          );
 
           // 隐藏层误差: δ^[l] = (W^[l+1])^T * δ^[l+1] ⊙ activation'(z^[l])
           for (let l = nLayers - 3; l >= 0; l--) {
@@ -380,7 +395,10 @@ export const neuralNetworkAlgorithm: AlgorithmNode = {
           for (let l = 0; l < nLayers - 1; l++) {
             // ∇W^[l] = (1/m) * δ^[l]^T * a^[l-1]
             const gradW = matrixMultiply(transpose(deltas[l]), activations[l]);
-            const gradWScaled = scalarMultiply(gradW, learningRate / currentBatchSize);
+            const gradWScaled = scalarMultiply(
+              gradW,
+              learningRate / currentBatchSize,
+            );
 
             // W^[l] = W^[l] - α * ∇W^[l]
             weights[l] = matrixSubtract(weights[l], gradWScaled);
@@ -396,7 +414,10 @@ export const neuralNetworkAlgorithm: AlgorithmNode = {
             }
 
             // b^[l] = b^[l] - α * ∇b^[l]
-            biases[l] = matrixSubtract(biases[l], scalarMultiply(gradB, learningRate));
+            biases[l] = matrixSubtract(
+              biases[l],
+              scalarMultiply(gradB, learningRate),
+            );
           }
         }
 
@@ -436,9 +457,10 @@ export const neuralNetworkAlgorithm: AlgorithmNode = {
 
       const finalPredictions = finalActivations;
       const finalLoss = lossHistory[lossHistory.length - 1];
-      const finalAccuracy = nOutputs > 1
-        ? computeAccuracy(finalPredictions, Y)
-        : 1 - Math.min(finalLoss, 1); // 回归问题的伪准确率
+      const finalAccuracy =
+        nOutputs > 1
+          ? computeAccuracy(finalPredictions, Y)
+          : 1 - Math.min(finalLoss, 1); // 回归问题的伪准确率
 
       return {
         model: {
@@ -470,7 +492,9 @@ export const neuralNetworkAlgorithm: AlgorithmNode = {
         },
       };
     } catch (error) {
-      throw new Error(`神经网络训练失败: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `神经网络训练失败: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   },
 };

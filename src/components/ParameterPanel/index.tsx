@@ -26,7 +26,9 @@ export const ParameterPanel: React.FC<ParameterPanelProps> = ({
     return initialState;
   }, [config, initialValues]);
 
-  const [draftParams, setDraftParams] = useState<ParameterValues>(resolvedInitialValues);
+  const [draftParams, setDraftParams] = useState<ParameterValues>(
+    resolvedInitialValues,
+  );
 
   useEffect(() => {
     setDraftParams(resolvedInitialValues);
@@ -79,7 +81,10 @@ export const ParameterPanel: React.FC<ParameterPanelProps> = ({
               }
             }}
             onBlur={() => {
-              if (saveMode === "blur" && typeof draftParams[key] !== "undefined") {
+              if (
+                saveMode === "blur" &&
+                typeof draftParams[key] !== "undefined"
+              ) {
                 applyValues(draftParams);
               }
             }}

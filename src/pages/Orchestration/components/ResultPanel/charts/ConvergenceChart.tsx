@@ -75,31 +75,50 @@ const ConvergenceChart: React.FC<ConvergenceChartProps> = ({ data }) => {
     ],
   };
 
-  const solutionStr = solution.length > 0
-    ? `[${solution.map((v) => v.toFixed(4)).join(", ")}]`
-    : "—";
+  const solutionStr =
+    solution.length > 0
+      ? `[${solution.map((v) => v.toFixed(4)).join(", ")}]`
+      : "—";
 
   return (
     <div style={{ display: "flex", height: "100%", gap: 12 }}>
       <div style={{ flex: 1, minWidth: 0 }}>
         <ReactECharts option={option} style={{ height: "100%" }} />
       </div>
-      <div style={{ width: 150, display: "flex", flexDirection: "column", justifyContent: "center", gap: 12 }}>
+      <div
+        style={{
+          width: 150,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          gap: 12,
+        }}
+      >
         <div>
-          <div style={{ fontSize: 12, color: "#888", marginBottom: 4 }}>收敛状态</div>
+          <div style={{ fontSize: 12, color: "#888", marginBottom: 4 }}>
+            收敛状态
+          </div>
           <Tag color={converged ? "success" : "warning"}>
             {converged ? "已收敛" : "未收敛"}
           </Tag>
         </div>
-        <Statistic title="迭代次数" value={iterations} valueStyle={{ fontSize: 16 }} />
+        <Statistic
+          title="迭代次数"
+          value={iterations}
+          valueStyle={{ fontSize: 16 }}
+        />
         <Statistic
           title="最终目标值"
           value={finalValue.toExponential(4)}
           valueStyle={{ fontSize: 14 }}
         />
         <div>
-          <div style={{ fontSize: 12, color: "#888", marginBottom: 2 }}>最优点</div>
-          <div style={{ fontSize: 12, wordBreak: "break-all" }}>{solutionStr}</div>
+          <div style={{ fontSize: 12, color: "#888", marginBottom: 2 }}>
+            最优点
+          </div>
+          <div style={{ fontSize: 12, wordBreak: "break-all" }}>
+            {solutionStr}
+          </div>
         </div>
       </div>
     </div>

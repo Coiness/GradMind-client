@@ -53,7 +53,9 @@ export const AlgorithmNode = memo(({ data, selected }: NodeProps) => {
   };
 
   return (
-    <div className={`${styles.algorithmNode} ${selected ? styles.selected : ""}`}>
+    <div
+      className={`${styles.algorithmNode} ${selected ? styles.selected : ""}`}
+    >
       {/* Input Handles */}
       {algorithm.inputs.map((input, index) => (
         <Handle

@@ -215,7 +215,10 @@ export const pcaAlgorithm: AlgorithmNode = {
       const components = selectedComponents.map((pair) => pair.vector);
       const variance = selectedComponents.map((pair) => pair.value);
 
-      const totalVariance = eigenPairs.reduce((sum, pair) => sum + pair.value, 0);
+      const totalVariance = eigenPairs.reduce(
+        (sum, pair) => sum + pair.value,
+        0,
+      );
       const explainedVariance = variance.map((value) =>
         totalVariance > 0 ? value / totalVariance : 0,
       );

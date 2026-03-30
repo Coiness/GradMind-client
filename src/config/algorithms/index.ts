@@ -1,4 +1,7 @@
-import type { AlgorithmNode, AlgorithmCategoryInfo } from "@/types/algorithmNode";
+import type {
+  AlgorithmNode,
+  AlgorithmCategoryInfo,
+} from "@/types/algorithmNode";
 
 // Data Reduction
 import { svdAlgorithm } from "./dataReduction/svd";

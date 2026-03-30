@@ -3,9 +3,10 @@ import type { AlgorithmNode } from "@/types/algorithmNode";
 export const kMeansAlgorithm: AlgorithmNode = {
   key: "kmeans",
   name: "K-Means 聚类",
-  description: "将数据点划分到K个簇中。支持普通数值数据的散点聚类，以及图像的灰度智能分割（自动输出多张分层图像）。",
+  description:
+    "将数据点划分到K个簇中。支持普通数值数据的散点聚类，以及图像的灰度智能分割（自动输出多张分层图像）。",
   category: "data-reduction",
-  
+
   inputs: [
     {
       id: "dataset",
@@ -14,7 +15,7 @@ export const kMeansAlgorithm: AlgorithmNode = {
       required: true,
     },
   ],
-  
+
   outputs: [
     {
       id: "labels",
@@ -37,7 +38,7 @@ export const kMeansAlgorithm: AlgorithmNode = {
       dataType: "dataset",
     },
   ],
-  
+
   parameters: [
     {
       key: "k",
@@ -71,8 +72,15 @@ export const kMeansAlgorithm: AlgorithmNode = {
     if (!inputData) throw new Error("缺少输入数据");
 
     // 智能识别输入类型：普通数据 vs 图像数据
-    if (typeof inputData === "object" && !Array.isArray(inputData) && inputData.data) {
-      if (inputData.type === "image" || (inputData.metadata && inputData.metadata.fileName)) {
+    if (
+      typeof inputData === "object" &&
+      !Array.isArray(inputData) &&
+      inputData.data
+    ) {
+      if (
+        inputData.type === "image" ||
+        (inputData.metadata && inputData.metadata.fileName)
+      ) {
         isImage = true;
         dataMatrix = inputData.data as number[][];
       } else {
@@ -100,7 +108,7 @@ export const kMeansAlgorithm: AlgorithmNode = {
     // 准备聚类特征
     // ---------------------------------------------------------
     let features: number[][] = [];
-    
+
     if (isImage) {
       // 图像：展平为 1D 数组（特征是单一的灰度值）
       for (let i = 0; i < imgHeight; i++) {
@@ -110,7 +118,7 @@ export const kMeansAlgorithm: AlgorithmNode = {
       }
     } else {
       // 普通数据：特征就是原数据的深拷贝，防止污染上游数据！
-      features = dataMatrix.map(row => [...row]);
+      features = dataMatrix.map((row) => [...row]);
     }
 
     const nSamples = features.length;
@@ -121,10 +129,10 @@ export const kMeansAlgorithm: AlgorithmNode = {
     // ---------------------------------------------------------
     let centroids: number[][] = [];
     const usedIndices = new Set<number>();
-    
+
     // 确保有足够的点可以作为质心
     const actualK = Math.min(k, nSamples);
-    
+
     while (centroids.length < actualK) {
       const idx = Math.floor(Math.random() * nSamples);
       if (!usedIndices.has(idx)) {
@@ -142,18 +150,23 @@ export const kMeansAlgorithm: AlgorithmNode = {
 
     // 修复：确保至少执行1次迭代，即使 maxIterations 被设置为非常小的值（比如0或1）
     // 为了防止浏览器卡死，这里做一个简单的 Mini-batch 或者直接限制大图的迭代次数
-    const actualMaxIters = Math.max(1, isImage ? Math.min(maxIterations, 30) : maxIterations); 
+    const actualMaxIters = Math.max(
+      1,
+      isImage ? Math.min(maxIterations, 30) : maxIterations,
+    );
 
     while (changed && iteration < actualMaxIters) {
       changed = false;
-      const newCentroids = Array(actualK).fill(0).map(() => new Array(nFeatures).fill(0));
+      const newCentroids = Array(actualK)
+        .fill(0)
+        .map(() => new Array(nFeatures).fill(0));
       const counts = new Array(actualK).fill(0);
 
       // 步骤1：分配点到最近的质心
       for (let i = 0; i < nSamples; i++) {
         let minDist = Infinity;
         let bestCluster = 0;
-        
+
         for (let j = 0; j < actualK; j++) {
           let distSq = 0;
           for (let f = 0; f < nFeatures; f++) {
@@ -165,12 +178,12 @@ export const kMeansAlgorithm: AlgorithmNode = {
             bestCluster = j;
           }
         }
-        
+
         if (labels[i] !== bestCluster) {
           labels[i] = bestCluster;
           changed = true;
         }
-        
+
         // 累加计算新质心
         for (let f = 0; f < nFeatures; f++) {
           newCentroids[bestCluster][f] += features[i][f];
@@ -186,9 +199,9 @@ export const kMeansAlgorithm: AlgorithmNode = {
           }
         }
       }
-      
+
       iteration++;
-      
+
       // 让出线程（非阻塞机制），但为了算法纯粹性，这里仅在图像过大时让出
       if (isImage && iteration % 5 === 0) {
         await new Promise((resolve) => setTimeout(resolve, 0));
@@ -201,10 +214,12 @@ export const kMeansAlgorithm: AlgorithmNode = {
     if (isImage) {
       // 图像分割大礼包
       const clusteredImages: number[][][] = [];
-      
+
       // 生成 K 张独立的图片，属于该簇的保留原灰度（或质心灰度），不属于的变黑
       for (let clusterIdx = 0; clusterIdx < actualK; clusterIdx++) {
-        const img: number[][] = Array(imgHeight).fill(0).map(() => Array(imgWidth).fill(0));
+        const img: number[][] = Array(imgHeight)
+          .fill(0)
+          .map(() => Array(imgWidth).fill(0));
         let flatIdx = 0;
         for (let i = 0; i < imgHeight; i++) {
           for (let j = 0; j < imgWidth; j++) {
@@ -220,7 +235,9 @@ export const kMeansAlgorithm: AlgorithmNode = {
       }
 
       // 为了兼容现有示波器的单图逻辑，主图展示带有“灰度分层（质心颜色）”的合成图
-      const mainImage: number[][] = Array(imgHeight).fill(0).map(() => Array(imgWidth).fill(0));
+      const mainImage: number[][] = Array(imgHeight)
+        .fill(0)
+        .map(() => Array(imgWidth).fill(0));
       let flatIdx = 0;
       for (let i = 0; i < imgHeight; i++) {
         for (let j = 0; j < imgWidth; j++) {
@@ -239,18 +256,17 @@ export const kMeansAlgorithm: AlgorithmNode = {
             mainImage: mainImage, // 整体分层效果图
             layers: clusteredImages, // K个独立图层
             width: imgWidth,
-            height: imgHeight
-          }
-        }
+            height: imgHeight,
+          },
+        },
       };
-
     } else {
       // 普通数据散点聚类大礼包
       // 修复：确保 points 能够映射回原始数据集的坐标，而不是被污染的 features
       const points = features.map((row, i) => [
-        row[0] ?? 0, 
-        row.length > 1 ? row[1] : 0, 
-        labels[i] ?? 0
+        row[0] ?? 0,
+        row.length > 1 ? row[1] : 0,
+        labels[i] ?? 0,
       ]);
 
       return {
@@ -260,9 +276,12 @@ export const kMeansAlgorithm: AlgorithmNode = {
           type: "scatter-clusters", // 通知示波器按簇染色
           data: {
             points: points, // [x, y, clusterId]
-            centroids: centroids.map(c => [c[0] ?? 0, c.length > 1 ? c[1] : 0])
-          }
-        }
+            centroids: centroids.map((c) => [
+              c[0] ?? 0,
+              c.length > 1 ? c[1] : 0,
+            ]),
+          },
+        },
       };
     }
   },

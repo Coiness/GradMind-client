@@ -145,7 +145,7 @@ export const advancedOptimizerAlgorithm: AlgorithmNode = {
 
     // 提取目标函数
     const objFuncType = params.objectiveFunction || "bowl";
-    
+
     let func: (x: number[]) => number;
     if (functionInput !== undefined) {
       // 兼容外部传入
@@ -153,9 +153,13 @@ export const advancedOptimizerAlgorithm: AlgorithmNode = {
         func = functionInput;
       } else if (typeof functionInput === "string") {
         try {
-          func = new Function("x", `return ${functionInput}`) as (x: number[]) => number;
+          func = new Function("x", `return ${functionInput}`) as (
+            x: number[],
+          ) => number;
         } catch (error) {
-          throw new Error(`无法解析函数字符串: ${error instanceof Error ? error.message : String(error)}`);
+          throw new Error(
+            `无法解析函数字符串: ${error instanceof Error ? error.message : String(error)}`,
+          );
         }
       } else if (functionInput.func) {
         func = functionInput.func;
@@ -174,7 +178,8 @@ export const advancedOptimizerAlgorithm: AlgorithmNode = {
         };
       } else {
         // bowl
-        func = (x: number[]) => x.reduce((sum, value) => sum + value * value, 0);
+        func = (x: number[]) =>
+          x.reduce((sum, value) => sum + value * value, 0);
       }
     }
 
@@ -210,7 +215,12 @@ export const advancedOptimizerAlgorithm: AlgorithmNode = {
     // 初始化优化器状态
     let point = [...initialPoint];
     const n = point.length;
-    const history: Array<{ point: number[]; value: number; gradient: number[]; gradNorm: number }> = [];
+    const history: Array<{
+      point: number[];
+      value: number;
+      gradient: number[];
+      gradNorm: number;
+    }> = [];
     let converged = false;
     let iterations = 0;
 
@@ -229,7 +239,9 @@ export const advancedOptimizerAlgorithm: AlgorithmNode = {
         const value = func(point);
 
         // 计算梯度
-        const gradient = gradFunc ? gradFunc(point) : computeNumericalGradient(point);
+        const gradient = gradFunc
+          ? gradFunc(point)
+          : computeNumericalGradient(point);
 
         // 计算梯度范数
         const gradNorm = Math.sqrt(gradient.reduce((sum, g) => sum + g * g, 0));
@@ -255,31 +267,41 @@ export const advancedOptimizerAlgorithm: AlgorithmNode = {
           m = m.map((mi, i) => beta1 * mi + (1 - beta1) * gradient[i]);
 
           // 更新二阶矩估计: v_t = β2*v_{t-1} + (1-β2)*g_t²
-          v = v.map((vi, i) => beta2 * vi + (1 - beta2) * gradient[i] * gradient[i]);
+          v = v.map(
+            (vi, i) => beta2 * vi + (1 - beta2) * gradient[i] * gradient[i],
+          );
 
           // 偏差修正
           const mHat = m.map((mi) => mi / (1 - Math.pow(beta1, iterations)));
           const vHat = v.map((vi) => vi / (1 - Math.pow(beta2, iterations)));
 
           // 更新参数: x_t = x_{t-1} - α*m̂_t/(√v̂_t + ε)
-          point = point.map((x, i) => x - learningRate * mHat[i] / (Math.sqrt(vHat[i]) + epsilon));
-
+          point = point.map(
+            (x, i) =>
+              x - (learningRate * mHat[i]) / (Math.sqrt(vHat[i]) + epsilon),
+          );
         } else if (optimizer === "rmsprop") {
           // RMSprop 算法
           // 更新: v_t = β*v_{t-1} + (1-β)*g_t²
-          vRms = vRms.map((vi, i) => beta2 * vi + (1 - beta2) * gradient[i] * gradient[i]);
+          vRms = vRms.map(
+            (vi, i) => beta2 * vi + (1 - beta2) * gradient[i] * gradient[i],
+          );
 
           // 更新参数: x_t = x_{t-1} - α*g_t/(√v_t + ε)
-          point = point.map((x, i) => x - learningRate * gradient[i] / (Math.sqrt(vRms[i]) + epsilon));
-
+          point = point.map(
+            (x, i) =>
+              x - (learningRate * gradient[i]) / (Math.sqrt(vRms[i]) + epsilon),
+          );
         } else if (optimizer === "adagrad") {
           // AdaGrad 算法
           // 累积梯度平方
           v = v.map((vi, i) => vi + gradient[i] * gradient[i]);
 
           // 更新参数: x_t = x_{t-1} - α*g_t/(√v_t + ε)
-          point = point.map((x, i) => x - learningRate * gradient[i] / (Math.sqrt(v[i]) + epsilon));
-
+          point = point.map(
+            (x, i) =>
+              x - (learningRate * gradient[i]) / (Math.sqrt(v[i]) + epsilon),
+          );
         } else {
           throw new Error(`不支持的优化器类型: ${optimizer}`);
         }
@@ -318,7 +340,9 @@ export const advancedOptimizerAlgorithm: AlgorithmNode = {
         },
       };
     } catch (error) {
-      throw new Error(`${optimizer} 优化失败: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `${optimizer} 优化失败: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   },
 };

@@ -19,7 +19,7 @@ export const leastSquaresAlgorithm: AlgorithmNode = {
       label: "输入数据集",
       dataType: "matrix",
       required: true,
-    }
+    },
   ],
 
   outputs: [
@@ -91,7 +91,7 @@ export const leastSquaresAlgorithm: AlgorithmNode = {
     if (!datasetInput) {
       throw new Error("缺少数据集输入");
     }
-    
+
     if (Array.isArray(datasetInput)) {
       if (typeof datasetInput[0] === "number") {
         throw new Error("数据集必须是二维矩阵");
@@ -109,18 +109,18 @@ export const leastSquaresAlgorithm: AlgorithmNode = {
 
     const n = rawData.length;
     const m = rawData[0].length;
-    
+
     // 确定目标列索引
     const yCol = targetColumn < 0 ? m - 1 : Math.min(targetColumn, m - 1);
-    
+
     // 分离 X 和 Y
     const xData: number[][] = [];
     const yData: number[] = [];
-    
+
     for (let i = 0; i < n; i++) {
       const row = rawData[i];
       yData.push(row[yCol]);
-      
+
       const xRow = [];
       for (let j = 0; j < m; j++) {
         if (j !== yCol) {
@@ -132,7 +132,9 @@ export const leastSquaresAlgorithm: AlgorithmNode = {
 
     // 验证数据维度
     if (xData.length !== yData.length) {
-      throw new Error(`X 和 Y 数据长度不匹配: ${xData.length} vs ${yData.length}`);
+      throw new Error(
+        `X 和 Y 数据长度不匹配: ${xData.length} vs ${yData.length}`,
+      );
     }
 
     const numFeatures = xData[0].length;
@@ -167,12 +169,14 @@ export const leastSquaresAlgorithm: AlgorithmNode = {
         coefficients = beta.toArray() as number[];
       }
     } catch (error) {
-      throw new Error(`最小二乘法求解失败: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `最小二乘法求解失败: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
 
     // 计算预测值
     const predictions = X.map((row) =>
-      row.reduce((sum, x, i) => sum + x * coefficients[i], 0)
+      row.reduce((sum, x, i) => sum + x * coefficients[i], 0),
     );
 
     // 计算残差

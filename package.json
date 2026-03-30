@@ -15,6 +15,7 @@
     "test:ui": "vitest --ui"
   },
   "dependencies": {
+    "@ant-design/icons": "^6.1.1",
     "@reduxjs/toolkit": "^2.10.1",
     "@types/mathjs": "^9.4.1",
     "antd": "^5.28.1",

@@ -13,8 +13,13 @@ const { Title } = Typography;
  * Right panel that displays detailed information about the selected node
  */
 export const NodeInspector: React.FC = () => {
-  const { selectedNodeId, currentWorkflow, algorithmLibrary, validationErrors, executionResults } =
-    useAppSelector((state) => state.orchestration);
+  const {
+    selectedNodeId,
+    currentWorkflow,
+    algorithmLibrary,
+    validationErrors,
+    executionResults,
+  } = useAppSelector((state) => state.orchestration);
 
   console.log("🔍 [NodeInspector] Rendering with:", {
     selectedNodeId,
@@ -24,29 +29,33 @@ export const NodeInspector: React.FC = () => {
 
   // Find the selected node
   const selectedNode = currentWorkflow?.nodes.find(
-    (node) => node.id === selectedNodeId
+    (node) => node.id === selectedNodeId,
   );
 
   // Find the algorithm definition
   const algorithm = selectedNode?.data.algorithmKey
-    ? algorithmLibrary.find((alg) => alg.key === selectedNode.data.algorithmKey) ?? null
+    ? (algorithmLibrary.find(
+        (alg) => alg.key === selectedNode.data.algorithmKey,
+      ) ?? null)
     : null;
 
   // Filter validation errors for this node
   const nodeErrors = validationErrors.filter(
-    (error) => error.nodeId === selectedNodeId
+    (error) => error.nodeId === selectedNodeId,
   );
 
   // Get execution result for this node
   const nodeResult = selectedNodeId ? executionResults[selectedNodeId] : null;
 
   console.log("📊 [NodeInspector] Node details:", {
-    selectedNode: selectedNode ? {
-      id: selectedNode.id,
-      label: selectedNode.data.label,
-      status: selectedNode.data.status,
-      hasResult: !!selectedNode.data.result,
-    } : null,
+    selectedNode: selectedNode
+      ? {
+          id: selectedNode.id,
+          label: selectedNode.data.label,
+          status: selectedNode.data.status,
+          hasResult: !!selectedNode.data.result,
+        }
+      : null,
     nodeResult,
     nodeErrors: nodeErrors.length,
   });
@@ -73,31 +82,17 @@ export const NodeInspector: React.FC = () => {
     {
       key: "details",
       label: "详情",
-      children: (
-        <AlgorithmInfo
-          node={selectedNode}
-          algorithm={algorithm}
-        />
-      ),
+      children: <AlgorithmInfo node={selectedNode} algorithm={algorithm} />,
     },
     {
       key: "results",
       label: "结果",
-      children: (
-        <ExecutionResults
-          node={selectedNode}
-          result={nodeResult}
-        />
-      ),
+      children: <ExecutionResults node={selectedNode} result={nodeResult} />,
     },
     {
       key: "validation",
       label: `验证 ${nodeErrors.length > 0 ? `(${nodeErrors.length})` : ""}`,
-      children: (
-        <ValidationErrors
-          errors={nodeErrors}
-        />
-      ),
+      children: <ValidationErrors errors={nodeErrors} />,
     },
   ];
 

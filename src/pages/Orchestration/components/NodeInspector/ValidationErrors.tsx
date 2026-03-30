@@ -21,10 +21,7 @@ export const ValidationErrors: React.FC<ValidationErrorsProps> = ({
   if (!errors || errors.length === 0) {
     return (
       <div className={styles.validationErrors}>
-        <Empty
-          description="无验证错误"
-          image={Empty.PRESENTED_IMAGE_SIMPLE}
-        />
+        <Empty description="无验证错误" image={Empty.PRESENTED_IMAGE_SIMPLE} />
       </div>
     );
   }
@@ -45,7 +42,11 @@ export const ValidationErrors: React.FC<ValidationErrorsProps> = ({
                 错误 ({errorMessages.length})
               </Title>
             </div>
-            <Space direction="vertical" size="small" style={{ width: "100%", marginTop: 12 }}>
+            <Space
+              direction="vertical"
+              size="small"
+              style={{ width: "100%", marginTop: 12 }}
+            >
               {errorMessages.map((error, index) => (
                 <Alert
                   key={index}
@@ -67,7 +68,11 @@ export const ValidationErrors: React.FC<ValidationErrorsProps> = ({
                 警告 ({warningMessages.length})
               </Title>
             </div>
-            <Space direction="vertical" size="small" style={{ width: "100%", marginTop: 12 }}>
+            <Space
+              direction="vertical"
+              size="small"
+              style={{ width: "100%", marginTop: 12 }}
+            >
               {warningMessages.map((warning, index) => (
                 <Alert
                   key={index}

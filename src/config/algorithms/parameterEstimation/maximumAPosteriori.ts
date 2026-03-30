@@ -17,8 +17,7 @@ export const mapAlgorithm: AlgorithmNode = {
   key: "map",
   name: "最大后验估计（MAP）",
   category: "parameter-estimation",
-  description:
-    "通过最大化后验概率来估计模型参数，通过贝叶斯推断结合先验知识。",
+  description: "通过最大化后验概率来估计模型参数，通过贝叶斯推断结合先验知识。",
   icon: "🎯",
 
   inputs: [
@@ -147,7 +146,8 @@ export const mapAlgorithm: AlgorithmNode = {
 
     // Calculate posterior parameters
     // μ_n = (σ²*μ0 + n*σ0²*x̄) / (σ² + n*σ0²)
-    const posteriorMean = (sigmaSq * mu0 + n * sigma0Sq * xBar) / (sigmaSq + n * sigma0Sq);
+    const posteriorMean =
+      (sigmaSq * mu0 + n * sigma0Sq * xBar) / (sigmaSq + n * sigma0Sq);
 
     // σ_n² = (σ²*σ0²) / (σ² + n*σ0²)
     const posteriorVariance = (sigmaSq * sigma0Sq) / (sigmaSq + n * sigma0Sq);
@@ -165,10 +165,16 @@ export const mapAlgorithm: AlgorithmNode = {
     const sumSquaredDiff = data.reduce((sum: number, x: number) => {
       return sum + Math.pow(x - mapEstimate, 2);
     }, 0);
-    const logLikelihood = -n / 2 * Math.log(2 * Math.PI) - n / 2 * Math.log(sigmaSq) - sumSquaredDiff / (2 * sigmaSq);
+    const logLikelihood =
+      (-n / 2) * Math.log(2 * Math.PI) -
+      (n / 2) * Math.log(sigmaSq) -
+      sumSquaredDiff / (2 * sigmaSq);
 
     // Log prior: log p(μ) = -1/2 * log(2π) - 1/2 * log(σ0²) - 1/(2σ0²) * (μ - μ0)²
-    const logPrior = -0.5 * Math.log(2 * Math.PI) - 0.5 * Math.log(sigma0Sq) - Math.pow(mapEstimate - mu0, 2) / (2 * sigma0Sq);
+    const logPrior =
+      -0.5 * Math.log(2 * Math.PI) -
+      0.5 * Math.log(sigma0Sq) -
+      Math.pow(mapEstimate - mu0, 2) / (2 * sigma0Sq);
 
     // Log posterior (unnormalized)
     const logPosterior = logLikelihood + logPrior;
@@ -177,11 +183,15 @@ export const mapAlgorithm: AlgorithmNode = {
     // For normal posterior, credible interval is: μ_n ± z * σ_n
     const zScore = getZScoreByLevel(credibleLevel);
     const credibleInterval = [
-      [posteriorMean - zScore * posteriorStd, posteriorMean + zScore * posteriorStd]
+      [
+        posteriorMean - zScore * posteriorStd,
+        posteriorMean + zScore * posteriorStd,
+      ],
     ];
 
     // Calculate additional statistics
-    const priorInfluence = Math.abs(posteriorMean - xBar) / (Math.abs(posteriorMean) + 1e-10);
+    const priorInfluence =
+      Math.abs(posteriorMean - xBar) / (Math.abs(posteriorMean) + 1e-10);
     const effectiveSampleSize = sigmaSq / posteriorVariance;
 
     return {
