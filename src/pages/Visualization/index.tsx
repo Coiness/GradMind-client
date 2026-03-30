@@ -5,6 +5,7 @@ import type { ParameterValues } from "@/types/parameterConfig";
 import { ParameterPanel } from "@/components/ParameterPanel";
 import { InfoPanel } from "@/components/InfoPanel";
 import { MathCodeBridge } from "@/components/MathCodeBridge";
+import VisualizationCanvas from "@/components/VisualizationCanvas";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   setSelectedScenario,
@@ -70,7 +71,11 @@ const VisualizationPage: FC = () => {
           padding: "16px",
         }}
       >
-        <p>Canvas Area - 这里将来放置图表</p>
+        <VisualizationCanvas
+          visualizationType={currentScenario.visualizationType}
+          data={computationResult}
+          loading={status === "loading"}
+        />
       </main>
 
       <div
