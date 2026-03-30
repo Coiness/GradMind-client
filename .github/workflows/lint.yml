@@ -24,16 +24,36 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20" # 使用与你项目匹配的 Node.js 版本
-          cache: "npm" # 缓存 npm 依赖，加快后续运行速度
 
-      # 3. 安装依赖
+      # 3. 安装 pnpm
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      # 4. 获取 pnpm 缓存目录
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      # 5. 设置 pnpm 缓存
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      # 6. 安装依赖
       - name: Install dependencies
-        run: npm ci # 使用 npm ci 更快、更可靠
+        run: pnpm install --frozen-lockfile
 
-      # 4. 运行 ESLint 检查
+      # 7. 运行 ESLint 检查
       - name: Run ESLint
-        run: npm run lint
+        run: pnpm run lint
 
-      # 5. 运行 Prettier 格式检查
+      # 8. 运行 Prettier 格式检查
       - name: Run Prettier check
-        run: npm run format:check # 注意：这里用 format:check，只检查不写入
+        run: pnpm run format:check # 注意：这里用 format:check，只检查不写入
