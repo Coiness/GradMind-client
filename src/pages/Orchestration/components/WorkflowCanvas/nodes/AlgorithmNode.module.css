@@ -1,0 +1,68 @@
+.algorithmNode {
+  position: relative;
+  min-width: 200px;
+}
+
+.algorithmNode.selected .card {
+  box-shadow: 0 0 0 2px #1890ff;
+}
+
+.card {
+  border-width: 2px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.name {
+  flex: 1;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.error {
+  margin-top: 8px;
+  padding: 4px 8px;
+  background: #fff2f0;
+  border-radius: 4px;
+}
+
+.errorNode {
+  min-width: 150px;
+  border-color: #ff4d4f;
+}
+
+.handle {
+  width: 10px;
+  height: 10px;
+  border: 2px solid #fff;
+}
+
+.handle:hover {
+  width: 12px;
+  height: 12px;
+}

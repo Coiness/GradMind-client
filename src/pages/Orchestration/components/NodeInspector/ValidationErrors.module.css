@@ -1,0 +1,19 @@
+.validationErrors {
+  padding: 0;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.errorIcon {
+  color: #ff4d4f;
+  font-size: 18px;
+}
+
+.warningIcon {
+  color: #faad14;
+  font-size: 18px;
+}

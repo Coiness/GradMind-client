@@ -13,10 +13,6 @@ export default function MainLayout() {
       label: "可视化交互",
     },
     {
-      key: "/translation",
-      label: "公式-算法对译",
-    },
-    {
       key: "/orchestration",
       label: "算法流编排",
     },
@@ -27,8 +23,7 @@ export default function MainLayout() {
   };
 
   return (
-    <div>
-      {/* 2. 使用 className 替换 style */}
+    <div className={styles.layout}>
       <header className={styles.header}>
         <div className={styles.logo}>知几</div>
         <Tabs
@@ -37,7 +32,7 @@ export default function MainLayout() {
           onChange={onTabChange}
         />
       </header>
-      <main>
+      <main className={styles.main}>
         <Suspense fallback={<div>Loading Page...</div>}>
           <Outlet />
         </Suspense>

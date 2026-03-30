@@ -1,0 +1,84 @@
+.oscilloscopeNode {
+  position: relative;
+  min-width: 260px;
+  max-width: 340px;
+}
+
+.oscilloscopeNode.selected .card {
+  box-shadow: 0 0 0 2px #722ed1;
+}
+
+.card {
+  border-width: 2px;
+  border-color: #d3adf7;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  background: #fafafa;
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(114, 46, 209, 0.15);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.name {
+  flex: 1;
+  font-size: 12px;
+  color: #722ed1;
+}
+
+.statusIcon {
+  flex-shrink: 0;
+}
+
+/* 图表区域：执行后在节点下方内嵌渲染 */
+.chartArea {
+  margin-top: 6px;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 6px;
+  height: 180px;
+  width: 100%;
+}
+
+.idle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #bbb;
+  font-size: 11px;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.handle {
+  width: 10px;
+  height: 10px;
+  border: 2px solid #fff;
+  background: #722ed1 !important;
+}
+
+.handle:hover {
+  width: 12px;
+  height: 12px;
+}
+
+.error {
+  margin-top: 6px;
+  padding: 4px 8px;
+  background: #fff2f0;
+  border-radius: 4px;
+  font-size: 11px;
+  color: #ff4d4f;
+}

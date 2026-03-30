@@ -1,12 +1,59 @@
-import React, { memo } from "react";
-import type { FC, ReactNode } from "react";
+import React, { useEffect } from "react";
+import { Layout, Empty } from "antd";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import {
+  loadAlgorithmLibrary,
+  loadSavedWorkflows,
+  createNewWorkflow,
+  loadTemplates,
+} from "@/store/features/orchestrationSlice";
+import { AlgorithmLibrary } from "./components/AlgorithmLibrary";
+import { WorkflowCanvasWithProvider } from "./components/WorkflowCanvas";
+import { NodeInspector } from "./components/NodeInspector";
+import { WorkflowControls } from "./components/WorkflowControls";
+import styles from "./index.module.css";
 
-interface IProps {
-  children?: ReactNode;
-}
+const { Sider, Content } = Layout;
 
-const OrchestrationPage: FC<IProps> = () => {
-  return <div>OrchestrationPage</div>;
+const OrchestrationPage: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { currentWorkflow } = useAppSelector((state) => state.orchestration);
+
+  useEffect(() => {
+    dispatch(loadAlgorithmLibrary());
+    dispatch(loadSavedWorkflows());
+    dispatch(loadTemplates());
+    if (!currentWorkflow) {
+      dispatch(createNewWorkflow({ name: "新建工作流" }));
+    }
+  }, [dispatch]);
+
+  return (
+    <Layout className={styles.orchestrationPage}>
+      <Sider width={300} className={styles.leftPanel} theme="light">
+        <AlgorithmLibrary />
+      </Sider>
+
+      <Content className={styles.centerPanel}>
+        <WorkflowControls />
+        <div className={styles.canvasArea}>
+          {currentWorkflow ? (
+            <WorkflowCanvasWithProvider />
+          ) : (
+            <div className={styles.emptyState}>
+              <Empty description="未加载工作流。创建一个新工作流以开始。" />
+            </div>
+          )}
+        </div>
+      </Content>
+
+      <Sider width={300} className={styles.rightPanel} theme="light">
+        <div className={styles.panelContent}>
+          <NodeInspector />
+        </div>
+      </Sider>
+    </Layout>
+  );
 };
 
-export default memo(OrchestrationPage);
+export default OrchestrationPage;
