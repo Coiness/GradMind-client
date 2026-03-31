@@ -1,8 +1,8 @@
 .workflowControls {
-  padding: 8px 16px;
-  background: #fff;
-  border-bottom: 1px solid #f0f0f0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 12px 20px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
   z-index: 10;
   flex-shrink: 0;
 }

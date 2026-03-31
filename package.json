@@ -16,8 +16,11 @@
   },
   "dependencies": {
     "@ant-design/icons": "^6.1.1",
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.5.0",
     "@reduxjs/toolkit": "^2.10.1",
     "@types/mathjs": "^9.4.1",
+    "@types/three": "^0.183.1",
     "antd": "^5.28.1",
     "echarts": "^6.0.0",
     "echarts-for-react": "^3.0.6",
@@ -27,7 +30,8 @@
     "react-dom": "^19.1.1",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.9.5",
-    "reactflow": "^11.11.4"
+    "reactflow": "^11.11.4",
+    "three": "^0.183.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",

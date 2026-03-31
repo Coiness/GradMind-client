@@ -38,7 +38,7 @@ const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({
           alignItems: "center",
           justifyContent: "center",
           height: "100%",
-          color: "#999",
+          color: "var(--text-secondary)",
         }}
       >
         <div>请调整参数并点击"应用参数"查看可视化</div>
@@ -69,7 +69,7 @@ const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({
       return null;
   }
 
-  return <div style={{ padding: "20px", color: "#999" }}>可视化类型不匹配</div>;
+  return <div style={{ padding: "20px", color: "var(--text-secondary)" }}>可视化类型不匹配</div>;
 };
 
 export default VisualizationCanvas;

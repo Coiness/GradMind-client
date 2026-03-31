@@ -1,7 +1,7 @@
 .workflowCanvas {
   width: 100%;
   height: 100%;
-  background: #fafafa;
+  background: var(--bg-tertiary);
 }
 
 /* ReactFlow customization */
@@ -10,19 +10,12 @@
 }
 
 :global(.react-flow__node.selected) {
-  box-shadow: none;
-}
-
-:global(.react-flow__edge) {
-  cursor: pointer;
-}
-
-:global(.react-flow__edge.selected) {
-  z-index: 1000;
+  box-shadow: 0 0 0 2px var(--accent-primary);
 }
 
 :global(.react-flow__edge-path) {
   stroke-width: 2;
+  stroke: var(--accent-primary);
 }
 
 :global(.react-flow__edge.animated .react-flow__edge-path) {
@@ -37,10 +30,27 @@
 }
 
 :global(.react-flow__controls) {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-md);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+
+:global(.react-flow__controls button) {
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+  transition: var(--transition-smooth);
+}
+
+:global(.react-flow__controls button:hover) {
+  background: var(--accent-primary);
+  color: white;
 }
 
 :global(.react-flow__minimap) {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  border-radius: 4px;
+  box-shadow: var(--shadow-md);
+  border-radius: 8px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
 }

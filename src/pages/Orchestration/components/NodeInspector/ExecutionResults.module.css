@@ -20,8 +20,8 @@
 
 .resultData {
   margin-top: 8px;
-  background: #fafafa;
-  border: 1px solid #f0f0f0;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   padding: 12px;
   max-height: 400px;
@@ -33,7 +33,7 @@
   font-family: "Courier New", Courier, monospace;
   font-size: 12px;
   line-height: 1.5;
-  color: #262626;
+  color: var(--text-primary);
   white-space: pre-wrap;
   word-wrap: break-word;
 }
@@ -41,5 +41,5 @@
 .metadata {
   margin-top: 16px;
   padding-top: 16px;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--border-color);
 }

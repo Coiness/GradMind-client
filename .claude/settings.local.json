@@ -17,7 +17,15 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(do echo:*)",
-      "Bash(tree -L 3 /c/Users/15121/Desktop/code/GradMind-client/src -I 'node_modules' 2>/dev/null || find /c/Users/15121/Desktop/code/GradMind-client/src -type f -name \"*.tsx\" -o -name \"*.ts\" | grep -v node_modules | sort)"
+      "Bash(tree -L 3 /c/Users/15121/Desktop/code/GradMind-client/src -I 'node_modules' 2>/dev/null || find /c/Users/15121/Desktop/code/GradMind-client/src -type f -name \"*.tsx\" -o -name \"*.ts\" | grep -v node_modules | sort)",
+      "Bash(npx skills:*)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm run:*)",
+      "WebSearch",
+      "Read(//c/Users/15121/.agents/skills/ui-ux-pro-max/**)",
+      "Bash(python3 scripts/search.py \"data visualization machine learning tool professional scientific\" --design-system -p \"GradMind\" -f markdown)",
+      "Bash(xargs grep:*)",
+      "Bash(grep -r \"ReactECharts\\\\|echarts\" /c/Users/15121/Desktop/code/GradMind-client/src/pages/Orchestration/components/ResultPanel/charts/*.tsx)"
     ]
   }
 }

@@ -137,7 +137,7 @@ export const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({
                     style={{
                       marginTop: 8,
                       padding: 8,
-                      background: "#f5f5f5",
+                      background: "var(--bg-tertiary)",
                       borderRadius: 4,
                       textAlign: "center",
                     }}

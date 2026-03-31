@@ -1,6 +1,7 @@
 import React from "react";
 import ReactECharts from "echarts-for-react";
 import { Statistic } from "antd";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface ScatterChartProps {
   data: {
@@ -17,6 +18,7 @@ interface ScatterChartProps {
  */
 const ScatterChart: React.FC<ScatterChartProps> = ({ data }) => {
   const { points = [], explainedVariance = [], cumulativeVariance = [] } = data;
+  const { theme } = useTheme();
 
   const pc1Pct =
     explainedVariance[0] != null
@@ -34,9 +36,10 @@ const ScatterChart: React.FC<ScatterChartProps> = ({ data }) => {
         : "—";
 
   const option = {
+    backgroundColor: theme === 'dark' ? '#0f172a' : '#ffffff',
     title: {
       text: `PCA 降维结果（PC1: ${pc1Pct}%，PC2: ${pc2Pct}%）`,
-      textStyle: { fontSize: 13, fontWeight: "bold" },
+      textStyle: { fontSize: 13, fontWeight: "bold", color: theme === 'dark' ? '#e2e8f0' : '#000' },
       left: "center",
       top: 4,
     },
@@ -51,14 +54,20 @@ const ScatterChart: React.FC<ScatterChartProps> = ({ data }) => {
       nameLocation: "middle",
       nameGap: 22,
       type: "value",
-      splitLine: { lineStyle: { type: "dashed" } },
+      splitLine: { lineStyle: { type: "dashed", color: theme === 'dark' ? '#334155' : '#e5e7eb' } },
+      axisLine: { lineStyle: { color: theme === 'dark' ? '#64748b' : '#999' } },
+      axisLabel: { color: theme === 'dark' ? '#94a3b8' : '#666' },
+      nameTextStyle: { color: theme === 'dark' ? '#94a3b8' : '#666' }
     },
     yAxis: {
       name: "PC2",
       nameLocation: "middle",
       nameGap: 32,
       type: "value",
-      splitLine: { lineStyle: { type: "dashed" } },
+      splitLine: { lineStyle: { type: "dashed", color: theme === 'dark' ? '#334155' : '#e5e7eb' } },
+      axisLine: { lineStyle: { color: theme === 'dark' ? '#64748b' : '#999' } },
+      axisLabel: { color: theme === 'dark' ? '#94a3b8' : '#666' },
+      nameTextStyle: { color: theme === 'dark' ? '#94a3b8' : '#666' }
     },
     series: [
       {
