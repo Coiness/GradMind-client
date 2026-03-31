@@ -1,21 +1,36 @@
 import type { Scenario } from "@/types/scenarioConfig";
-import { presetDatasets } from "@/config/presetDatasets";
 import { pcaAlgorithm } from "@/config/algorithms/dataReduction/pca";
 import { pcaBridge } from "./pcaBridge";
 
 // 生成 4 维高斯数据
 function generate4DGaussianData(samples: number): number[][] {
   const data: number[][] = [];
+
   for (let i = 0; i < samples; i++) {
-    const row: number[] = [];
-    for (let j = 0; j < 4; j++) {
+    // 生成基础高斯随机数
+    const gaussianRandom = () => {
       const u1 = Math.random();
       const u2 = Math.random();
-      const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
-      row.push(z * (j === 3 ? 2 : 1)); // 第 4 维变化更明显
-    }
-    data.push(row);
+      return Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+    };
+
+    // 生成 4 个独立的基础变量
+    const base1 = gaussianRandom();
+    const base2 = gaussianRandom();
+    const base3 = gaussianRandom();
+    const base4 = gaussianRandom();
+
+    // 前 3 维：使用不同的线性组合，确保主成分方向分散
+    const x = base1 * 1.5 + base2 * 0.3;
+    const y = base2 * 1.2 + base3 * 0.5;
+    const z = base3 * 1.0 + base1 * 0.2 + base4 * 0.3;
+
+    // 第 4 维：独立生成，变化更明显
+    const color = base4 * 2.0 + base1 * 0.2;
+
+    data.push([x, y, z, color]);
   }
+
   return data;
 }
 
@@ -28,18 +43,6 @@ const pcaScenario: Scenario = {
   bridgeConfig: pcaBridge,
   parameterConfig: [
     {
-      key: "datasetType",
-      label: "数据集",
-      type: "select",
-      defaultValue: "fruit",
-      options: {
-        items: [
-          { label: "水果多维特征", value: "fruit" },
-          { label: "随机高斯数据", value: "random" },
-        ],
-      },
-    },
-    {
       key: "nComponents",
       label: "主成分数量",
       type: "slider",
@@ -48,7 +51,6 @@ const pcaScenario: Scenario = {
     },
   ],
   compute: async (params) => {
-    const datasetType = params.datasetType as string;
     const nComponents = params.nComponents as number;
     const startTime = Date.now();
 
@@ -77,6 +79,8 @@ const pcaScenario: Scenario = {
         variance: result.variance as number[],
         explainedVariance: result.explainedVariance as number[],
         cumulativeVariance: result.cumulativeVariance as number[],
+        components: result.components as number[][],
+        mean: result.mean as number[],
       },
     };
   },

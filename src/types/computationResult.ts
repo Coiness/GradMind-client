@@ -22,6 +22,8 @@ export interface PCAVisualization {
   variance?: number[]; // 方差
   explainedVariance?: number[]; // 解释方差
   cumulativeVariance?: number[]; // 累积方差
+  components?: number[][]; // 主成分向量
+  mean?: number[]; // 均值
 }
 
 // 收敛曲线可视化数据
