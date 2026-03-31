@@ -36,10 +36,14 @@ const ScatterChart: React.FC<ScatterChartProps> = ({ data }) => {
         : "—";
 
   const option = {
-    backgroundColor: theme === 'dark' ? '#0f172a' : '#ffffff',
+    backgroundColor: theme === "dark" ? "#0f172a" : "#ffffff",
     title: {
       text: `PCA 降维结果（PC1: ${pc1Pct}%，PC2: ${pc2Pct}%）`,
-      textStyle: { fontSize: 13, fontWeight: "bold", color: theme === 'dark' ? '#e2e8f0' : '#000' },
+      textStyle: {
+        fontSize: 13,
+        fontWeight: "bold",
+        color: theme === "dark" ? "#e2e8f0" : "#000",
+      },
       left: "center",
       top: 4,
     },
@@ -54,20 +58,30 @@ const ScatterChart: React.FC<ScatterChartProps> = ({ data }) => {
       nameLocation: "middle",
       nameGap: 22,
       type: "value",
-      splitLine: { lineStyle: { type: "dashed", color: theme === 'dark' ? '#334155' : '#e5e7eb' } },
-      axisLine: { lineStyle: { color: theme === 'dark' ? '#64748b' : '#999' } },
-      axisLabel: { color: theme === 'dark' ? '#94a3b8' : '#666' },
-      nameTextStyle: { color: theme === 'dark' ? '#94a3b8' : '#666' }
+      splitLine: {
+        lineStyle: {
+          type: "dashed",
+          color: theme === "dark" ? "#334155" : "#e5e7eb",
+        },
+      },
+      axisLine: { lineStyle: { color: theme === "dark" ? "#64748b" : "#999" } },
+      axisLabel: { color: theme === "dark" ? "#94a3b8" : "#666" },
+      nameTextStyle: { color: theme === "dark" ? "#94a3b8" : "#666" },
     },
     yAxis: {
       name: "PC2",
       nameLocation: "middle",
       nameGap: 32,
       type: "value",
-      splitLine: { lineStyle: { type: "dashed", color: theme === 'dark' ? '#334155' : '#e5e7eb' } },
-      axisLine: { lineStyle: { color: theme === 'dark' ? '#64748b' : '#999' } },
-      axisLabel: { color: theme === 'dark' ? '#94a3b8' : '#666' },
-      nameTextStyle: { color: theme === 'dark' ? '#94a3b8' : '#666' }
+      splitLine: {
+        lineStyle: {
+          type: "dashed",
+          color: theme === "dark" ? "#334155" : "#e5e7eb",
+        },
+      },
+      axisLine: { lineStyle: { color: theme === "dark" ? "#64748b" : "#999" } },
+      axisLabel: { color: theme === "dark" ? "#94a3b8" : "#666" },
+      nameTextStyle: { color: theme === "dark" ? "#94a3b8" : "#666" },
     },
     series: [
       {

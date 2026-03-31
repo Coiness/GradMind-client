@@ -34,10 +34,14 @@ const ConvergenceChart: React.FC<ConvergenceChartProps> = ({ data }) => {
   const useLog = history.length > 0 && history.every((v) => v > 0);
 
   const option = {
-    backgroundColor: theme === 'dark' ? '#0f172a' : '#ffffff',
+    backgroundColor: theme === "dark" ? "#0f172a" : "#ffffff",
     title: {
       text: `收敛过程（${iterations} 次迭代，${converged ? "已收敛 ✓" : "未收敛"}）`,
-      textStyle: { fontSize: 13, fontWeight: "bold", color: theme === 'dark' ? '#e2e8f0' : '#000' },
+      textStyle: {
+        fontSize: 13,
+        fontWeight: "bold",
+        color: theme === "dark" ? "#e2e8f0" : "#000",
+      },
       left: "center",
       top: 4,
     },
@@ -55,9 +59,12 @@ const ConvergenceChart: React.FC<ConvergenceChartProps> = ({ data }) => {
       nameGap: 22,
       type: "category",
       data: xAxisData,
-      axisLabel: { interval: Math.floor(history.length / 5), color: theme === 'dark' ? '#94a3b8' : '#666' },
-      axisLine: { lineStyle: { color: theme === 'dark' ? '#64748b' : '#999' } },
-      nameTextStyle: { color: theme === 'dark' ? '#94a3b8' : '#666' }
+      axisLabel: {
+        interval: Math.floor(history.length / 5),
+        color: theme === "dark" ? "#94a3b8" : "#666",
+      },
+      axisLine: { lineStyle: { color: theme === "dark" ? "#64748b" : "#999" } },
+      nameTextStyle: { color: theme === "dark" ? "#94a3b8" : "#666" },
     },
     yAxis: {
       name: "目标函数值",
@@ -65,10 +72,12 @@ const ConvergenceChart: React.FC<ConvergenceChartProps> = ({ data }) => {
       nameGap: 48,
       type: useLog ? "log" : "value",
       logBase: 10,
-      axisLabel: { color: theme === 'dark' ? '#94a3b8' : '#666' },
-      axisLine: { lineStyle: { color: theme === 'dark' ? '#64748b' : '#999' } },
-      splitLine: { lineStyle: { color: theme === 'dark' ? '#334155' : '#e5e7eb' } },
-      nameTextStyle: { color: theme === 'dark' ? '#94a3b8' : '#666' }
+      axisLabel: { color: theme === "dark" ? "#94a3b8" : "#666" },
+      axisLine: { lineStyle: { color: theme === "dark" ? "#64748b" : "#999" } },
+      splitLine: {
+        lineStyle: { color: theme === "dark" ? "#334155" : "#e5e7eb" },
+      },
+      nameTextStyle: { color: theme === "dark" ? "#94a3b8" : "#666" },
     },
     series: [
       {
@@ -104,7 +113,13 @@ const ConvergenceChart: React.FC<ConvergenceChartProps> = ({ data }) => {
         }}
       >
         <div>
-          <div style={{ fontSize: 12, color: theme === 'dark' ? '#94a3b8' : '#888', marginBottom: 4 }}>
+          <div
+            style={{
+              fontSize: 12,
+              color: theme === "dark" ? "#94a3b8" : "#888",
+              marginBottom: 4,
+            }}
+          >
             收敛状态
           </div>
           <Tag color={converged ? "success" : "warning"}>
@@ -122,7 +137,13 @@ const ConvergenceChart: React.FC<ConvergenceChartProps> = ({ data }) => {
           valueStyle={{ fontSize: 14 }}
         />
         <div>
-          <div style={{ fontSize: 12, color: theme === 'dark' ? '#94a3b8' : '#888', marginBottom: 2 }}>
+          <div
+            style={{
+              fontSize: 12,
+              color: theme === "dark" ? "#94a3b8" : "#888",
+              marginBottom: 2,
+            }}
+          >
             最优点
           </div>
           <div style={{ fontSize: 12, wordBreak: "break-all" }}>

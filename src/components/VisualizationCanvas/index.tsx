@@ -69,7 +69,11 @@ const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({
       return null;
   }
 
-  return <div style={{ padding: "20px", color: "var(--text-secondary)" }}>可视化类型不匹配</div>;
+  return (
+    <div style={{ padding: "20px", color: "var(--text-secondary)" }}>
+      可视化类型不匹配
+    </div>
+  );
 };
 
 export default VisualizationCanvas;

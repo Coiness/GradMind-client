@@ -14,7 +14,11 @@ interface MatrixViewProps {
 }
 
 /** 将矩阵转换为 Ant Design Table 的 columns + dataSource */
-function matrixToTable(matrix: number[][], label: string, theme: 'light' | 'dark') {
+function matrixToTable(
+  matrix: number[][],
+  label: string,
+  theme: "light" | "dark",
+) {
   if (!matrix || matrix.length === 0) return { columns: [], dataSource: [] };
 
   const cols = matrix[0].length;
@@ -25,7 +29,11 @@ function matrixToTable(matrix: number[][], label: string, theme: 'light' | 'dark
       key: "row",
       width: 48,
       render: (_: unknown, __: unknown, index: number) => (
-        <span style={{ color: theme === 'dark' ? '#94a3b8' : '#888', fontSize: 11 }}>r{index + 1}</span>
+        <span
+          style={{ color: theme === "dark" ? "#94a3b8" : "#888", fontSize: 11 }}
+        >
+          r{index + 1}
+        </span>
       ),
     },
     ...Array.from({ length: cols }, (_, j) => ({
@@ -64,10 +72,10 @@ const MatrixView: React.FC<MatrixViewProps> = ({ data }) => {
   const vtTable = matrixToTable(vt, "V^T", theme);
 
   const sigmaOption = {
-    backgroundColor: theme === 'dark' ? '#0f172a' : '#ffffff',
+    backgroundColor: theme === "dark" ? "#0f172a" : "#ffffff",
     title: {
       text: "奇异值 Σ（能量分布）",
-      textStyle: { fontSize: 12, color: theme === 'dark' ? '#e2e8f0' : '#000' },
+      textStyle: { fontSize: 12, color: theme === "dark" ? "#e2e8f0" : "#000" },
       left: "center",
       top: 2,
     },
@@ -80,14 +88,16 @@ const MatrixView: React.FC<MatrixViewProps> = ({ data }) => {
     xAxis: {
       type: "category",
       data: sigma.map((_, i) => `σ${i + 1}`),
-      axisLabel: { fontSize: 11, color: theme === 'dark' ? '#94a3b8' : '#666' },
-      axisLine: { lineStyle: { color: theme === 'dark' ? '#64748b' : '#999' } }
+      axisLabel: { fontSize: 11, color: theme === "dark" ? "#94a3b8" : "#666" },
+      axisLine: { lineStyle: { color: theme === "dark" ? "#64748b" : "#999" } },
     },
     yAxis: {
       type: "value",
-      axisLabel: { fontSize: 10, color: theme === 'dark' ? '#94a3b8' : '#666' },
-      axisLine: { lineStyle: { color: theme === 'dark' ? '#64748b' : '#999' } },
-      splitLine: { lineStyle: { color: theme === 'dark' ? '#334155' : '#e5e7eb' } }
+      axisLabel: { fontSize: 10, color: theme === "dark" ? "#94a3b8" : "#666" },
+      axisLine: { lineStyle: { color: theme === "dark" ? "#64748b" : "#999" } },
+      splitLine: {
+        lineStyle: { color: theme === "dark" ? "#334155" : "#e5e7eb" },
+      },
     },
     series: [
       {

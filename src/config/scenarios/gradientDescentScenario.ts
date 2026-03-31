@@ -145,9 +145,10 @@ const gradientDescentScenario: Scenario = {
     const finalLoss = func(x, y);
 
     // 根据函数类型调整范围
-    const range = funcType === "rosenbrock"
-      ? { xMin: -2, xMax: 2, yMin: -2, yMax: 2 }
-      : { xMin: -5, xMax: 5, yMin: -5, yMax: 5 };
+    const range =
+      funcType === "rosenbrock"
+        ? { xMin: -2, xMax: 2, yMin: -2, yMax: 2 }
+        : { xMin: -5, xMax: 5, yMin: -5, yMax: 5 };
 
     const surfaceData = generateSurfaceData(funcType, range);
 

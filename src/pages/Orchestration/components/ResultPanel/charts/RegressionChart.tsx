@@ -50,10 +50,14 @@ const RegressionChart: React.FC<RegressionChartProps> = ({ data }) => {
     residuals.reduce((s, r) => s + r * r, 0) / (residuals.length || 1);
 
   const option = {
-    backgroundColor: theme === 'dark' ? '#0f172a' : '#ffffff',
+    backgroundColor: theme === "dark" ? "#0f172a" : "#ffffff",
     title: {
       text: `最小二乘回归（R² = ${rSquared.toFixed(4)}）`,
-      textStyle: { fontSize: 13, fontWeight: "bold", color: theme === 'dark' ? '#e2e8f0' : '#000' },
+      textStyle: {
+        fontSize: 13,
+        fontWeight: "bold",
+        color: theme === "dark" ? "#e2e8f0" : "#000",
+      },
       left: "center",
       top: 4,
     },
@@ -62,7 +66,7 @@ const RegressionChart: React.FC<RegressionChartProps> = ({ data }) => {
       data: ["原始数据", "拟合直线"],
       top: 28,
       right: 10,
-      textStyle: { fontSize: 11, color: theme === 'dark' ? '#94a3b8' : '#666' },
+      textStyle: { fontSize: 11, color: theme === "dark" ? "#94a3b8" : "#666" },
     },
     grid: { left: 50, right: 20, top: 56, bottom: 36 },
     xAxis: {
@@ -70,20 +74,30 @@ const RegressionChart: React.FC<RegressionChartProps> = ({ data }) => {
       nameLocation: "middle",
       nameGap: 22,
       type: "value",
-      splitLine: { lineStyle: { type: "dashed", color: theme === 'dark' ? '#334155' : '#e5e7eb' } },
-      axisLine: { lineStyle: { color: theme === 'dark' ? '#64748b' : '#999' } },
-      axisLabel: { color: theme === 'dark' ? '#94a3b8' : '#666' },
-      nameTextStyle: { color: theme === 'dark' ? '#94a3b8' : '#666' }
+      splitLine: {
+        lineStyle: {
+          type: "dashed",
+          color: theme === "dark" ? "#334155" : "#e5e7eb",
+        },
+      },
+      axisLine: { lineStyle: { color: theme === "dark" ? "#64748b" : "#999" } },
+      axisLabel: { color: theme === "dark" ? "#94a3b8" : "#666" },
+      nameTextStyle: { color: theme === "dark" ? "#94a3b8" : "#666" },
     },
     yAxis: {
       name: "y",
       nameLocation: "middle",
       nameGap: 36,
       type: "value",
-      splitLine: { lineStyle: { type: "dashed", color: theme === 'dark' ? '#334155' : '#e5e7eb' } },
-      axisLine: { lineStyle: { color: theme === 'dark' ? '#64748b' : '#999' } },
-      axisLabel: { color: theme === 'dark' ? '#94a3b8' : '#666' },
-      nameTextStyle: { color: theme === 'dark' ? '#94a3b8' : '#666' }
+      splitLine: {
+        lineStyle: {
+          type: "dashed",
+          color: theme === "dark" ? "#334155" : "#e5e7eb",
+        },
+      },
+      axisLine: { lineStyle: { color: theme === "dark" ? "#64748b" : "#999" } },
+      axisLabel: { color: theme === "dark" ? "#94a3b8" : "#666" },
+      nameTextStyle: { color: theme === "dark" ? "#94a3b8" : "#666" },
     },
     series: [
       {
@@ -120,7 +134,13 @@ const RegressionChart: React.FC<RegressionChartProps> = ({ data }) => {
         }}
       >
         <div>
-          <div style={{ fontSize: 12, color: theme === 'dark' ? '#94a3b8' : '#888', marginBottom: 2 }}>
+          <div
+            style={{
+              fontSize: 12,
+              color: theme === "dark" ? "#94a3b8" : "#888",
+              marginBottom: 2,
+            }}
+          >
             拟合方程
           </div>
           <div style={{ fontSize: 13, fontWeight: 600 }}>

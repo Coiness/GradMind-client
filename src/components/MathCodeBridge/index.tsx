@@ -20,7 +20,13 @@ export const MathCodeBridge: React.FC<MathCodeBridgeProps> = ({ mappings }) => {
 
   if (!mappings || mappings.length === 0) {
     return (
-      <div style={{ padding: "20px", textAlign: "center", color: "var(--text-secondary)" }}>
+      <div
+        style={{
+          padding: "20px",
+          textAlign: "center",
+          color: "var(--text-secondary)",
+        }}
+      >
         当前场景暂无公式-代码对应关系
       </div>
     );

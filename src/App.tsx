@@ -35,7 +35,7 @@ function AppContent() {
   const element = useRoutes(router);
 
   return (
-    <ConfigProvider theme={currentTheme === 'dark' ? darkTheme : lightTheme}>
+    <ConfigProvider theme={currentTheme === "dark" ? darkTheme : lightTheme}>
       <Suspense fallback={<div>Loading Layout...</div>}>{element}</Suspense>
     </ConfigProvider>
   );

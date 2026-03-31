@@ -2,7 +2,11 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { Button, Space } from "antd";
-import { PlayCircleOutlined, PauseCircleOutlined, ReloadOutlined } from "@ant-design/icons";
+import {
+  PlayCircleOutlined,
+  PauseCircleOutlined,
+  ReloadOutlined,
+} from "@ant-design/icons";
 import * as THREE from "three";
 import { useTheme } from "@/contexts/ThemeContext";
 import type { PCAVisualization } from "@/types/computationResult";
@@ -42,7 +46,14 @@ const PCArrows: React.FC<{
       {arrows.map((arrow, i) => (
         <arrowHelper
           key={i}
-          args={[arrow.direction, new THREE.Vector3(0, 0, 0), 3, arrow.color, 0.3, 0.2]}
+          args={[
+            arrow.direction,
+            new THREE.Vector3(0, 0, 0),
+            3,
+            arrow.color,
+            0.3,
+            0.2,
+          ]}
         />
       ))}
     </group>
@@ -65,7 +76,7 @@ const ScatterPoints: React.FC<{
 
     const colors = shouldShowColor
       ? fourthDimValues.map((val) => mapValueToColor(val, min, max))
-      : originalData.map(() => '#808080');
+      : originalData.map(() => "#808080");
 
     // 计算投影
     const projected = originalData.map((point) => {
@@ -78,7 +89,10 @@ const ScatterPoints: React.FC<{
       const result = [0, 0, 0, point[3]]; // 第 4 维保持不变
 
       for (let i = 0; i < nComponents; i++) {
-        const dot = point.reduce((sum, val, j) => sum + val * components[i][j], 0);
+        const dot = point.reduce(
+          (sum, val, j) => sum + val * components[i][j],
+          0,
+        );
         for (let j = 0; j < 3; j++) {
           result[j] += dot * components[i][j];
         }
@@ -118,7 +132,9 @@ const PCA3DChart: React.FC<PCA3DChartProps> = ({ data }) => {
   const [isPlaying, setIsPlaying] = useState(true);
 
   if (!components || components.length === 0) {
-    return <div style={{ padding: 20, color: "red" }}>错误：缺少主成分数据</div>;
+    return (
+      <div style={{ padding: 20, color: "red" }}>错误：缺少主成分数据</div>
+    );
   }
 
   // 动画循环 (6秒: 100步 × 60ms)
@@ -146,15 +162,29 @@ const PCA3DChart: React.FC<PCA3DChartProps> = ({ data }) => {
   };
 
   return (
-    <div style={{ height: "100%", background: theme === "dark" ? "#0f172a" : "#ffffff", position: "relative" }}>
+    <div
+      style={{
+        height: "100%",
+        background: theme === "dark" ? "#0f172a" : "#ffffff",
+        position: "relative",
+      }}
+    >
       <Canvas camera={{ position: [10, 10, 10], fov: 50 }}>
-        <color attach="background" args={[theme === "dark" ? "#0f172a" : "#ffffff"]} />
+        <color
+          attach="background"
+          args={[theme === "dark" ? "#0f172a" : "#ffffff"]}
+        />
         <ambientLight intensity={0.6} />
         <directionalLight position={[5, 5, 5]} intensity={0.8} />
         <pointLight position={[-5, -5, -5]} intensity={0.4} />
 
         <PCArrows components={components} nComponents={nComponents} />
-        <ScatterPoints originalData={originalData} components={components} nComponents={nComponents} progress={progress} />
+        <ScatterPoints
+          originalData={originalData}
+          components={components}
+          nComponents={nComponents}
+          progress={progress}
+        />
 
         <OrbitControls enableDamping dampingFactor={0.05} />
         <axesHelper args={[5]} />
@@ -168,7 +198,9 @@ const PCA3DChart: React.FC<PCA3DChartProps> = ({ data }) => {
             onClick={handlePlayPause}
           />
           <Button icon={<ReloadOutlined />} onClick={handleReset} />
-          <span style={{ color: theme === "dark" ? "#fff" : "#000", marginLeft: 8 }}>
+          <span
+            style={{ color: theme === "dark" ? "#fff" : "#000", marginLeft: 8 }}
+          >
             {nComponents}D → {Math.round(progress * 100)}%
           </span>
         </Space>

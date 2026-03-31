@@ -2,7 +2,11 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Grid } from "@react-three/drei";
 import { Button, Space } from "antd";
-import { PlayCircleOutlined, PauseCircleOutlined, ReloadOutlined } from "@ant-design/icons";
+import {
+  PlayCircleOutlined,
+  PauseCircleOutlined,
+  ReloadOutlined,
+} from "@ant-design/icons";
 import * as THREE from "three";
 import { useTheme } from "@/contexts/ThemeContext";
 import type { GradientDescentVisualization } from "@/types/computationResult";
@@ -25,7 +29,7 @@ const Surface: React.FC<{
       xMax - xMin,
       yMax - yMin,
       resolution,
-      resolution
+      resolution,
     );
 
     // 目标函数
@@ -72,7 +76,14 @@ const PathLine: React.FC<{ points: THREE.Vector3[] }> = ({ points }) => {
   }, [points]);
 
   return (
-    <primitive object={new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: 0xff0000 }))} />
+    <primitive
+      object={
+        new THREE.Line(
+          geometry,
+          new THREE.LineBasicMaterial({ color: 0xff0000 }),
+        )
+      }
+    />
   );
 };
 
@@ -81,13 +92,19 @@ const CurrentPoint: React.FC<{ position: THREE.Vector3 }> = ({ position }) => {
   return (
     <mesh position={position}>
       <sphereGeometry args={[0.15, 16, 16]} />
-      <meshStandardMaterial color="#ff0000" emissive="#ff0000" emissiveIntensity={0.5} />
+      <meshStandardMaterial
+        color="#ff0000"
+        emissive="#ff0000"
+        emissiveIntensity={0.5}
+      />
     </mesh>
   );
 };
 
 // 主组件
-const GradientDescent3DChart: React.FC<GradientDescent3DChartProps> = ({ data }) => {
+const GradientDescent3DChart: React.FC<GradientDescent3DChartProps> = ({
+  data,
+}) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const timerRef = useRef<number | null>(null);
@@ -115,9 +132,9 @@ const GradientDescent3DChart: React.FC<GradientDescent3DChartProps> = ({ data })
 
   // 转换路径点为 Three.js Vector3
   const pathVectors = useMemo(() => {
-    return pathPoints.slice(0, currentStep + 1).map(
-      (p) => new THREE.Vector3(p.x, p.z, -p.y)
-    );
+    return pathPoints
+      .slice(0, currentStep + 1)
+      .map((p) => new THREE.Vector3(p.x, p.z, -p.y));
   }, [pathPoints, currentStep]);
 
   const currentPosition = useMemo(() => {
@@ -144,13 +161,23 @@ const GradientDescent3DChart: React.FC<GradientDescent3DChartProps> = ({ data })
         >
           重置
         </Button>
-        <span style={{ color: theme === 'dark' ? '#94a3b8' : '#666', fontSize: 12 }}>
+        <span
+          style={{ color: theme === "dark" ? "#94a3b8" : "#666", fontSize: 12 }}
+        >
           步骤: {currentStep + 1} / {pathPoints.length}
         </span>
       </Space>
-      <div style={{ flex: 1, background: theme === 'dark' ? '#0f172a' : '#ffffff' }}>
+      <div
+        style={{
+          flex: 1,
+          background: theme === "dark" ? "#0f172a" : "#ffffff",
+        }}
+      >
         <Canvas camera={{ position: [10, 10, 10], fov: 50 }}>
-          <color attach="background" args={[theme === 'dark' ? '#0f172a' : '#ffffff']} />
+          <color
+            attach="background"
+            args={[theme === "dark" ? "#0f172a" : "#ffffff"]}
+          />
           <ambientLight intensity={0.5} />
           <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
           <pointLight position={[-10, -10, -5]} intensity={0.5} />
@@ -159,7 +186,11 @@ const GradientDescent3DChart: React.FC<GradientDescent3DChartProps> = ({ data })
           {pathVectors.length > 1 && <PathLine points={pathVectors} />}
           <CurrentPoint position={currentPosition} />
 
-          <Grid args={[20, 20]} cellColor={theme === 'dark' ? '#1e293b' : '#e5e7eb'} sectionColor={theme === 'dark' ? '#334155' : '#9ca3af'} />
+          <Grid
+            args={[20, 20]}
+            cellColor={theme === "dark" ? "#1e293b" : "#e5e7eb"}
+            sectionColor={theme === "dark" ? "#334155" : "#9ca3af"}
+          />
           <OrbitControls enableDamping dampingFactor={0.05} />
           <axesHelper args={[5]} />
         </Canvas>
