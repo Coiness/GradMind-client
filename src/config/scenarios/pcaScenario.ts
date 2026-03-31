@@ -3,20 +3,16 @@ import { presetDatasets } from "@/config/presetDatasets";
 import { pcaAlgorithm } from "@/config/algorithms/dataReduction/pca";
 import { pcaBridge } from "./pcaBridge";
 
-// 生成随机高斯数据
-function generateRandomGaussianData(
-  samples: number,
-  dimensions: number,
-): number[][] {
+// 生成 4 维高斯数据
+function generate4DGaussianData(samples: number): number[][] {
   const data: number[][] = [];
   for (let i = 0; i < samples; i++) {
     const row: number[] = [];
-    for (let j = 0; j < dimensions; j++) {
-      // Box-Muller 变换生成高斯分布
+    for (let j = 0; j < 4; j++) {
       const u1 = Math.random();
       const u2 = Math.random();
       const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
-      row.push(Math.round(z * 10) / 10);
+      row.push(z * (j === 3 ? 2 : 1)); // 第 4 维变化更明显
     }
     data.push(row);
   }
@@ -47,8 +43,8 @@ const pcaScenario: Scenario = {
       key: "nComponents",
       label: "主成分数量",
       type: "slider",
-      defaultValue: 3,
-      options: { min: 2, max: 5, step: 1 },
+      defaultValue: 4,
+      options: { min: 1, max: 4, step: 1 },
     },
   ],
   compute: async (params) => {
@@ -56,22 +52,17 @@ const pcaScenario: Scenario = {
     const nComponents = params.nComponents as number;
     const startTime = Date.now();
 
-    // 获取数据
-    let data: number[][];
-    if (datasetType === "fruit") {
-      const fruitDataset = presetDatasets.find(
-        (d) => d.id === "fruit-properties-data",
-      );
-      data = fruitDataset?.datasetData.data as number[][];
-    } else {
-      data = generateRandomGaussianData(200, 10);
-    }
+    // 使用 4 维数据
+    const data = generate4DGaussianData(150);
 
     // 调用 PCA 算法
     const result = await pcaAlgorithm.compute(
       { dataset: data },
-      { nComponents, center: "true" },
+      { nComponents: 4, center: "true" },
     );
+
+    const transformed = result.transformed as number[][];
+    const originalData = data;
 
     const computationTime = Date.now() - startTime;
 
@@ -80,7 +71,9 @@ const pcaScenario: Scenario = {
       computationTime,
       visualization: {
         type: "pca-scatter" as const,
-        points: result.transformed as number[][],
+        points: transformed,
+        originalData,
+        nComponents,
         variance: result.variance as number[],
         explainedVariance: result.explainedVariance as number[],
         cumulativeVariance: result.cumulativeVariance as number[],
