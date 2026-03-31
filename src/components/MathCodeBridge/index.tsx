@@ -1,77 +1,53 @@
 import React, { useState } from "react";
 import { Card, Space, Typography, Tag, Divider } from "antd";
+import type { BridgeConfig } from "@/types/bridgeConfig";
 const { Title, Text } = Typography;
 
-export const MathCodeBridge: React.FC = () => {
+interface MathCodeBridgeProps {
+  config?: BridgeConfig;
+}
+
+export const MathCodeBridge: React.FC<MathCodeBridgeProps> = ({ config }) => {
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [hoveredId, setHoveredId] = useState<string | null>("loss_func");
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
 
-  // 公式与代码的对应关系 - 精简版
-  const formulaMappings = [
-    {
-      id: "loss_func",
-      name: "损失函数",
-      formula: "J(θ) = 1/2m ∑(hθ(x) - y)²",
-      description: "均方误差",
-      color: "#e6f7ff",
-      codeLines: [1, 5],
-      codeSnippet: `def compute_loss(X, y, theta):
-    m = len(y)
-    predictions = X.dot(theta)
-    loss = (1/(2*m)) * np.sum((predictions - y) ** 2)
-    return loss`,
-    },
-    {
-      id: "gradient_formula",
-      name: "梯度计算",
-      formula: "∇J(θ) = 1/m ∑(hθ(x) - y)x",
-      description: "参数梯度",
-      color: "#d9f7be",
-      codeLines: [7, 11],
-      codeSnippet: `def compute_gradient(X, y, theta):
-    m = len(y)
-    predictions = X.dot(theta)
-    errors = predictions - y
-    gradient = (1/m) * X.T.dot(errors)
-    return gradient`,
-    },
-    {
-      id: "update_step",
-      name: "参数更新",
-      formula: "θ := θ - α∇J(θ)",
-      description: "更新规则",
-      color: "#ffd6e7",
-      codeLines: [13, 22],
-      codeSnippet: `def gradient_descent(X, y, theta, alpha, iterations):
-    m = len(y)
-    loss_history = []
-    
-    for i in range(iterations):
-        grad = compute_gradient(X, y, theta)
-        theta = theta - alpha * grad
-        loss = compute_loss(X, y, theta)
-        loss_history.append(loss)
-        
-    return theta, loss_history`,
-    },
-  ];
+  if (!config) {
+    return (
+      <div style={{ padding: "20px", textAlign: "center", color: "var(--text-secondary)" }}>
+        当前场景暂无公式-代码对应关系
+      </div>
+    );
+  }
 
-  // 获取当前高亮的公式
-  const currentFormula = formulaMappings.find(
+  // 从 config 提取映射关系
+  const getCodeSnippet = (lines: [number, number]) => {
+    const codeLines = config.codeContent.split('\n');
+    return codeLines.slice(lines[0] - 1, lines[1]).join('\n');
+  };
+
+  const displayMappings = Object.entries(config.mappings).map(([id, mapping]) => ({
+    id,
+    name: mapping.description || id,
+    color: mapping.color,
+    description: mapping.description || "",
+    codeLines: mapping.lines,
+    codeSnippet: getCodeSnippet(mapping.lines),
+  }));
+
+  const currentFormula = displayMappings.find(
     (f) => f.id === (hoveredId || activeId),
   );
 
   return (
     <div
       style={{
-        padding: "12px 16px", // 减少内边距
+        padding: "12px 16px",
         height: "100%",
         overflow: "hidden",
         display: "flex",
         flexDirection: "column",
       }}
     >
-      {/* 紧凑标题区域 */}
       <div style={{ marginBottom: "12px" }}>
         <div
           style={{
@@ -98,7 +74,6 @@ export const MathCodeBridge: React.FC = () => {
         </Text>
       </div>
 
-      {/* 数学公式区域 - 紧凑版 */}
       <Card
         size="small"
         title={
@@ -114,7 +89,7 @@ export const MathCodeBridge: React.FC = () => {
         bodyStyle={{ padding: "12px" }}
       >
         <Space direction="vertical" style={{ width: "100%" }}>
-          {formulaMappings.map((item) => {
+          {displayMappings.map((item) => {
             const isActive = activeId === item.id;
             const isHovered = hoveredId === item.id;
             const shouldHighlight = isActive || isHovered;
@@ -181,7 +156,7 @@ export const MathCodeBridge: React.FC = () => {
                         lineHeight: "1.3",
                       }}
                     >
-                      {item.formula}
+                      {item.description}
                     </Text>
                   </div>
                 </div>
@@ -191,7 +166,6 @@ export const MathCodeBridge: React.FC = () => {
         </Space>
       </Card>
 
-      {/* 代码实现区域 - 紧凑版 */}
       <Card
         size="small"
         title={
@@ -211,10 +185,10 @@ export const MathCodeBridge: React.FC = () => {
             background: "#1e1e1e",
             borderRadius: "6px",
             overflow: "hidden",
-            fontSize: "11px", // 缩小代码字体
+            fontSize: "11px",
           }}
         >
-          {formulaMappings.map((item) => {
+          {displayMappings.map((item) => {
             const isActive = activeId === item.id;
             const isHovered = hoveredId === item.id;
             const shouldHighlight = isActive || isHovered;
@@ -268,7 +242,7 @@ export const MathCodeBridge: React.FC = () => {
                     margin: 0,
                     color: shouldHighlight ? "#000" : "#d4d4d4",
                     fontFamily: "Consolas, Monaco, monospace",
-                    fontSize: "11px", // 缩小代码字体
+                    fontSize: "11px",
                     lineHeight: "1.3",
                     whiteSpace: "pre-wrap",
                     wordBreak: "break-all",
@@ -282,7 +256,6 @@ export const MathCodeBridge: React.FC = () => {
         </div>
       </Card>
 
-      {/* 紧凑的交互说明和图例 */}
       <Card size="small" bodyStyle={{ padding: "8px 12px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <Text strong style={{ fontSize: "12px", whiteSpace: "nowrap" }}>
@@ -296,7 +269,7 @@ export const MathCodeBridge: React.FC = () => {
               flex: 1,
             }}
           >
-            {formulaMappings.map((item) => (
+            {displayMappings.map((item) => (
               <div
                 key={item.id}
                 style={{

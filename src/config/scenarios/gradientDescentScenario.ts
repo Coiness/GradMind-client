@@ -1,5 +1,6 @@
 import type { Scenario } from "@/types/scenarioConfig";
 import type { Point3D } from "@/types/computationResult";
+import { gradientDescentBridge } from "./gradientDescentBridge";
 
 // 目标函数定义
 const objectiveFunctions = {
@@ -61,6 +62,7 @@ const gradientDescentScenario: Scenario = {
   description: "演示梯度下降算法如何优化损失函数",
   visualizationType: "gradient-descent-3d",
   realtimeMode: true,
+  bridgeConfig: gradientDescentBridge,
   parameterConfig: [
     {
       key: "functionType",

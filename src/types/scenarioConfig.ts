@@ -1,6 +1,7 @@
 import type { ParameterConfig, ParameterValues } from "./parameterConfig";
 import type { InfoItem } from "./InfoConfig";
 import type { ComputationResult } from "./computationResult";
+import type { BridgeConfig } from "./bridgeConfig";
 
 // 可视化类型
 export type VisualizationType =
@@ -17,6 +18,7 @@ export interface Scenario {
   parameterConfig: ParameterConfig[]; // 参数面板配置
   visualizationType: VisualizationType; // 可视化类型
   realtimeMode?: boolean; // 是否支持实时交互（默认 false）
+  bridgeConfig?: BridgeConfig; // 公式-代码对应配置（可选）
   // 计算函数：接收参数，返回计算结果
   compute: (params: ParameterValues) => Promise<ComputationResult>;
   // 结果转换函数：将计算结果转换为信息面板的数据

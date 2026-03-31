@@ -65,9 +65,9 @@ const VisualizationPage: FC = () => {
 
       <main
         style={{
-          border: "1px solid #f0f0f0",
+          border: "1px solid var(--border-color)",
           borderRadius: "8px",
-          backgroundColor: "#fff",
+          backgroundColor: "var(--bg-primary)",
           padding: "16px",
         }}
       >
@@ -80,13 +80,13 @@ const VisualizationPage: FC = () => {
 
       <div
         style={{
-          border: "1px solid #f0f0f0",
+          border: "1px solid var(--border-color)",
           borderRadius: "8px",
-          backgroundColor: "#fff",
+          backgroundColor: "var(--bg-primary)",
           overflow: "hidden",
         }}
       >
-        <MathCodeBridge />
+        <MathCodeBridge config={currentScenario.bridgeConfig} />
       </div>
     </div>
   );
