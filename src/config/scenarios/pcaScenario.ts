@@ -45,7 +45,7 @@ const pcaScenario: Scenario = {
       key: "nComponents",
       label: "主成分数量",
       type: "slider",
-      defaultValue: 2,
+      defaultValue: 3,
       options: { min: 2, max: 5, step: 1 },
     },
   ],

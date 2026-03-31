@@ -87,14 +87,14 @@ const gradientDescentScenario: Scenario = {
       label: "初始点 X",
       type: "number",
       defaultValue: 1.5,
-      options: { min: -2, max: 2, step: 0.1 },
+      options: { min: -10, max: 10, step: 0.1 },
     },
     {
       key: "y0",
       label: "初始点 Y",
       type: "number",
       defaultValue: 1.5,
-      options: { min: -2, max: 2, step: 0.1 },
+      options: { min: -10, max: 10, step: 0.1 },
     },
     {
       key: "maxIterations",

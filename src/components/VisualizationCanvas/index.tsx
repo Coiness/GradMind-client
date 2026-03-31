@@ -2,7 +2,7 @@ import React from "react";
 import type { ComputationResult } from "@/types/computationResult";
 import type { VisualizationType } from "@/types/scenarioConfig";
 import GradientDescent3DChart from "./charts/GradientDescent3DChart";
-import ScatterChart from "@/pages/Orchestration/components/ResultPanel/charts/ScatterChart";
+import PCA3DChart from "./charts/PCA3DChart";
 
 interface VisualizationCanvasProps {
   visualizationType: VisualizationType;
@@ -57,7 +57,7 @@ const VisualizationCanvas: React.FC<VisualizationCanvasProps> = ({
 
     case "pca-scatter":
       if (visualization.type === "pca-scatter") {
-        return <ScatterChart data={visualization} />;
+        return <PCA3DChart data={visualization} />;
       }
       break;
 
