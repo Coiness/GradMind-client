@@ -105,6 +105,13 @@ const gradientDescentScenario: Scenario = {
       defaultValue: 50,
       options: { min: 10, max: 200, step: 10 },
     },
+    {
+      key: "animationSpeed",
+      label: "动画速度 (ms/步)",
+      type: "slider",
+      defaultValue: 100,
+      options: { min: 50, max: 500, step: 50 },
+    },
   ],
   compute: async (params) => {
     const funcType = params.functionType as keyof typeof objectiveFunctions;
@@ -112,6 +119,7 @@ const gradientDescentScenario: Scenario = {
     const x0 = params.x0 as number;
     const y0 = params.y0 as number;
     const maxIterations = params.maxIterations as number;
+    const animationSpeed = params.animationSpeed as number;
 
     const { func, gradient } = objectiveFunctions[funcType];
     const startTime = Date.now();
@@ -153,6 +161,7 @@ const gradientDescentScenario: Scenario = {
         surfaceData,
         pathPoints,
         range,
+        animationSpeed,
       },
     };
   },

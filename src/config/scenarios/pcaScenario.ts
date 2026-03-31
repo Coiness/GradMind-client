@@ -1,6 +1,7 @@
 import type { Scenario } from "@/types/scenarioConfig";
 import { presetDatasets } from "@/config/presetDatasets";
 import { pcaAlgorithm } from "@/config/algorithms/dataReduction/pca";
+import { pcaBridge } from "./pcaBridge";
 
 // 生成随机高斯数据
 function generateRandomGaussianData(
@@ -28,6 +29,7 @@ const pcaScenario: Scenario = {
   description: "主成分分析，将高维数据投影到低维空间",
   visualizationType: "pca-scatter",
   realtimeMode: true,
+  bridgeConfig: pcaBridge,
   parameterConfig: [
     {
       key: "datasetType",

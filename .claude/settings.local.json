@@ -25,7 +25,8 @@
       "Read(//c/Users/15121/.agents/skills/ui-ux-pro-max/**)",
       "Bash(python3 scripts/search.py \"data visualization machine learning tool professional scientific\" --design-system -p \"GradMind\" -f markdown)",
       "Bash(xargs grep:*)",
-      "Bash(grep -r \"ReactECharts\\\\|echarts\" /c/Users/15121/Desktop/code/GradMind-client/src/pages/Orchestration/components/ResultPanel/charts/*.tsx)"
+      "Bash(grep -r \"ReactECharts\\\\|echarts\" /c/Users/15121/Desktop/code/GradMind-client/src/pages/Orchestration/components/ResultPanel/charts/*.tsx)",
+      "Bash(git checkout:*)"
     ]
   }
 }

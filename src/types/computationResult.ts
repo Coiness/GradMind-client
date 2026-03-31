@@ -12,6 +12,7 @@ export interface GradientDescentVisualization {
   surfaceData: Point3D[]; // 曲面网格数据
   pathPoints: Point3D[]; // 优化路径点
   range: { xMin: number; xMax: number; yMin: number; yMax: number }; // 坐标范围
+  animationSpeed?: number; // 动画速度 (ms/步)
 }
 
 // PCA 可视化数据

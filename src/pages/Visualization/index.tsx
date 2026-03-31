@@ -55,6 +55,7 @@ const VisualizationPage: FC = () => {
           config={currentScenario.parameterConfig}
           onApply={handleApplyParams}
           isLoading={status === "loading"}
+          saveMode={currentScenario.realtimeMode ? "blur" : "manual"}
         />
         <InfoPanel
           title={currentScenario.name}
@@ -86,7 +87,7 @@ const VisualizationPage: FC = () => {
           overflow: "hidden",
         }}
       >
-        <MathCodeBridge config={currentScenario.bridgeConfig} />
+        <MathCodeBridge mappings={currentScenario.bridgeConfig?.mappings} />
       </div>
     </div>
   );

@@ -33,6 +33,7 @@ export default function MainLayout() {
           items={items}
           onChange={onTabChange}
         />
+        <div style={{ flex: 1 }} />
         <Switch
           checked={theme === "dark"}
           onChange={toggleTheme}

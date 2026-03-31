@@ -93,19 +93,19 @@ const GradientDescent3DChart: React.FC<GradientDescent3DChartProps> = ({ data })
   const timerRef = useRef<number | null>(null);
   const { theme } = useTheme();
 
-  const { pathPoints, range, functionType } = data;
+  const { pathPoints, range, functionType, animationSpeed = 100 } = data;
 
   // 动画控制
   useEffect(() => {
     if (isPlaying && currentStep < pathPoints.length - 1) {
       timerRef.current = window.setTimeout(() => {
         setCurrentStep((prev) => prev + 1);
-      }, 50);
+      }, animationSpeed);
     }
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [isPlaying, currentStep, pathPoints.length]);
+  }, [isPlaying, currentStep, pathPoints.length, animationSpeed]);
 
   // 重置动画
   useEffect(() => {
