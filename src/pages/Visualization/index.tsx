@@ -5,6 +5,7 @@ import type { ParameterValues } from "@/types/parameterConfig";
 import { ParameterPanel } from "@/components/ParameterPanel";
 import { InfoPanel } from "@/components/InfoPanel";
 import { MathCodeBridge } from "@/components/MathCodeBridge";
+import VisualizationCanvas from "@/components/VisualizationCanvas";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   setSelectedScenario,
@@ -54,6 +55,7 @@ const VisualizationPage: FC = () => {
           config={currentScenario.parameterConfig}
           onApply={handleApplyParams}
           isLoading={status === "loading"}
+          saveMode={currentScenario.realtimeMode ? "blur" : "manual"}
         />
         <InfoPanel
           title={currentScenario.name}
@@ -64,24 +66,28 @@ const VisualizationPage: FC = () => {
 
       <main
         style={{
-          border: "1px solid #f0f0f0",
+          border: "1px solid var(--border-color)",
           borderRadius: "8px",
-          backgroundColor: "#fff",
+          backgroundColor: "var(--bg-primary)",
           padding: "16px",
         }}
       >
-        <p>Canvas Area - 这里将来放置图表</p>
+        <VisualizationCanvas
+          visualizationType={currentScenario.visualizationType}
+          data={computationResult}
+          loading={status === "loading"}
+        />
       </main>
 
       <div
         style={{
-          border: "1px solid #f0f0f0",
+          border: "1px solid var(--border-color)",
           borderRadius: "8px",
-          backgroundColor: "#fff",
+          backgroundColor: "var(--bg-primary)",
           overflow: "hidden",
         }}
       >
-        <MathCodeBridge />
+        <MathCodeBridge mappings={currentScenario.bridgeConfig?.mappings} />
       </div>
     </div>
   );

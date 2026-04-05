@@ -4,39 +4,35 @@
 }
 
 .datasetNode.selected .card {
-  box-shadow: 0 0 0 2px #52c41a;
+  box-shadow: 0 0 0 2px #10b981;
 }
 
 .card {
-  border: 2px solid #52c41a;
-  background: linear-gradient(135deg, #f0f9ff 0%, #e6f7ff 100%);
-  transition: all 0.2s ease;
+  border: 2px solid #10b981;
+  background: rgba(16, 185, 129, 0.1);
+  backdrop-filter: blur(10px);
+  transition: var(--transition-smooth);
   cursor: pointer;
+  border-radius: 8px;
 }
 
 .card:hover {
-  box-shadow: 0 4px 12px rgba(82, 196, 26, 0.2);
-}
-
-.content {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.icon {
-  font-size: 20px;
-  color: #52c41a;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
 }
 
 .label {
   font-size: 13px;
+  color: var(--text-primary);
+  font-weight: 500;
 }
 
 .handle {
   width: 10px;
   height: 10px;
-  border: 2px solid #fff;
+  border: 2px solid #10b981;
+  background: var(--bg-secondary);
+  transition: var(--transition-smooth);
 }
 
 .handle:hover {

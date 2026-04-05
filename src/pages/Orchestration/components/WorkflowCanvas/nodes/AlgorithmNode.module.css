@@ -4,35 +4,29 @@
 }
 
 .algorithmNode.selected .card {
-  box-shadow: 0 0 0 2px #1890ff;
+  box-shadow: 0 0 0 2px #6366f1;
 }
 
 .card {
   border-width: 2px;
-  transition: all 0.2s ease;
+  background: rgba(99, 102, 241, 0.1);
+  backdrop-filter: blur(10px);
+  transition: var(--transition-smooth);
   cursor: pointer;
+  border-radius: 8px;
 }
 
 .card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
-.icon {
-  font-size: 18px;
-  flex-shrink: 0;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
 }
 
 .name {
   flex: 1;
   font-size: 13px;
   line-height: 1.4;
+  color: var(--text-primary);
+  font-weight: 500;
 }
 
 .footer {
@@ -41,25 +35,23 @@
   justify-content: center;
   gap: 8px;
   padding-top: 8px;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--border-color);
 }
 
 .error {
   margin-top: 8px;
   padding: 4px 8px;
-  background: #fff2f0;
+  background: rgba(239, 68, 68, 0.2);
   border-radius: 4px;
-}
-
-.errorNode {
-  min-width: 150px;
-  border-color: #ff4d4f;
+  color: #ef4444;
 }
 
 .handle {
   width: 10px;
   height: 10px;
-  border: 2px solid #fff;
+  border: 2px solid var(--accent-primary);
+  background: var(--bg-secondary);
+  transition: var(--transition-smooth);
 }
 
 .handle:hover {

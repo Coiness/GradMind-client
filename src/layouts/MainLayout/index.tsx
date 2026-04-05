@@ -1,11 +1,13 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Suspense } from "react";
-import { Tabs } from "antd";
+import { Tabs, Switch } from "antd";
+import { useTheme } from "@/contexts/ThemeContext";
 import styles from "./MainLayout.module.css";
 
 export default function MainLayout() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { theme, toggleTheme } = useTheme();
 
   const items = [
     {
@@ -30,6 +32,13 @@ export default function MainLayout() {
           activeKey={location.pathname}
           items={items}
           onChange={onTabChange}
+        />
+        <div style={{ flex: 1 }} />
+        <Switch
+          checked={theme === "dark"}
+          onChange={toggleTheme}
+          checkedChildren="🌙"
+          unCheckedChildren="☀️"
         />
       </header>
       <main className={styles.main}>

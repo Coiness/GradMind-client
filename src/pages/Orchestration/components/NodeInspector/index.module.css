@@ -2,27 +2,28 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: #fff;
+  background: var(--bg-primary);
   min-height: 0;
 }
 
 .header {
-  padding: 16px;
-  border-bottom: 1px solid #f0f0f0;
+  padding: 20px;
+  border-bottom: 1px solid var(--border-color);
   flex-shrink: 0;
+  background: var(--bg-primary);
 }
 
 .header h5 {
   margin: 0 0 8px 0;
   font-size: 14px;
   font-weight: 600;
-  color: #262626;
+  color: var(--text-secondary);
 }
 
 .nodeTitle {
   font-size: 16px;
-  font-weight: 500;
-  color: #1890ff;
+  font-weight: 600;
+  color: var(--accent-primary);
   margin-top: 4px;
 }
 
@@ -32,6 +33,7 @@
   align-items: center;
   justify-content: center;
   padding: 24px;
+  color: var(--text-secondary);
 }
 
 .tabs {

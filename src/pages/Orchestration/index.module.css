@@ -1,14 +1,17 @@
 .orchestrationPage {
   height: 100%;
-  background: #f0f2f5;
+  background: var(--bg-secondary);
   min-height: 0;
 }
 
 .leftPanel {
   height: 100%;
   overflow: hidden;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+  background: var(--bg-primary);
+  border-right: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
   min-height: 0;
+  transition: var(--transition-smooth);
 }
 
 .centerPanel {
@@ -17,6 +20,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  background: var(--bg-secondary);
   min-height: 0;
 }
 
@@ -25,13 +29,17 @@
   min-height: 300px;
   overflow: hidden;
   position: relative;
+  background: var(--bg-tertiary);
 }
 
 .rightPanel {
   height: 100%;
   overflow: hidden;
-  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.05);
+  background: var(--bg-primary);
+  border-left: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
   min-height: 0;
+  transition: var(--transition-smooth);
 }
 
 .rightPanel :global(.ant-layout-sider-children) {

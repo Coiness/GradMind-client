@@ -2,59 +2,37 @@ import React, { useState } from "react";
 import { Card, Space, Typography, Tag, Divider } from "antd";
 const { Title, Text } = Typography;
 
-export const MathCodeBridge: React.FC = () => {
-  const [activeId, setActiveId] = useState<string | null>(null);
-  const [hoveredId, setHoveredId] = useState<string | null>("loss_func");
+interface MathCodeBridgeProps {
+  mappings?: Array<{
+    id: string;
+    name: string;
+    formula: string;
+    description: string;
+    color: string;
+    codeLines: [number, number];
+    codeSnippet: string;
+  }>;
+}
 
-  // 公式与代码的对应关系 - 精简版
-  const formulaMappings = [
-    {
-      id: "loss_func",
-      name: "损失函数",
-      formula: "J(θ) = 1/2m ∑(hθ(x) - y)²",
-      description: "均方误差",
-      color: "#e6f7ff",
-      codeLines: [1, 5],
-      codeSnippet: `def compute_loss(X, y, theta):
-    m = len(y)
-    predictions = X.dot(theta)
-    loss = (1/(2*m)) * np.sum((predictions - y) ** 2)
-    return loss`,
-    },
-    {
-      id: "gradient_formula",
-      name: "梯度计算",
-      formula: "∇J(θ) = 1/m ∑(hθ(x) - y)x",
-      description: "参数梯度",
-      color: "#d9f7be",
-      codeLines: [7, 11],
-      codeSnippet: `def compute_gradient(X, y, theta):
-    m = len(y)
-    predictions = X.dot(theta)
-    errors = predictions - y
-    gradient = (1/m) * X.T.dot(errors)
-    return gradient`,
-    },
-    {
-      id: "update_step",
-      name: "参数更新",
-      formula: "θ := θ - α∇J(θ)",
-      description: "更新规则",
-      color: "#ffd6e7",
-      codeLines: [13, 22],
-      codeSnippet: `def gradient_descent(X, y, theta, alpha, iterations):
-    m = len(y)
-    loss_history = []
-    
-    for i in range(iterations):
-        grad = compute_gradient(X, y, theta)
-        theta = theta - alpha * grad
-        loss = compute_loss(X, y, theta)
-        loss_history.append(loss)
-        
-    return theta, loss_history`,
-    },
-  ];
+export const MathCodeBridge: React.FC<MathCodeBridgeProps> = ({ mappings }) => {
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+
+  if (!mappings || mappings.length === 0) {
+    return (
+      <div
+        style={{
+          padding: "20px",
+          textAlign: "center",
+          color: "var(--text-secondary)",
+        }}
+      >
+        当前场景暂无公式-代码对应关系
+      </div>
+    );
+  }
+
+  const formulaMappings = mappings;
 
   // 获取当前高亮的公式
   const currentFormula = formulaMappings.find(
