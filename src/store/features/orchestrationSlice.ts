@@ -442,7 +442,7 @@ export const orchestrationSlice = createSlice({
         const newWorkflow: Workflow = {
           ...template,
           id: `workflow-${Date.now()}`,
-          name: `${template.name} (Copy)`,
+          name: template.name,
           nodes: template.nodes.map((n) => ({ ...n, data: { ...n.data } })),
           edges: template.edges.map((e) => ({ ...e })),
           createdAt: new Date().toISOString(),

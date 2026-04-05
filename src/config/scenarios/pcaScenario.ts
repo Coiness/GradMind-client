@@ -90,7 +90,7 @@ const pcaScenario: Scenario = {
       | number[]
       | undefined;
     return [
-      { label: "计算耗时", value: result?.computationTime, unit: "ms" },
+      { label: "计算耗时", value: result?.computationTime ?? "—", unit: result != null ? "ms" : "" },
       {
         label: "PC1 解释方差",
         value: explainedVariance?.[0]

@@ -167,9 +167,9 @@ const gradientDescentScenario: Scenario = {
     };
   },
   resultTransformer: (result) => [
-    { label: "计算耗时", value: result?.computationTime, unit: "ms" },
-    { label: "最终损失", value: result?.finalLoss?.toFixed(6) },
-    { label: "迭代次数", value: result?.iterations },
+    { label: "计算耗时", value: result?.computationTime ?? "—", unit: result != null ? "ms" : "" },
+    { label: "最终损失", value: result?.finalLoss != null ? result.finalLoss.toFixed(6) : "—" },
+    { label: "迭代次数", value: result?.iterations ?? "—" },
   ],
 };
 
