@@ -1,173 +1,96 @@
-# GradMind Client
+# GradMind 
 
-一个用于可视化《人工智能数学基础》核心概念的交互式 Web 应用。通过动态参数调整和实时计算，帮助学习者直观理解梯度下降、反向传播等算法。
+**智能算法编排与 3D/2D 可视化分析平台**
 
-## 技术栈
+GradMind 是一个基于 Web 的交互式科学计算与算法编排平台。它通过有向无环图 (DAG) 的形式，将复杂的数学算法（如解析优化、数值优化、数据降维等）解构为可直观操作的节点工作流，并提供强大的实时可视化反馈。本项目旨在帮助算法研究人员、学生和开发者更直观、更深层次地理解机器学习和最优化算法的底层数学行为。
 
-- 前端框架: React 18 + TypeScript
-- 构建工具: Vite
-- UI 库: Ant Design
-- 状态管理: Redux Toolkit
-- 样式: CSS Modules (保持一致性)
-- 代码规范: ESLint + Prettier
+---
 
-## 快速开始
+## ✨ 核心特性
 
-环境要求
+### 1. 灵活的算法编排 (Algorithm Orchestration)
+- **基于 DAG 的工作流引擎**：利用 React Flow 构建可视化画布，支持通过拖拽节点构建复杂的计算逻辑。
+- **自动化执行引擎**：内置拓扑排序算法，确保节点按依赖关系严格有序执行。
+- **智能数据流转**：支持矩阵(Matrix)、向量(Vector)、标量(Scalar)及函数(Function)之间的类型安全流转与自动转换。
+- **实时校验**：提供工作流合法性校验，实时拦截死循环、连接错误或参数缺失。
 
-- Node.js >= 20.19.0 (推荐使用 LTS 版本)
-- npm 或 yarn
+### 2. 丰富的数学与机器学习算法库
+- **解析优化 (Analytical Optimization)**：拉格朗日乘数法、最小二乘法、黑塞矩阵 (Hessian) 分析、解析梯度计算。
+- **数值优化 (Numerical Optimization)**：梯度下降 (GD)、小批量梯度下降 (Mini-batch GD)、Adam/RMSprop 自适应优化器、基础神经网络计算。
+- **数据降维 (Data Reduction)**：PCA (主成分分析)、SVD (奇异值分解)、K-Means 聚类、矩阵截断图像重构。
+- **参数估计 (Parameter Estimation)**：极大似然估计 (MLE) 与最大后验概率估计 (MAP)。
 
-安装依赖
-`npm install`
+### 3. 多维可视化反馈
+- **专属示波器节点 (Oscilloscope)**：可随时接入工作流的任意环节，捕获中间输出。
+- **丰富的图表类型**：内置 ECharts 提供散点分布、回归曲线、损失函数收敛图、矩阵热力图等。
+- **3D 曲面与轨迹**：基于 Three.js 提供目标函数（如 Rosenbrock、鞍点）的 3D 曲面渲染，并动态绘制梯度下降的寻优轨迹。
 
-启动开发服务器
-`npm run dev`
+### 4. 预设场景模板
+内置了多个教科书级别的端到端实验模板，一键加载即可运行：
+- **最优化理论与微积分验证**：最小二乘法(估算起点) → 梯度下降(数值寻优) → Hessian矩阵(凸性验证) → 解析梯度(平稳点验证)。
+- **SVD 图像压缩**：原始图像矩阵 → 奇异值分解 → 截取主成分重建 → 可视化对比。
+- **更多模板**：神经网络 XOR 逻辑求解、优化器收敛速度对比、PCA 高维特征压缩等。
 
-打开浏览器访问 `http://localhost:5173`，即可看到应用运行。
+---
 
-构建生产化版本
-`npm run build`
+## 🛠 技术栈
 
-代码格式化
-`npm run format`
+本项目采用现代前端工程化标准构建：
 
-代码检查
-`npm run lint`
+- **核心框架**：React 19 + TypeScript + Vite 7
+- **状态管理**：Redux Toolkit (包含完整的工作流执行状态流转)
+- **工作流引擎**：React Flow
+- **可视化图表**：ECharts 6 (2D 图表) + Three.js / React Three Fiber (3D 渲染)
+- **UI 组件库**：Ant Design 5.x
+- **数学计算库**：Math.js
+- **代码规范**：ESLint + Prettier
+- **单元测试**：Vitest
 
-## 项目结构
+---
 
-```
-src/
-├── assets/              # 静态资源文件 (图片、图标等)
-├── components/          # 通用可复用组件
-│   ├── InfoPanel/       # 信息展示面板
-│   │   ├── index.module.css
-│   │   └── index.tsx
-│   └── ParameterPanel/  # 参数配置面板
-├── config/              # 应用配置
-│   └── scenarios/       # 场景配置文件
-│       ├── gradientDescentScenario.ts  # 梯度下降场景
-│       └── index.ts     # 场景导出
-├── layouts/             # 页面布局组件
-├── pages/               # 页面组件
-│   ├── Orchestration/   # 编排页面
-│   ├── Translation/     # 翻译页面
-│   └── Visualization/   # 可视化页面
-│       └── index.tsx
-├── router/              # 路由配置
-│   └── index.tsx
-├── store/               # Redux 状态管理
-│   └── features/        # Redux slices
-│       ├── hooks.ts     # Redux hooks
-│       ├── index.ts     # Store 配置
-│       └── visualizationSlice.ts  # 可视化 slice
-├── style/               # 全局样式
-│   └── global.less
-└── types/               # TypeScript 类型定义
-    ├── computationResult.ts  # 计算结果类型
-    ├── index.ts         # 类型导出
-    ├── InfoConfig.ts    # 信息面板类型
-    └── parameterConfig.ts  # 参数配置类型
+## 🚀 快速开始
+
+### 1. 克隆仓库
+```bash
+git clone https://github.com/Coiness/GradMind-client.git
+cd GradMind-client
 ```
 
-## 开发规范
-
-### 1. 新增组件的要求
-
-- 位置: 所有通用组件放在 `components` 下，每个组件一个文件夹。
-- 文件结构:
-  - `index.tsx`: 组件主文件
-  - `index.module.css`: 组件样式 (使用 CSS Modules)
-- 风格一致性:
-  - 使用 Ant Design 组件作为基础。
-  - 容器样式统一: `padding: 16px; border: 1px solid #f0f0f0; border-radius: 8px; background-color: #fff;`
-  - 布局使用 `Space` 组件垂直堆叠。
-  - 避免内联样式，优先使用 CSS Modules。
-- 命名: PascalCase (如 `ParameterPanel`)。
-- Props: 使用 TypeScript 接口定义，必需属性在前，可选属性在后。
-- 示例:
-
-```tsx
-// src/components/NewComponent/index.tsx
-import styles from "./index.module.css";
-
-interface NewComponentProps {
-  title: string;
-  data: any[];
-  loading?: boolean;
-}
-
-export const NewComponent: React.FC<NewComponentProps> = () => {
-  return <div className={styles.panel}>{/* 组件内容 */}</div>;
-};
+### 2. 安装依赖
+本项目使用 `pnpm` 作为包管理器（推荐）：
+```bash
+pnpm install
 ```
 
-### 2. Store (Redux) 使用规范
+### 3. 启动开发服务器
+```bash
+pnpm run dev
+```
+启动后，在浏览器中访问 `http://localhost:5173` 即可体验。
 
-- 位置: 所有 Redux 相关代码放在 `store` 下。
-- Slice 结构: 使用 Redux Toolkit 的 `createSlice`，每个功能一个 slice。
-- 异步操作: 使用 `createAsyncThunk` 处理异步逻辑。
-- 状态类型: 在 slice 文件中定义 `State` 接口。
-- 命名: slice 文件使用 camelCase (如 `visualizationSlice.ts`)。
-- 示例:
+### 4. 代码格式化与测试
+```bash
+# 运行类型检查与 ESLint
+pnpm run lint
 
-```ts
-// src/store/features/newFeatureSlice.ts
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+# 运行代码格式化
+pnpm run format
 
-export interface NewFeatureState {
-  data: any;
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
-}
-
-export const fetchData = createAsyncThunk('newFeature/fetchData', async () => {
-  // 异步逻辑
-});
-
-const newFeatureSlice = createSlice({
-  name: 'newFeature',
-  initialState: { ... } as NewFeatureState,
-  reducers: { /* 同步 reducers */ },
-  extraReducers: (builder) => {
-    builder.addCase(fetchData.pending, (state) => {
-      // ...
-    });
-    // ...
-  },
-});
+# 运行核心执行引擎的单元测试
+pnpm run test
 ```
 
-### 3. Type (TypeScript 类型) 定义规范
+---
 
-- 位置: 所有类型定义放在 `types` 下，每个类型一个文件。
-- 命名: 文件名使用 camelCase (如 `parameterConfig.ts`)，类型名使用 PascalCase (如 `ParameterConfig`)。
-- 组织: 相关类型放在同一个文件，避免过度拆分。
-- 导入: 使用 `import type` 语法。
-- 示例:
+## 📖 使用指南
 
-```ts
-// src/types/newType.ts
-export interface NewType {
-  id: string;
-  name: string;
-  value?: number;
-}
+1. **构建工作流**：在页面左侧的【算法库】中，将所需的数据集（Dataset）、算法（Algorithm）和示波器（Oscilloscope）拖拽至中央画布。
+2. **连接节点**：通过连线建立数据传递路径，如将“最小二乘法”的 `coefficients` 输出端连接至“梯度下降”的 `initialPoint` 输入端。
+3. **配置参数**：选中画布上的任意算法节点，在右侧【节点检查器】中调整超参数（如步长、学习率、迭代次数等）。
+4. **运行与观察**：点击画布顶部的【运行工作流】按钮，引擎将按拓扑顺序计算所有节点。计算完成后，点击示波器节点即可在结果面板查看详细的可视化图表。
 
-export type NewUnionType = "option1" | "option2";
-```
+---
 
-## 贡献指南
+## 📄 开源协议
 
-1. Fork 本仓库。
-2. 创建功能分支: `git checkout -b feature/new-feature`。
-3. 代码检查: `npm lint`.
-4. 代码格式化: `npm run format`.
-5. 将代码加入缓冲区: `git add .`
-6. 提交更改: `git commit -m "feat: add new feature"`。
-7. 推送分支: `git push origin feature/new-feature`。
-8. 创建 Pull Request。（github网页可以）
-
-## 补充
-
-我使用 scenarios 类型存放不同场景的一些信息，像是参数、展示信息、计算结果等，可以在 config 里面通过新建文件来配置不同的场景。
+本项目采用 [MIT License](LICENSE) 开源协议。
