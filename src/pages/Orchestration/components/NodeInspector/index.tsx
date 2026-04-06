@@ -1,6 +1,8 @@
 import React from "react";
-import { Tabs, Empty, Typography } from "antd";
-import { useAppSelector } from "@/store/hooks";
+import { Tabs, Empty, Typography, Button, Popconfirm } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { removeNode } from "@/store/features/orchestrationSlice";
 import { AlgorithmInfo } from "./AlgorithmInfo";
 import { ExecutionResults } from "./ExecutionResults";
 import { ValidationErrors } from "./ValidationErrors";
@@ -13,6 +15,7 @@ const { Title } = Typography;
  * Right panel that displays detailed information about the selected node
  */
 export const NodeInspector: React.FC = () => {
+  const dispatch = useAppDispatch();
   const {
     selectedNodeId,
     currentWorkflow,
@@ -101,6 +104,26 @@ export const NodeInspector: React.FC = () => {
       <div className={styles.header}>
         <Title level={5}>节点检查器</Title>
         <div className={styles.nodeTitle}>{selectedNode.data.label}</div>
+        <div className={styles.actions}>
+          <Popconfirm
+            title="删除此节点？"
+            description="删除后无法恢复，连线也会一并移除。"
+            onConfirm={() => {
+              dispatch(removeNode(selectedNodeId));
+            }}
+            okText="删除"
+            cancelText="取消"
+            okButtonProps={{ danger: true }}
+          >
+            <Button
+              size="small"
+              danger
+              icon={<DeleteOutlined />}
+            >
+              删除节点
+            </Button>
+          </Popconfirm>
+        </div>
       </div>
       <Tabs
         defaultActiveKey="details"

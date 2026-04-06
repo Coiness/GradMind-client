@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useRef, useEffect } from "react";
 import type { DragEvent } from "react";
 import ReactFlow, {
   Background,
@@ -61,6 +61,21 @@ export const WorkflowCanvas: React.FC = () => {
       setEdges(currentWorkflow.edges);
     }
   }, [currentWorkflow, setNodes, setEdges]);
+
+  // Keyboard shortcut: Delete/Backspace removes selected node
+  useEffect(() => {
+    if (!selectedNodeId) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Delete" || e.key === "Backspace") {
+        const target = e.target as HTMLElement;
+        if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") return;
+        e.preventDefault();
+        dispatch(removeNode(selectedNodeId));
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedNodeId, dispatch]);
 
   // Handle node connection
   const onConnect = useCallback(

@@ -14,15 +14,17 @@ export const gradientAlgorithm: AlgorithmNode = {
   inputs: [
     {
       id: "function",
-      label: "目标函数",
+      label: "目标函数(可选)",
       dataType: "function",
-      required: true,
+      required: false,
+      description: "要计算梯度的目标函数",
     },
     {
       id: "point",
       label: "求值点",
       dataType: "vector",
       required: true,
+      description: "计算梯度的坐标点",
     },
   ],
 
@@ -31,35 +33,52 @@ export const gradientAlgorithm: AlgorithmNode = {
       id: "gradient",
       label: "梯度向量",
       dataType: "vector",
+      description: "计算得到的偏导数向量",
     },
     {
       id: "magnitude",
       label: "梯度幅值",
       dataType: "scalar",
+      description: "梯度向量的模长(接近0代表平稳点)",
     },
   ],
 
   parameters: [
     {
-      key: "method",
-      label: "计算方法",
+      key: "objectiveFunction",
+      label: "内置目标函数",
       type: "select",
-      defaultValue: "numerical",
+      defaultValue: "bowl",
       options: {
         items: [
-          { label: "数值法（有限差分）", value: "numerical" },
-          { label: "自动微分", value: "autodiff" },
+          { label: "碗状函数 (Bowl)", value: "bowl" },
+          { label: "马鞍函数 (Saddle)", value: "saddle" },
+          { label: "Rosenbrock函数", value: "rosenbrock" },
+        ],
+      },
+      description: "选择内置的测试函数(如果有连线输入则忽略此项)",
+    },
+    {
+      key: "method",
+      label: "差分方法",
+      type: "select",
+      defaultValue: "central",
+      options: {
+        items: [
+          { label: "中心差分", value: "central" },
+          { label: "前向差分", value: "forward" },
+          { label: "后向差分", value: "backward" },
         ],
       },
     },
     {
       key: "epsilon",
-      label: "步长（ε）",
+      label: "步长 (ε)",
       type: "number",
       defaultValue: 1e-5,
       options: {
-        min: 1e-10,
-        max: 1e-2,
+        min: 1e-8,
+        max: 1e-1,
         step: 1e-6,
       },
     },
@@ -67,16 +86,13 @@ export const gradientAlgorithm: AlgorithmNode = {
 
   compute: async (inputs, params) => {
     const epsilon = Number(params.epsilon) || 1e-5;
-    const method = params.method || "numerical";
+    const method = params.method || "central";
 
     // 提取输入数据
     const functionInput = inputs.function;
     const pointInput = inputs.point;
 
     // 验证输入
-    if (!functionInput) {
-      throw new Error("缺少目标函数输入");
-    }
     if (!pointInput) {
       throw new Error("缺少求值点输入");
     }
@@ -84,18 +100,38 @@ export const gradientAlgorithm: AlgorithmNode = {
     // 提取点数据
     let point: number[];
     if (Array.isArray(pointInput)) {
-      point = pointInput;
-    } else if (pointInput.data) {
-      point = Array.isArray(pointInput.data[0])
-        ? pointInput.data[0]
-        : pointInput.data;
+      point = pointInput.flat(Infinity) as number[];
+    } else if (
+      typeof pointInput === "object" &&
+      pointInput !== null &&
+      "data" in pointInput
+    ) {
+      const data = (pointInput as any).data;
+      point = Array.isArray(data) ? (data.flat(Infinity) as number[]) : [0, 0];
+    } else if (typeof pointInput === "number") {
+      point = [pointInput];
     } else {
-      throw new Error("无效的点数据格式");
+      throw new Error("求值点必须是向量或数字");
     }
 
     // 提取函数
     let func: (x: number[]) => number;
-    if (typeof functionInput === "function") {
+    if (!functionInput) {
+      const objFunc = (params.objectiveFunction as string) || "bowl";
+      switch (objFunc) {
+        case "bowl":
+          func = (x) => x[0] * x[0] + x[1] * x[1];
+          break;
+        case "saddle":
+          func = (x) => x[0] * x[0] - x[1] * x[1];
+          break;
+        case "rosenbrock":
+          func = (x) => Math.pow(1 - x[0], 2) + 100 * Math.pow(x[1] - x[0] * x[0], 2);
+          break;
+        default:
+          func = (x) => x[0] * x[0] + x[1] * x[1];
+      }
+    } else if (typeof functionInput === "function") {
       func = functionInput;
     } else if (typeof functionInput === "string") {
       // 如果是字符串，尝试解析为函数
