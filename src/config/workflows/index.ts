@@ -864,4 +864,182 @@ export const templates: Workflow[] = [
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
+  /**
+   * 场景9：最优化理论与微积分验证管道（解析解→数值解→二阶验证）
+   * 展示教科书级别的端到端数学优化流程：
+   * ① 最小二乘法：通过解析法求得线性拟合系数（提供初始向量）
+   * ② 梯度下降：以上述系数为起点，在非线性曲面上进行数值迭代寻优
+   * ③ Hessian矩阵：计算收敛点处的二阶偏导矩阵，分析曲面特征值
+   * ④ 梯度计算：最终验证该收敛点的梯度幅值是否接近零（平稳点验证）
+   */
+  {
+    id: "scene-optimization-theory-pipeline",
+    name: "最优化理论与微积分验证",
+    description:
+      "将统计学、数值优化和微积分完美结合。先用最小二乘法(解析解)估算一个合理的起点，输入给梯度下降(数值法)寻找真正的全局最优解，最后利用 Hessian 矩阵特征值和梯度幅值验证该解是否为严格的局部极小值(谷底)。",
+    nodes: [
+      {
+        id: "dataset-temp",
+        type: "dataset",
+        position: { x: 30, y: 180 },
+        data: {
+          label: "气温波动数据集 (提供拟合数据)",
+          datasetData: presetDatasets.find(
+            (d) => d.id === "temperature-fluctuation-data",
+          )?.datasetData,
+        },
+      },
+      {
+        id: "least-squares",
+        type: "algorithm",
+        position: { x: 300, y: 180 },
+        data: {
+          label: "最小二乘法 (解析解估计)",
+          algorithmKey: "least-squares",
+          parameters: {
+            method: "polynomial",
+            degree: 1, // 线性拟合，产生2个系数作为起点
+            regularization: 0,
+            targetColumn: -1,
+          },
+          status: "idle",
+        },
+      },
+      {
+        id: "osc-ls-residual",
+        type: "oscilloscope",
+        position: { x: 300, y: 420 },
+        data: { label: "最小二乘拟合残差", status: "idle" },
+      },
+      {
+        id: "gradient-descent",
+        type: "algorithm",
+        position: { x: 600, y: 180 },
+        data: {
+          label: "梯度下降 (数值迭代寻优)",
+          algorithmKey: "gradient-descent",
+          parameters: {
+            objectiveFunction: "rosenbrock", // 在复杂的非线性曲面上寻优
+            learningRate: 0.001,
+            maxIterations: 100,
+          },
+          status: "idle",
+        },
+      },
+      {
+        id: "osc-gd-history",
+        type: "oscilloscope",
+        position: { x: 600, y: 420 },
+        data: { label: "梯度下降收敛轨迹", status: "idle" },
+      },
+      {
+        id: "hessian",
+        type: "algorithm",
+        position: { x: 900, y: 180 },
+        data: {
+          label: "Hessian 矩阵 (二阶曲率分析)",
+          algorithmKey: "hessian",
+          parameters: {
+            objectiveFunction: "rosenbrock", // 与上面保持一致的曲面
+            h: 0.0001,
+          },
+          status: "idle",
+        },
+      },
+      {
+        id: "osc-hessian-eigen",
+        type: "oscilloscope",
+        position: { x: 900, y: 420 },
+        data: { label: "收敛点 Hessian 特征值", status: "idle" },
+      },
+      {
+        id: "gradient-calc",
+        type: "algorithm",
+        position: { x: 1200, y: 180 },
+        data: {
+          label: "解析梯度 (平稳点最终验证)",
+          algorithmKey: "gradient",
+          parameters: {
+            objectiveFunction: "rosenbrock",
+            h: 0.0001,
+          },
+          status: "idle",
+        },
+      },
+      {
+        id: "osc-final-verify",
+        type: "oscilloscope",
+        position: { x: 1200, y: 420 },
+        data: { label: "解析梯度平稳点验证", status: "idle" },
+      },
+    ],
+    edges: [
+      // 1. 数据集 -> 最小二乘法
+      {
+        id: "e1",
+        source: "dataset-temp",
+        target: "least-squares",
+        sourceHandle: "dataset",
+        targetHandle: "dataset",
+      },
+      // 2. 最小二乘法(输出残差) -> 示波器观察拟合效果
+      {
+        id: "e2",
+        source: "least-squares",
+        target: "osc-ls-residual",
+        sourceHandle: "residuals",
+        targetHandle: "input",
+      },
+      // 3. 最小二乘法(输出系数 Vector) -> 梯度下降(作为初始寻优点)
+      {
+        id: "e3",
+        source: "least-squares",
+        target: "gradient-descent",
+        sourceHandle: "coefficients",
+        targetHandle: "initialPoint",
+      },
+      // 4. 梯度下降(输出优化历史) -> 示波器观察收敛过程
+      {
+        id: "e4",
+        source: "gradient-descent",
+        target: "osc-gd-history",
+        sourceHandle: "history",
+        targetHandle: "input",
+      },
+      // 5. 梯度下降(输出最终解 Vector) -> Hessian矩阵(作为求值点)
+      {
+        id: "e5",
+        source: "gradient-descent",
+        target: "hessian",
+        sourceHandle: "solution",
+        targetHandle: "point",
+      },
+      // 6. Hessian矩阵(输出特征值 Vector) -> 示波器观察是否全为正
+      {
+        id: "e6",
+        source: "hessian",
+        target: "osc-hessian-eigen",
+        sourceHandle: "eigenvalues",
+        targetHandle: "input",
+      },
+      // 7. 梯度下降(输出最终解 Vector) -> 梯度计算(作为求值点)
+      {
+        id: "e7",
+        source: "gradient-descent",
+        target: "gradient-calc",
+        sourceHandle: "solution",
+        targetHandle: "point",
+      },
+      // 8. 梯度计算(输出梯度向量 Vector) -> 最终验证示波器
+      {
+        id: "e8",
+        source: "gradient-calc",
+        target: "osc-final-verify",
+        sourceHandle: "gradient",
+        targetHandle: "input",
+      },
+    ],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
 ];

@@ -15,15 +15,17 @@ export const hessianAlgorithm: AlgorithmNode = {
   inputs: [
     {
       id: "function",
-      label: "目标函数",
+      label: "目标函数(可选)",
       dataType: "function",
-      required: true,
+      required: false, // 改为非必填，优先使用下拉框
+      description: "要分析的目标函数",
     },
     {
       id: "point",
       label: "求值点",
       dataType: "vector",
       required: true,
+      description: "计算Hessian矩阵的坐标点",
     },
   ],
 
@@ -32,20 +34,37 @@ export const hessianAlgorithm: AlgorithmNode = {
       id: "hessian",
       label: "Hessian 矩阵",
       dataType: "matrix",
+      description: "计算得到的二阶偏导数矩阵",
     },
     {
       id: "eigenvalues",
       label: "特征值",
       dataType: "vector",
+      description: "Hessian矩阵的特征值，用于判断凸性",
     },
     {
       id: "convexity",
       label: "凸性分析",
       dataType: "scalar",
+      description: "1为严格凸(极小值)，-1为严格凹(极大值)，0为鞍点或不确定",
     },
   ],
 
   parameters: [
+    {
+      key: "objectiveFunction",
+      label: "内置目标函数",
+      type: "select",
+      defaultValue: "bowl",
+      options: {
+        items: [
+          { label: "碗状函数 (Bowl)", value: "bowl" },
+          { label: "马鞍函数 (Saddle)", value: "saddle" },
+          { label: "Rosenbrock函数", value: "rosenbrock" },
+        ],
+      },
+      description: "选择内置的测试函数(如果有连线输入则忽略此项)",
+    },
     {
       key: "method",
       label: "计算方法",
@@ -68,6 +87,7 @@ export const hessianAlgorithm: AlgorithmNode = {
         max: 1e-2,
         step: 1e-6,
       },
+      description: "数值微积分的差分步长",
     },
   ],
 
@@ -78,9 +98,6 @@ export const hessianAlgorithm: AlgorithmNode = {
     const functionInput = inputs.function;
     const pointInput = inputs.point;
 
-    if (!functionInput) {
-      throw new Error("缺少目标函数输入");
-    }
     if (!pointInput) {
       throw new Error("缺少求值点输入");
     }
@@ -99,7 +116,22 @@ export const hessianAlgorithm: AlgorithmNode = {
 
     // 提取函数
     let func: (x: number[]) => number;
-    if (typeof functionInput === "function") {
+    if (!functionInput) {
+      const objFunc = (params.objectiveFunction as string) || "bowl";
+      switch (objFunc) {
+        case "bowl":
+          func = (x) => x[0] * x[0] + x[1] * x[1];
+          break;
+        case "saddle":
+          func = (x) => x[0] * x[0] - x[1] * x[1];
+          break;
+        case "rosenbrock":
+          func = (x) => Math.pow(1 - x[0], 2) + 100 * Math.pow(x[1] - x[0] * x[0], 2);
+          break;
+        default:
+          func = (x) => x[0] * x[0] + x[1] * x[1];
+      }
+    } else if (typeof functionInput === "function") {
       func = functionInput;
     } else if (typeof functionInput === "string") {
       try {
