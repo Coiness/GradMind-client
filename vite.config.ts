@@ -5,6 +5,7 @@ import path from "path";
 // https://vite.dev/config/
 // alias
 export default defineConfig({
+  base: "/GradMind-client/",
   plugins: [react()],
   resolve: {
     alias: {

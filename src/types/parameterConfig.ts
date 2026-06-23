@@ -1,6 +1,7 @@
 export type ParameterConfig = {
   key: string; // 唯一标识，用于 state
   label: string; // 显示的标签
+  description?: string; // 可选的描述信息
   type: "slider" | "number" | "select" | "boolean"; // 控件类型
   defaultValue: number | string | boolean;
   // 特定于控件的选项

@@ -27,6 +27,7 @@ export type DataType =
 export interface AlgorithmInput {
   id: string; // e.g., 'matrix', 'vector', 'function'
   label: string; // Display name
+  description?: string; // Optional description
   dataType: DataType;
   required: boolean;
 }
@@ -37,6 +38,7 @@ export interface AlgorithmInput {
 export interface AlgorithmOutput {
   id: string;
   label: string;
+  description?: string; // Optional description
   dataType: DataType;
 }
 
