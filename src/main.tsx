@@ -11,7 +11,7 @@ import App from "./App.tsx";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
+      <BrowserRouter basename="/GradMind-client">
         <App />
       </BrowserRouter>
     </Provider>
